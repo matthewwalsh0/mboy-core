@@ -5,11 +5,13 @@
 #ifndef MY_APPLICATION_TYPES_H
 #define MY_APPLICATION_TYPES_H
 
-typedef unsigned char uint8;
-typedef unsigned short uint16;
-typedef unsigned int uint32;
-typedef char int8;
-typedef short int16;
-typedef int int32;
+#include "sys/types.h"
+
+typedef u_int8_t uint8;
+typedef u_int16_t uint16;
+typedef u_int32_t uint32;
+typedef int8_t int8;
+typedef int16_t int16;
+typedef int32_t int32;
 
 #endif //MY_APPLICATION_TYPES_H

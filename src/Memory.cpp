@@ -95,8 +95,8 @@ void Memory::flag_interrupt(uint8 bit) {
 }
 
 void Memory::dma(uint8 value) {
-    uint8 start = Bytes::join_8(value, 0x00);
-    uint8 end = Bytes::join_8(value, 0x9F) + 1;
+    uint16 start = Bytes::join_8(value, 0x00);
+    uint16 end = Bytes::join_8(value, 0x9F) + 1;
 
     for(uint16 sourceAddress = start; sourceAddress < end; sourceAddress++) {
         uint16 relative = sourceAddress - start;

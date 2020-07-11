@@ -54,3 +54,28 @@ void Tile::drawLine(Pixels *pixels, palette palette, uint16 localY, uint16 targe
         pixels->set(finalX, targetY, pixel);
     }
 }
+
+void Tile::drawLineAdvanced(Pixels *pixels, palette palette, uint16 localY, uint16 targetX, uint16 targetY,
+                            bool flipX, bool flipY, bool large, bool transparentColourZero, bool priority,
+                            uint16 localX, uint16 targetWidth, uint32 priorityColour) {
+    uint8 height = large ? TILE_SIZE_LARGE - 1 : TILE_SIZE - 1;
+
+    for(uint8 x = localX; x < TILE_SIZE; x++) {
+        uint8 tileX = flipX ? TILE_SIZE - 1 - x : x;
+        uint8 tileY = flipY ? height - localY : localY;
+        uint8 colourIndex = colourIndexes[tileY * 8 + tileX];
+
+        if(transparentColourZero && colourIndex == 0) { continue; }
+
+        uint32 pixel = palette.colours[colourIndex];
+        uint16 finalX = Bytes::wrappingSub_8(Bytes::wrappingAdd_8(targetX, x), localX);
+
+        if(finalX >= targetWidth) continue;
+
+        uint32 targetPixel = pixels->get(finalX, targetY);
+
+        if(priority && targetPixel != priorityColour) continue;
+
+        pixels->set(finalX, targetY, pixel);
+    }
+}

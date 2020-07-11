@@ -10,8 +10,16 @@ const uint16 ROM_SIZE = 0x8000;
 
 Rom::Rom(std::string filename) {
     std::ifstream file (filename, std::ios::binary);
-    file.read((char*) &this->rom, ROM_SIZE);
-    this->name = readName(this->rom);
+
+    if(file)
+    {
+        file.read((char*) &this->rom, ROM_SIZE);
+        this->name = readName(this->rom);
+    }
+    else
+    {
+        throw std::invalid_argument("Cannot read file.\nFile: " + filename + "\nReason: " + strerror(errno));
+    }
 }
 
 uint8 Rom::get_8(uint16 address) {

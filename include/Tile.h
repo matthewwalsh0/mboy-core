@@ -24,6 +24,9 @@ public:
     Tile(Memory* memory, uint16 start, bool large, bool alternateBank);
     void drawLine(Pixels* pixels, palette palette, uint16 localY,
             uint16 targetX, uint16 targetY, bool flipX, bool flipY);
+    void drawLineAdvanced(Pixels *pixels, palette palette, uint16 localY, uint16 targetX, uint16 targetY,
+            bool flipX, bool flipY, bool large, bool transparentColourZero, bool priority,
+            uint16 localX, uint16 targetWidth, uint32 priorityColour);
 };
 
 #endif //MY_APPLICATION_TILE_H

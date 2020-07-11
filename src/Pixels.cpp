@@ -29,20 +29,10 @@ void Pixels::clearLine(uint16 y, uint16 offset, uint16 width) {
 }
 
 uint32 *Pixels::getLine(uint16 y, uint16 offset, uint16 width) {
-    uint32* pixels = new uint32[this->width];
     uint16 lineStart = y * this->width;
     uint16 sourceIndex = lineStart + offset;
-    uint16 lineEnd = lineStart + this->width;
-
-    for(uint16 x = 0; x < width; x++) {
-        pixels[x] = data[sourceIndex++];
-
-        if(sourceIndex == lineEnd) {
-            sourceIndex = lineStart;
-        }
-    }
-
-    return pixels;
+   
+    return data + sourceIndex;
 }
 
 uint16 Pixels::getIndex(uint16 x, uint16 y) {

@@ -28,6 +28,9 @@ const uint16 TILE_MAP_1_START = 0x9C00;
 const uint16 TILE_MAP_1_END = 0x9FFF + 1;
 const uint16 BACKGROUND_PALETTE = 0xFF47;
 const uint16 LCD_CONTROL = 0xFF40;
+const uint16 SPRITE_INFO_START = 0xFE00;
+const uint16 SPRITE_PALETTE_0 = 0xFF48;
+const uint16 SPRITE_PALETTE_1 = 0xFF49;
 
 const uint16 SCROLL_Y = 0xFF42;
 const uint16 SCROLL_X = 0xFF43;
