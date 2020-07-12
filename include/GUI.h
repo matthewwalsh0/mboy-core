@@ -12,6 +12,7 @@ public:
     virtual void displayBuffer(uint32* pixels) {};
     virtual bool isOpen() { return true; }
     virtual void displayFPS(uint16 fps) {};
+    virtual void playAudio(float* samples, uint16 count) {};
 };
 
 

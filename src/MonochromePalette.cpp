@@ -21,6 +21,7 @@ static uint32 getColour(bool first, bool second) {
 palette MonochromePalette::get(uint8 value) {
     palette palette;
 
+    palette.value = value;
     palette.colours[0] = getColour(Bytes::getBit_8(value, 0), Bytes::getBit_8(value, 1));
     palette.colours[1] = getColour(Bytes::getBit_8(value, 2), Bytes::getBit_8(value, 3));
     palette.colours[2] = getColour(Bytes::getBit_8(value, 4), Bytes::getBit_8(value, 5));

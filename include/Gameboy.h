@@ -11,12 +11,14 @@
 #include "Timer.h"
 #include "GPU.h"
 #include "GUI.h"
+#include "APU.h"
 
 class Gameboy {
 private:
     Memory memory;
     CPU cpu;
     GPU gpu;
+    APU apu;
     CoreMemory coreMemory;
     Rom* rom;
     Timer timer;

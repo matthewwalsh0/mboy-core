@@ -3,6 +3,7 @@
 //
 
 #include "Pixels.h"
+#include <cstring>
 
 uint32 Pixels::get(uint16 x, uint16 y) {
     return data[getIndex(x, y)];
@@ -14,10 +15,7 @@ void Pixels::set(uint16 x, uint16 y, uint32 pixel) {
 
 void Pixels::setLine(uint16 y, uint32 *pixels, uint16 offset, uint16 width) {
     uint16 startIndex = y * this->width + offset;
-
-    for(uint16 x = 0; x < width; x++) {
-        data[startIndex++] = pixels[x];
-    }
+    memcpy(data + startIndex, pixels, width * sizeof(uint32));
 }
 
 void Pixels::clearLine(uint16 y, uint16 offset, uint16 width) {

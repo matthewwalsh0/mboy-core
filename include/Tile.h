@@ -13,6 +13,7 @@ const uint16 TILE_SIZE = 8;
 const uint16 TILE_SIZE_LARGE = 16;
 
 struct palette {
+    uint8 value;
     uint32 colours[4] = {0};
 };
 
@@ -20,6 +21,8 @@ class Tile {
 private:
     uint32 colourIndexes[TILE_SIZE * TILE_SIZE];
     bool large;
+    uint32 paletteCache[256 * TILE_SIZE * TILE_SIZE];
+    bool paletteCacheSet[256 * TILE_SIZE] = {[0 ... 256 * TILE_SIZE - 1] = false};
 public:
     Tile(Memory* memory, uint16 start, bool large, bool alternateBank);
     void drawLine(Pixels* pixels, palette palette, uint16 localY,

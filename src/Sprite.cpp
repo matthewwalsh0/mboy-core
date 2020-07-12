@@ -15,7 +15,7 @@ Sprite::Sprite(Memory *memory, uint16 start, bool largeSprites) {
     priority = !Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 7);
     yFlip = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 6);
     xFlip = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 5);
-    alternatePalette = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 4);
+    //alternatePalette = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 4);
     large = largeSprites;
     this->memory = memory;
 }

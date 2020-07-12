@@ -4,10 +4,11 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui) {
+Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui), apu(gui) {
     this->rom = &rom;
     this->gui = gui;
-    memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu, (MemoryHook*) &timer);
+    memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu,
+            (MemoryHook*) &timer, (MemoryHook*) &apu);
 }
 
 void Gameboy::run() {
@@ -17,6 +18,7 @@ void Gameboy::run() {
     while(this->gui->isOpen()) {
         uint16 instructionDuration = cpu.step(&memory, count, false);
         gpu.step(instructionDuration, &memory, isColour, count);
+        apu.step(instructionDuration, count);
         timer.step(instructionDuration, &memory);
 
         count += 1;

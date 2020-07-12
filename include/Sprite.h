@@ -24,7 +24,6 @@ private:
     bool yFlip;
     bool xFlip;
     bool alternatePalette;
-    bool alternateBank;
     bool large;
     Memory* memory;
 };

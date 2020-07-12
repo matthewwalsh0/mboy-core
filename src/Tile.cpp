@@ -44,15 +44,28 @@ Tile::Tile(Memory *memory, uint16 start, bool large, bool alternateBank) {
 
 void Tile::drawLine(Pixels *pixels, palette palette, uint16 localY, uint16 targetX, uint16 targetY,
                     bool flipX, bool flipY) {
+    uint16 cacheIndex = palette.value * localY;
+    bool cached = paletteCacheSet[cacheIndex];
+
+    if(cached) {
+        pixels->setLine(targetY, paletteCache + cacheIndex, targetX, TILE_SIZE);
+        return;
+    }
+
+    uint16 tileY = flipY ? TILE_SIZE - 1 - localY : localY;
+    uint16 yIndex = tileY * TILE_SIZE;
+    uint32* linePixels = paletteCache + cacheIndex;
+
     for(uint8 x = 0; x < TILE_SIZE; x++) {
         uint16 tileX = flipX ? TILE_SIZE - 1 - x : x;
-        uint16 tileY = flipY ? TILE_SIZE - 1 - localY : localY;
-        uint8 colourIndex = colourIndexes[tileY * TILE_SIZE + tileX];
+        uint8 colourIndex = colourIndexes[yIndex + tileX];
         uint32 pixel = palette.colours[colourIndex];
-        uint16 finalX = targetX + x;
 
-        pixels->set(finalX, targetY, pixel);
+        linePixels[x] = pixel;
     }
+
+    pixels->setLine(targetY, linePixels, targetX, TILE_SIZE);
+    paletteCacheSet[cacheIndex] = true;
 }
 
 void Tile::drawLineAdvanced(Pixels *pixels, palette palette, uint16 localY, uint16 targetX, uint16 targetY,

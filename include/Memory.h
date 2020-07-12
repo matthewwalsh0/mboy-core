@@ -18,9 +18,10 @@ public:
     MemoryHook* cpu;
     MemoryHook* gpu;
     MemoryHook* timer;
+    MemoryHook* apu;
     uint8 column = 0;
 
-    void init(CoreMemory* coreMemory, Rom* rom, MemoryHook* cpu, MemoryHook* gpu, MemoryHook* timer);
+    void init(CoreMemory* coreMemory, Rom* rom, MemoryHook* cpu, MemoryHook* gpu, MemoryHook* timer, MemoryHook* apu);
     uint8 get_8(uint16 address);
     void set_8(uint16 address, uint8 value);
     void set_16(uint16 address, uint16 value);

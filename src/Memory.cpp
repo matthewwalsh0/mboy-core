@@ -9,12 +9,14 @@
 const uint16 ADDRESS_DMA_TRANSFER = 0xFF46;
 const uint16 ADDRESS_SPRITE_INFO_START = 0xFE00;
 
-void Memory::init(CoreMemory *coreMemory, Rom *rom, MemoryHook *cpu, MemoryHook *gpu, MemoryHook* timer) {
+void Memory::init(CoreMemory *coreMemory, Rom *rom, MemoryHook *cpu, MemoryHook *gpu,
+        MemoryHook* timer, MemoryHook* apu) {
     this->coreMemory = coreMemory;
     this->rom = rom;
     this->cpu = cpu;
     this->gpu = gpu;
     this->timer = timer;
+    this->apu = apu;
 
     set_8(LCD_CONTROL, 0x91);
     set_8(ADDRESS_JOYPAD, 0x0F);
@@ -80,6 +82,8 @@ void Memory::set_8(uint16 address, uint8 value) {
         bool column_1 = Bytes::getBit_8(columnValue, 4);
         bool column_2 = Bytes::getBit_8(columnValue, 5);
         column = column_1 ? 0 : column_2 ? 1 : column;
+    } else if (address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4) {
+        apu->set_8(address, value);
     }
 
     coreMemory->set_8(address, value);
