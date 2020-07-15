@@ -4,7 +4,7 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui), apu(gui) {
+Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui), apu(gui, &memory) {
     this->rom = &rom;
     this->gui = gui;
     memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu,

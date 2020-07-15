@@ -7,19 +7,15 @@
 
 #include "Types.h"
 
-const uint16 ADDRESS_INTERRUPT_ENABLE = 0xFFFF;
-const uint16 ADDRESS_INTERRUPT_FLAGS = 0xFF0F;
+// CPU + Timer
 const uint16 ADDRESS_DIVIDER = 0xFF04;
-const uint16 ADDRESS_STAT = 0xFF41;
-const uint16 ADDRESS_TARGET_LINE = 0xFF45;
-const uint16 ADDRESS_LINE = 0xFF44;
-const uint16 ADDRESS_JOYPAD = 0xFF00;
+const uint16 ADDRESS_INTERRUPT_FLAGS = 0xFF0F;
+const uint16 ADDRESS_INTERRUPT_ENABLE = 0xFFFF;
+
+// GPU
+const uint16 ADDRESS_VRAM_BANK = 0xFF4F;
 const uint16 ADDRESS_VRAM_START = 0x8000;
 const uint16 ADDRESS_VRAM_END = 0x9FFF;
-const uint16 ADDRESS_VRAM_BANK = 0xFF4F;
-const uint16 SQUARE_1_ADDRESS_START = 0xFF11;
-const uint16 SQUARE_2_ADDRESS_START = 0xFF16;
-
 const uint16 TILE_SET_1_START = 0x8000;
 const uint16 TILE_SET_1_END = 0x8FFF + 1;
 const uint16 TILE_SET_0_START = 0x8800;
@@ -28,15 +24,25 @@ const uint16 TILE_MAP_0_START = 0x9800;
 const uint16 TILE_MAP_0_END = 0x9BFF + 1;
 const uint16 TILE_MAP_1_START = 0x9C00;
 const uint16 TILE_MAP_1_END = 0x9FFF + 1;
-const uint16 BACKGROUND_PALETTE = 0xFF47;
-const uint16 LCD_CONTROL = 0xFF40;
 const uint16 SPRITE_INFO_START = 0xFE00;
+const uint16 LCD_CONTROL = 0xFF40;
+const uint16 ADDRESS_STAT = 0xFF41;
+const uint16 SCROLL_Y = 0xFF42;
+const uint16 SCROLL_X = 0xFF43;
+const uint16 ADDRESS_LINE = 0xFF44;
+const uint16 ADDRESS_TARGET_LINE = 0xFF45;
+const uint16 BACKGROUND_PALETTE = 0xFF47;
 const uint16 SPRITE_PALETTE_0 = 0xFF48;
 const uint16 SPRITE_PALETTE_1 = 0xFF49;
 
-const uint16 SCROLL_Y = 0xFF42;
-const uint16 SCROLL_X = 0xFF43;
+// APU
+const uint16 SQUARE_1_ADDRESS_START = 0xFF11;
+const uint16 SQUARE_2_ADDRESS_START = 0xFF16;
+const uint16 WAVE_TABLE_START = 0xFF30;
+const uint16 WAVE_START = 0xFF1A;
 
+// Other
+const uint16 ADDRESS_JOYPAD = 0xFF00;
 const uint8 INTERRUPT_BIT_VERTICAL_BLANK = 0;
 const uint8 INTERRUPT_BIT_LCD_STAT = 1;
 const uint8 INTERRUPT_BIT_TIMER = 2;

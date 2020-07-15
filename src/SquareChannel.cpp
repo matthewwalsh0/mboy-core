@@ -12,7 +12,6 @@ const bool DUTY_CYCLE_2[] = {true, false, false, false, false, true, true, true}
 const bool DUTY_CYCLE_3[] = {false, true, true, true, true, true, true, false};
 const bool* DUTY_CYCLES[] = {DUTY_CYCLE_0, DUTY_CYCLE_1, DUTY_CYCLE_2, DUTY_CYCLE_3};
 
-
 SquareChannel::SquareChannel(uint16 addressStart) {
     this->addressStart = addressStart;
 }

@@ -84,6 +84,10 @@ void Memory::set_8(uint16 address, uint8 value) {
         column = column_1 ? 0 : column_2 ? 1 : column;
     } else if (address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4) {
         apu->set_8(address, value);
+    } else if (address >= SQUARE_2_ADDRESS_START && address < SQUARE_2_ADDRESS_START + 4) {
+        apu->set_8(address, value);
+    } else if (address >= WAVE_START && address < WAVE_START + 5) {
+        apu->set_8(address, value);
     }
 
     coreMemory->set_8(address, value);

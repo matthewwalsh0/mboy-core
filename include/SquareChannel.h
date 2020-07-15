@@ -15,7 +15,7 @@ private:
     bool firstEnabled = false;
     bool enabled = false;
     uint16 frequency = 0;
-    uint16 frequencyTimer = 0;
+    int32 frequencyTimer = 0;
     uint16 duty = 0;
     uint16 dutyIndex = 0;
     bool trigger = false;
