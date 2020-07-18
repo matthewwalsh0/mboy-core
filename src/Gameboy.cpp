@@ -4,11 +4,11 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui), apu(gui, &memory) {
+Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui), apu(gui, &memory), joypad(gui) {
     this->rom = &rom;
     this->gui = gui;
     memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu,
-            (MemoryHook*) &timer, (MemoryHook*) &apu);
+            (MemoryHook*) &timer, (MemoryHook*) &apu, (MemoryHook*) &joypad);
 }
 
 void Gameboy::run() {

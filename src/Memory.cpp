@@ -10,13 +10,14 @@ const uint16 ADDRESS_DMA_TRANSFER = 0xFF46;
 const uint16 ADDRESS_SPRITE_INFO_START = 0xFE00;
 
 void Memory::init(CoreMemory *coreMemory, Rom *rom, MemoryHook *cpu, MemoryHook *gpu,
-        MemoryHook* timer, MemoryHook* apu) {
+        MemoryHook* timer, MemoryHook* apu, MemoryHook* joypad) {
     this->coreMemory = coreMemory;
     this->rom = rom;
     this->cpu = cpu;
     this->gpu = gpu;
     this->timer = timer;
     this->apu = apu;
+    this->joypad = joypad;
 
     set_8(LCD_CONTROL, 0x91);
     set_8(ADDRESS_JOYPAD, 0x0F);
@@ -46,7 +47,7 @@ uint8 Memory::get_8(uint16 address) {
             if(address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS) {
                 return cpu->get_8(address);
             } else if (address == ADDRESS_JOYPAD) {
-                return column | 0x0F;
+                return joypad->get_8(address);
             } else if (address >= 0xFF04 && address <= 0xFF07) {
                 return timer->get_8(address);
             } else if (address == ADDRESS_STAT || address == ADDRESS_TARGET_LINE || address == ADDRESS_LINE) {
@@ -78,10 +79,7 @@ void Memory::set_8(uint16 address, uint8 value) {
         cpu->set_8(address, value);
         return;
     } else if (address == ADDRESS_JOYPAD) {
-        uint8 columnValue = value & 0x30;
-        bool column_1 = Bytes::getBit_8(columnValue, 4);
-        bool column_2 = Bytes::getBit_8(columnValue, 5);
-        column = column_1 ? 0 : column_2 ? 1 : column;
+        joypad->set_8(address, value);
     } else if (address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4) {
         apu->set_8(address, value);
     } else if (address >= SQUARE_2_ADDRESS_START && address < SQUARE_2_ADDRESS_START + 4) {

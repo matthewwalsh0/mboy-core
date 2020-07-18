@@ -12,6 +12,7 @@
 #include "GPU.h"
 #include "GUI.h"
 #include "APU.h"
+#include "Joypad.h"
 
 class Gameboy {
 private:
@@ -22,6 +23,7 @@ private:
     CoreMemory coreMemory;
     Rom* rom;
     Timer timer;
+    Joypad joypad;
     GUI* gui;
 public:
     Gameboy(Rom rom, GUI* gui);
