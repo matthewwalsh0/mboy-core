@@ -40,6 +40,7 @@ uint8 Memory::get_8(uint16 address) {
         case 9:
         case 0xA:
         case 0xB:
+            return rom->get_8(address);
         case 0xC:
         case 0xD:
         case 0xE:
@@ -59,7 +60,7 @@ uint8 Memory::get_8(uint16 address) {
 }
 
 void Memory::set_8(uint16 address, uint8 value) {
-    if((address >= 0x0000 && address <= 0x7FFF)) {
+    if((address >= 0x0000 && address <= 0x7FFF)  || (address >= 0xA000 && address <= 0xBFFF)) {
         rom->set_8(address, value);
         return;
     } else if (address >= 0xFF04 && address <= 0xFF07) {

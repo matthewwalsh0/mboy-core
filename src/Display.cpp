@@ -9,6 +9,8 @@
 #include "GPU.h"
 #include "Sprite.h"
 
+const uint8 FINAL_INDEX = SCREEN_WIDTH / TILE_SIZE;
+
 Display::Display(Memory *memory) :
 tileMap_0(memory, TILE_MAP_0_START, TILE_MAP_0_END),
 tileMap_1(memory, TILE_MAP_1_START, TILE_MAP_1_END),
@@ -36,6 +38,28 @@ static void drawBackgroundLine(Pixels* pixels, Memory* memory, Control* control,
 
     uint32* linePixels = tileMap->pixels.getLine(localY, scrollX, SCREEN_WIDTH);
     pixels->setLine(line, linePixels, 0, SCREEN_WIDTH);
+}
+
+static void drawWindowLine(Pixels* pixels, Memory* memory, Control* control, TileMap* tileMap_0, TileMap* tileMap_1,
+        TileSet* tileSet, palette palette, uint8 line) {
+    if(!control->window) return;
+
+    uint8 windowX = memory->coreMemory->get_8(WINDOW_X) - 7;
+    uint8 windowY = memory->coreMemory->get_8(WINDOW_Y);
+
+    if(line < windowY) return;
+
+    uint8 localY = Bytes::wrappingSub_8(line, windowY);
+    uint8 tileIndexY = localY / 8;
+    TileMap* windowTileMap = !control->alternateWindowTileMap ? tileMap_0 : tileMap_1;
+
+    for(uint8 tileIndexX = 0; tileIndexX < TILE_COUNT; tileIndexX++) {
+        if(tileIndexX > FINAL_INDEX) continue;
+        windowTileMap->drawTile(tileIndexX, tileIndexY, palette, tileSet);
+    }
+
+    uint32* linePixels = windowTileMap->pixels.getLine(localY, 0, SCREEN_WIDTH);
+    pixels->setLine(line, linePixels, windowX, SCREEN_WIDTH - windowX);
 }
 
 static void drawSpriteLine(Pixels* pixels, Memory* memory, Control* control, uint8 line,
@@ -70,7 +94,8 @@ void Display::drawLine(Pixels *pixels, uint8 line, bool isColour, Control *contr
     uint16 scrollY = memory->coreMemory->get_8(SCROLL_Y);;
 
     drawBackgroundLine(pixels, memory, control, tileMap, tileSet, backgroundMonochromePalette, line, scrollX, scrollY);
-    drawSpriteLine(pixels, memory, control, line, tileSet, scrollX, scrollY, backgroundMonochromePalette);
+    drawWindowLine(pixels, memory, control, &tileMap_0, &tileMap_1, tileSet, backgroundMonochromePalette, line);
+    drawSpriteLine(pixels, memory, control, line, &tileSet_1, scrollX, scrollY, backgroundMonochromePalette);
 }
 
 uint8 Display::get_8(uint16 address) {

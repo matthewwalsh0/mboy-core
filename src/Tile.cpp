@@ -87,7 +87,7 @@ void Tile::drawLineAdvanced(Pixels *pixels, palette palette, uint16 localY, uint
 
         uint32 targetPixel = pixels->get(finalX, targetY);
 
-        if(priority && targetPixel != priorityColour) continue;
+        if(!priority && targetPixel != priorityColour) continue;
 
         pixels->set(finalX, targetY, pixel);
     }

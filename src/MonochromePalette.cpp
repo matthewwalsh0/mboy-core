@@ -6,10 +6,10 @@
 #include "Types.h"
 #include "Bytes.h"
 
-const uint32 PALETTE_WHITE = 0x00D0F8E0;
-const uint32 LIGHT_GREY = 0x0070C088;
-const uint32 DARK_GREY = 0x00566834;
-const uint32 BLACK = 0x00201808;
+const uint32 PALETTE_WHITE = 0xFFD0F8E0;
+const uint32 LIGHT_GREY = 0xFF70C088;
+const uint32 DARK_GREY = 0xFF566834;
+const uint32 BLACK = 0xFF201808;
 
 static uint32 getColour(bool first, bool second) {
     if(!first && !second) return PALETTE_WHITE;
