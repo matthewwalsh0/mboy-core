@@ -4,9 +4,17 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(Rom rom, GUI* gui) : gpu(&memory, gui), apu(gui, &memory), joypad(gui) {
+Gameboy::Gameboy(Rom rom, GUI* gui, struct config* config) : gpu(&memory, gui), apu(gui, &memory), joypad(gui) {
     this->rom = &rom;
     this->gui = gui;
+
+    if(config == nullptr) {
+        struct config defaultConfig;
+        this->config = &defaultConfig;
+    } else {
+        this->config = config;
+    }
+
     memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu,
             (MemoryHook*) &timer, (MemoryHook*) &apu, (MemoryHook*) &joypad);
 }
@@ -18,7 +26,11 @@ void Gameboy::run() {
     while(this->gui->isOpen()) {
         uint16 instructionDuration = cpu.step(&memory, count, false);
         gpu.step(instructionDuration, &memory, isColour, count);
-        apu.step(instructionDuration, count);
+
+        if(!config->turbo) {
+            apu.step(instructionDuration, count);
+        }
+
         timer.step(instructionDuration, &memory);
 
         count += 1;

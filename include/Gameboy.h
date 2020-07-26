@@ -13,6 +13,7 @@
 #include "GUI.h"
 #include "APU.h"
 #include "Joypad.h"
+#include "Config.h"
 
 class Gameboy {
 private:
@@ -25,8 +26,9 @@ private:
     Timer timer;
     Joypad joypad;
     GUI* gui;
+    config* config;
 public:
-    Gameboy(Rom rom, GUI* gui);
+    Gameboy(Rom rom, GUI* gui, struct config* config);
     void run();
 };
 
