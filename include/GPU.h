@@ -12,6 +12,7 @@
 #include "Display.h"
 #include "GUI.h"
 #include "LogFile.h"
+#include "Config.h"
 #include <chrono>
 
 const uint8 SCREEN_HEIGHT = 144;
@@ -35,15 +36,20 @@ private:
     LogFile logFile;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     uint16 frameCount = 0;
+    uint16 hdmaTarget = 0;
+    uint16 hdmaSource = 0;
+    struct config* config;
     
 public:
-    GPU(Memory* memory, GUI* gui);
+    GPU(Memory* memory, GUI* gui, struct config* config);
     void step(uint16 lastInstructionDuration, Memory* memory, bool isColour, uint32 count);
     uint8 getStat();
     void setStat(uint8 value);
     void setControl(uint8 value);
 
 private:
+    uint8 getHDMA(uint16 address) override;
+    void setHDMA(uint16 address, uint8 value) override;
     uint8 get_8(uint16 address) override;
     bool set_8(uint16 address, uint8 value) override;
 };

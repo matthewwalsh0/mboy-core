@@ -14,18 +14,29 @@ TileMap::TileMap(Memory *memory, uint16 start, uint16 end) : pixels(WIDTH, HEIGH
 }
 
 uint16 TileMap::getIndex(uint16 tileX, uint16 tileY) {
-    return memory->coreMemory->get_8(tileY * 32 + tileX + start);
+    return memory->vram.get_8(tileY * 32 + tileX + start, 0);
 }
 
 uint16 TileMap::getAttributeIndex(uint16 tileX, uint16 tileY) {
-    return memory->coreMemory->get_8(tileY * 32 + tileX + start);
+    return memory->vram.get_8(tileY * 32 + tileX + start, 1);
 }
 
-void TileMap::drawTile(uint16 tileIndexX, uint16 tileIndexY, palette palette, TileSet *tileSet) {
-    uint16 index = tileIndexY * TILE_COUNT + tileIndexX;
-    if(!invalidTiles[index]) return;
-
+void TileMap::drawTile(uint16 tileIndexX, uint16 tileIndexY, palette monochromePalette, TileSet *tileSet,
+    bool isColour, ColourPaletteData* colourPaletteData) {
     uint16 tileIndex = getIndex(tileIndexX, tileIndexY);
+    bool flipX = false;
+    bool flipY = false;
+    bool alternateBank = false;
+    palette palette = monochromePalette;
+
+    if(isColour) {
+        BackgroundAttributes tileAttributes = getBackgroundAttributes(tileIndexX, tileIndexY);
+        flipX = tileAttributes.flipX;
+        flipY = tileAttributes.flipY;
+        alternateBank = tileAttributes.alternateBank;
+        palette = colourPaletteData->getPalette(tileAttributes.paletteNumber);
+    }
+
     Tile* tile = tileSet->getTile(memory, tileIndex, false, false);
     uint16 targetX = tileIndexX * TILE_SIZE;
 
@@ -46,4 +57,9 @@ void TileMap::invalidateAllTiles() {
             invalidateTile(x, y);
         }
     }
+}
+
+BackgroundAttributes TileMap::getBackgroundAttributes(uint8 tileX, uint8 tileY) {
+    uint8 data = getAttributeIndex(tileX, tileY);
+    return BackgroundAttributes(data);
 }

@@ -13,8 +13,8 @@ class TileSet : MemoryHook {
 private:
     uint16 start;
     bool isSigned;
-    Tile* tileCache[256];
-    bool tileCacheSet[256] = {[0 ... 255] = false};
+    Tile* tileCache[1024 * 2];
+    bool tileCacheSet[1024 * 2] = {[0 ... 2047] = false};
 public:
     TileSet(uint16 start, bool isSigned);
     Tile* getTile(Memory* memory, uint8 index, bool large, bool alternateBank);

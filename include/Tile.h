@@ -13,8 +13,9 @@ const uint16 TILE_SIZE = 8;
 const uint16 TILE_SIZE_LARGE = 16;
 
 struct palette {
-    uint8 value;
     uint32 colours[4] = {0};
+    bool isColour = false;
+    uint8 checksum;
 };
 
 class Tile {

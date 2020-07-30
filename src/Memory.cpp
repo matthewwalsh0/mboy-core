@@ -38,20 +38,28 @@ uint8 Memory::get_8(uint16 address) {
             return rom->get_8(address);
         case 8:
         case 9:
+            return vram.get_8(address);
         case 0xA:
         case 0xB:
             return rom->get_8(address);
         case 0xC:
         case 0xD:
+            return wram.get_8(address);
         case 0xE:
         case 0xF:
-            if(address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS) {
+            if(address == ADDRESS_VRAM_BANK) {
+                return vram.bank;
+            } else if (address == ADDRESS_WRAM_BANK) {
+                return wram.getBank();
+            } else if(address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS) {
                 return cpu->get_8(address);
+            } else if (address >= 0xFF51 && address <= 0xFF55) {
+                return gpu->getHDMA(address);
             } else if (address == ADDRESS_JOYPAD) {
                 return joypad->get_8(address);
             } else if (address >= 0xFF04 && address <= 0xFF07) {
                 return timer->get_8(address);
-            } else if (address == ADDRESS_STAT || address == ADDRESS_TARGET_LINE || address == ADDRESS_LINE) {
+            } else if (address == ADDRESS_STAT || address == ADDRESS_TARGET_LINE || address == ADDRESS_LINE || address == 0xFF69 || address == 0xFF6A) {
                 return gpu->get_8(address);
             }
         default:
@@ -63,13 +71,29 @@ void Memory::set_8(uint16 address, uint8 value) {
     if((address >= 0x0000 && address <= 0x7FFF)  || (address >= 0xA000 && address <= 0xBFFF)) {
         rom->set_8(address, value);
         return;
+    } else if (address == ADDRESS_VRAM_BANK) {
+        vram.setBank(value);
+        return;
+    } else if (address >= ADDRESS_VRAM_START && address <= ADDRESS_VRAM_END) {
+        vram.set_8(address, value);
+        gpu->set_8(address, value);
+        return;
+    } else if (address == ADDRESS_WRAM_BANK) {
+        wram.setBank(value);
+        return;
+    } else if (address >= ADDRESS_WRAM_START && address <= ADDRESS_WRAM_END) {
+        wram.set_8(address, value);
+        return;
     } else if (address >= 0xFF04 && address <= 0xFF07) {
         timer->set_8(address, value);
         return;
     } else if (address == ADDRESS_DMA_TRANSFER) {
         dma(value);
         return;
-    } else if (address == LCD_CONTROL || address == ADDRESS_STAT || address == ADDRESS_TARGET_LINE || address == ADDRESS_LINE) {
+    } else if (address >= 0xFF51 && address <= 0xFF55) {
+        gpu->setHDMA(address, value);
+        return;
+    } else if (address == LCD_CONTROL || address == ADDRESS_STAT || address == ADDRESS_TARGET_LINE || address == ADDRESS_LINE || address == 0xFF68 || address == 0xFF69 || address == 0xFF6A || address == 0xFF6B) {
         coreMemory->set_8(address, value);
         gpu->set_8(address, value);
         return;

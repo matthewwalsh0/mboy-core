@@ -6,7 +6,7 @@
 #include "MemoryMap.h"
 
 void VRAM::setBank(uint8 value) {
-    bank = value;
+    bank = value & 0x1;
 }
 
 uint8 VRAM::get_8(uint16 address) {

@@ -12,23 +12,24 @@ TileSet::TileSet(uint16 start, bool isSigned) {
 
 Tile* TileSet::getTile(Memory *memory, uint8 index, bool large, bool alternateBank) {
     uint16 actualIndex = isSigned ? Bytes::wrappingAdd_8(Bytes::toSigned_8(index), 128) : index;
-    bool tileCached = tileCacheSet[actualIndex];
+    uint16 cacheIndex = ((alternateBank ? 1 : 0) * 1024) + actualIndex;
+    bool tileCached = tileCacheSet[cacheIndex];
 
     if(tileCached) {
-        Tile* cachedTile = tileCache[actualIndex];
+        Tile* cachedTile = tileCache[cacheIndex];
         return cachedTile;
     }
 
     uint16 tileStart = actualIndex * 16;
     Tile* tile = new Tile(memory, start + tileStart, large, alternateBank);
-    tileCache[actualIndex] = tile;
-    tileCacheSet[actualIndex] = true;
+    tileCache[cacheIndex] = tile;
+    tileCacheSet[cacheIndex] = true;
 
     return tile;
 }
 
 void TileSet::clearCache() {
-    for(uint16 i = 0; i < 256; i++) {
+    for(uint16 i = 0; i < 2048; i++) {
         bool isCached = tileCacheSet[i];
 
         if(isCached) {

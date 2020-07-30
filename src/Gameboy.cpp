@@ -4,16 +4,10 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(Rom rom, GUI* gui, struct config* config) : gpu(&memory, gui), apu(gui, &memory), joypad(gui) {
+Gameboy::Gameboy(Rom rom, GUI* gui, struct config* config) : gpu(&memory, gui, config), apu(gui, &memory), joypad(gui) {
     this->rom = &rom;
     this->gui = gui;
-
-    if(config == nullptr) {
-        struct config defaultConfig;
-        this->config = &defaultConfig;
-    } else {
-        this->config = config;
-    }
+    this->config = config;
 
     memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu,
             (MemoryHook*) &timer, (MemoryHook*) &apu, (MemoryHook*) &joypad);

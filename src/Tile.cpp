@@ -8,10 +8,11 @@
 static void getColours(Memory* memory, uint16 start, uint32* colourIndexes, bool large, bool alternateBank) {
     uint16 y = 0;
     uint16 bytesEnd = large ? TILE_SIZE_LARGE * 2 : TILE_SIZE * 2;
+    uint8 vramBank = alternateBank ? 1 : 0;
 
     for(uint16 index = 0; index < bytesEnd; index += 2) {
-        uint8 byte_1 = memory->coreMemory->get_8(start + index);
-        uint8 byte_2 =  memory->coreMemory->get_8(start + index + 1);
+        uint8 byte_1 = memory->vram.get_8(start + index, vramBank);
+        uint8 byte_2 =  memory->vram.get_8(start + index + 1, vramBank);
         uint16 x = 0;
 
         for(uint8 i = 0; i < TILE_SIZE; i++) {
@@ -39,13 +40,13 @@ static void getColours(Memory* memory, uint16 start, uint32* colourIndexes, bool
 
 Tile::Tile(Memory *memory, uint16 start, bool large, bool alternateBank) {
     this->large = large;
-    getColours(memory, start, colourIndexes, false, false);
+    getColours(memory, start, colourIndexes, large, alternateBank);
 }
 
 void Tile::drawLine(Pixels *pixels, palette palette, uint16 localY, uint16 targetX, uint16 targetY,
                     bool flipX, bool flipY) {
-    uint16 cacheIndex = palette.value * localY;
-    bool cached = paletteCacheSet[cacheIndex];
+    uint16 cacheIndex = palette.checksum * localY;
+    bool cached = !palette.isColour && paletteCacheSet[cacheIndex];
 
     if(cached) {
         pixels->setLine(targetY, paletteCache + cacheIndex, targetX, TILE_SIZE);

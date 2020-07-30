@@ -11,6 +11,8 @@
 #include "MemoryHook.h"
 #include "VRAM.h"
 #include "Joypad.h"
+#include "VRAM.h"
+#include "WRAM.h"
 
 class Memory {
 public:
@@ -21,6 +23,8 @@ public:
     MemoryHook* timer;
     MemoryHook* apu;
     MemoryHook* joypad;
+    VRAM vram;
+    WRAM wram;
 
     void init(CoreMemory* coreMemory, Rom* rom, MemoryHook* cpu, MemoryHook* gpu,
             MemoryHook* timer, MemoryHook* apu, MemoryHook* joypad);

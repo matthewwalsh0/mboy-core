@@ -43,6 +43,7 @@ Rom::Rom(std::string filename) {
 
     name = readName(this->rom);
     controller = getController(rom);
+    isColour = rom[ADDRESS_COLOUR_FLAG] == 0x80 || rom[ADDRESS_COLOUR_FLAG] == 0xC0;
 }
 
 uint8 Rom::get_8(uint16 address) {
@@ -68,7 +69,7 @@ bool Rom::set_8(uint16 address, uint8 value) {
 }
 
 std::string Rom::readName(uint8* rom) {
-    char name[15];
+    char name[30];
     strcpy(name, (const char*) rom + ADDRESS_TITLE_START);
     return std::string(name);
 }

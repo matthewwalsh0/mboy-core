@@ -23,13 +23,14 @@ const uint16 MODE_DURATIONS[] = {
         DURATION_SCANLINE_SPRITE,
         DURATION_SCANLINE_BACKGROUND};
 
-GPU::GPU(Memory *memory, GUI* gui) :
+GPU::GPU(Memory *memory, GUI* gui, struct config* config) :
 pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
-display(memory),
+display(memory, config),
 logFile(LOG_PATH) {
     this->memory = memory;
     this->control = new Control((uint8) 0);
     this->gui = gui;
+    this->config = config;
 
     mode = 0;
     cycleCount = 0;
@@ -171,6 +172,10 @@ void GPU::setControl(uint8 value) {
 
 uint8 GPU::get_8(uint16 address) {
     switch(address) {
+        case 0xFF69:
+            return display.get_8(address);
+        case 0xFF6A:
+            return display.get_8(address);
         case ADDRESS_STAT:
             return getStat();
         case ADDRESS_TARGET_LINE:
@@ -183,11 +188,23 @@ uint8 GPU::get_8(uint16 address) {
 }
 
 bool GPU::set_8(uint16 address, uint8 value) {
-    if(address >= TILE_SET_1_START && address < TILE_SET_0_END) {
+    if(address >= TILE_SET_1_START && address < TILE_MAP_1_END) {
         display.set_8(address, value);
         return true;
     } else {
         switch (address) {
+            case 0xFF68:
+                display.set_8(address, value);
+                return true;
+            case 0xFF69:
+                display.set_8(address, value);
+                return true;
+            case 0xFF6A:
+                display.set_8(address, value);
+                return true;
+            case 0xFF6B:
+                display.set_8(address, value);
+                return true;
             case LCD_CONTROL:
                 setControl(value);
                 return true;
@@ -201,7 +218,61 @@ bool GPU::set_8(uint16 address, uint8 value) {
                 line = 0;
                 return true;
             default:
-                throw std::invalid_argument("Invalid write on GPU.");
+                return false;
         }
+    }
+}
+
+uint8 GPU::getHDMA(uint16 address) {
+    uint16 relative = address - 0xFF51;
+    uint8 value = 0;
+
+    switch(relative) {
+        case 0:
+            return hdmaSource & 0xFF00;
+        case 1:
+            return hdmaSource & 0x00F0;
+        case 2:
+            return hdmaTarget & 0xFF00;
+        case 3:
+            return hdmaTarget & 0x00FF;
+        case 4:
+            value = Bytes::setBit_8(value, 7);
+            return value;
+        default:
+            return 0;
+    }
+}
+
+void GPU::setHDMA(uint16 address, uint8 value) {
+    uint16 relative = address - 0xFF51;
+
+    switch(relative) {
+        case 0:
+            hdmaSource = (hdmaSource & 0x00FF) | (value << 8);
+            return;
+        case 1:
+            hdmaSource = (hdmaSource & 0xFF00) | (value & 0xF0);
+            return;
+        case 2:
+            hdmaTarget = (hdmaTarget & 0x00FF) | ((value & 0b11111) << 8);
+            return;
+        case 3:
+            hdmaTarget = (hdmaTarget & 0xFF00) | (value & 0xF0);
+            return;
+        case 4:
+            uint8 length = value & 0b1111111;
+            uint8 size = (length + 1) * 0x10;
+            bool hblank = Bytes::getBit_8(value, 7);
+
+            if(!hblank) {
+                for(int i = 0; i < size; i++) {
+                    uint16 target = hdmaTarget + i + 0x8000;
+                    uint16 source = hdmaSource + i;
+                    uint16 current = memory->get_8(source);
+                    memory->vram.set_8(target, current);
+                }
+            }
+            return;
     }
 }
