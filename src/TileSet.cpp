@@ -5,25 +5,29 @@
 #include "TileSet.h"
 #include "Bytes.h"
 
-TileSet::TileSet(uint16 start, bool isSigned) {
+TileSet::TileSet(Memory* memory, uint16 start, bool isSigned) {
+    this->memory = memory;
     this->start = start;
     this->isSigned = isSigned;
 }
 
-Tile* TileSet::getTile(Memory *memory, uint8 index, bool large, bool alternateBank) {
+Tile* TileSet::getTile(uint8 index, bool large, bool alternateBank, bool useCache) {
     uint16 actualIndex = isSigned ? Bytes::wrappingAdd_8(Bytes::toSigned_8(index), 128) : index;
     uint16 cacheIndex = ((alternateBank ? 1 : 0) * 1024) + actualIndex;
     bool tileCached = tileCacheSet[cacheIndex];
 
-    if(tileCached) {
+    if(useCache && tileCached) {
         Tile* cachedTile = tileCache[cacheIndex];
         return cachedTile;
     }
 
     uint16 tileStart = actualIndex * 16;
     Tile* tile = new Tile(memory, start + tileStart, large, alternateBank);
-    tileCache[cacheIndex] = tile;
-    tileCacheSet[cacheIndex] = true;
+
+    if(useCache) {
+        tileCache[cacheIndex] = tile;
+        tileCacheSet[cacheIndex] = true;
+    }
 
     return tile;
 }
@@ -34,7 +38,9 @@ void TileSet::clearCache() {
 
         if(isCached) {
             Tile* oldTile = tileCache[i];
-            delete oldTile;
+            if(oldTile != nullptr) {
+                delete oldTile;
+            }
         }
 
         tileCacheSet[i] = false;

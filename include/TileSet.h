@@ -15,9 +15,10 @@ private:
     bool isSigned;
     Tile* tileCache[1024 * 2];
     bool tileCacheSet[1024 * 2] = {[0 ... 2047] = false};
+    Memory* memory;
 public:
-    TileSet(uint16 start, bool isSigned);
-    Tile* getTile(Memory* memory, uint8 index, bool large, bool alternateBank);
+    TileSet(Memory* memory, uint16 start, bool isSigned);
+    Tile* getTile(uint8 index, bool large, bool alternateBank, bool useCache);
     void clearCache();
 };
 

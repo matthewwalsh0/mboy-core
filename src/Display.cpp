@@ -14,8 +14,8 @@ const uint8 FINAL_INDEX = SCREEN_WIDTH / TILE_SIZE;
 Display::Display(Memory *memory, struct config* config) :
 tileMap_0(memory, TILE_MAP_0_START, TILE_MAP_0_END),
 tileMap_1(memory, TILE_MAP_1_START, TILE_MAP_1_END),
-tileSet_0(TILE_SET_0_START, true),
-tileSet_1(TILE_SET_1_START, false),
+tileSet_0(memory, TILE_SET_0_START, true),
+tileSet_1(memory, TILE_SET_1_START, false),
 backgroundColourPaletteData(0xFF68),
 spriteColourPaletteData(0xFF6A) {
     this->memory = memory;
@@ -23,6 +23,10 @@ spriteColourPaletteData(0xFF6A) {
 
     config->backgroundColourPalettes = backgroundColourPaletteData.palettes;
     config->spriteColourPalettes = spriteColourPaletteData.palettes;
+    config->tileMap_0 = &tileMap_0.pixels;
+    config->tileMap_1 = &tileMap_1.pixels;
+    config->tileSet_0 = &tileSet_0;
+    config->tileSet_1 = &tileSet_1;
 }
 
 static void drawBackgroundLine(Pixels* pixels, Memory* memory, Control* control, TileMap* tileMap,
@@ -32,14 +36,8 @@ static void drawBackgroundLine(Pixels* pixels, Memory* memory, Control* control,
 
     uint16 localY = Bytes::wrappingAdd_8(scrollY, line);
     uint16 tileIndexY = localY / TILE_SIZE;
-    uint16 scrollIndex = scrollX / TILE_SIZE;
-    uint16 lastScrollIndex = scrollIndex + 20;
-    int32 scrollWrapIndex = lastScrollIndex > TILE_COUNT ? lastScrollIndex - TILE_COUNT : -1;
 
     for(uint16 tileIndexX = 0; tileIndexX < TILE_COUNT; tileIndexX++) {
-        if(scrollWrapIndex == -1 && (tileIndexX < scrollIndex || tileIndexX > lastScrollIndex)) continue;
-        if(scrollWrapIndex != -1 && tileIndexX > scrollWrapIndex && tileIndexX < scrollIndex) continue;
-
         tileMap->drawTile(tileIndexX, tileIndexY, palette, tileSet, isColour, colourPaletteData);
     }
 
@@ -147,11 +145,15 @@ bool Display::set_8(uint16 address, uint8 value) {
 
     if(address == 0xFF68 || address == 0xFF69) {
         backgroundColourPaletteData.set_8(address, value);
+        tileMap_0.invalidateAllTiles();
+        tileMap_1.invalidateAllTiles();
         return true;
     }
 
     if(address == 0xFF6A || address == 0xFF6B) {
         spriteColourPaletteData.set_8(address, value);
+        tileMap_0.invalidateAllTiles();
+        tileMap_1.invalidateAllTiles();
         return true;
     }
 

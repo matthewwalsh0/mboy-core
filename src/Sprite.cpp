@@ -26,7 +26,7 @@ void Sprite::drawLine(Pixels* pixels, TileSet* tileSet, uint16 scrollX, uint16 s
         uint16 localY, palette backgroundPalette, palette palette_0, palette palette_1,
         bool isColour, ColourPaletteData* backgroundColourPaletteData, ColourPaletteData* spriteColourPaletteData,
         TileMap* tileMap) {
-    Tile* tile = tileSet->getTile(memory, tileIndex, large, alternateBank);
+    Tile* tile = tileSet->getTile(tileIndex, large, alternateBank, true);
 
     uint32 priorityColour;
         palette currentPalette;

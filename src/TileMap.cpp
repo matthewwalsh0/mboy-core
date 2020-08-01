@@ -23,6 +23,9 @@ uint16 TileMap::getAttributeIndex(uint16 tileX, uint16 tileY) {
 
 void TileMap::drawTile(uint16 tileIndexX, uint16 tileIndexY, palette monochromePalette, TileSet *tileSet,
     bool isColour, ColourPaletteData* colourPaletteData) {
+    uint16 index = tileIndexY * TILE_COUNT + tileIndexX;
+    if(!invalidTiles[index]) return;
+
     uint16 tileIndex = getIndex(tileIndexX, tileIndexY);
     bool flipX = false;
     bool flipY = false;
@@ -37,13 +40,15 @@ void TileMap::drawTile(uint16 tileIndexX, uint16 tileIndexY, palette monochromeP
         palette = colourPaletteData->getPalette(tileAttributes.paletteNumber);
     }
 
-    Tile* tile = tileSet->getTile(memory, tileIndex, false, false);
+    Tile* tile = tileSet->getTile(tileIndex, false, false, true);
     uint16 targetX = tileIndexX * TILE_SIZE;
 
     for(uint8 y = 0; y < TILE_SIZE; y++) {
         uint16 targetY = tileIndexY * TILE_SIZE + y;
         tile->drawLine(&pixels, palette, y, targetX, targetY, false, false);
     }
+
+    invalidTiles[index] = false;
 }
 
 void TileMap::invalidateTile(uint16 tileIndexX, uint16 tileIndexY) {

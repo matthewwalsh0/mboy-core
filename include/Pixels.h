@@ -11,11 +11,10 @@ const uint32 WHITE = 0x00FFFFFF;
 
 class Pixels {
 private:
-    uint16 width;
-    uint16 height;
-
     uint16 getIndex(uint16 x, uint16 y);
 public:
+    uint16 width;
+    uint16 height;
     uint32* data;
 
     Pixels(uint16 width, uint16 height);
