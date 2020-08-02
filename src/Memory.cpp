@@ -51,7 +51,7 @@ uint8 Memory::get_8(uint16 address) {
                 return vram.bank;
             } else if (address == ADDRESS_WRAM_BANK) {
                 return wram.getBank();
-            } else if(address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS) {
+            } else if(address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS || address == 0xFF4D) {
                 return cpu->get_8(address);
             } else if (address >= 0xFF51 && address <= 0xFF55) {
                 return gpu->getHDMA(address);
@@ -100,7 +100,7 @@ void Memory::set_8(uint16 address, uint8 value) {
     } else if (address >= TILE_SET_1_START && address < TILE_SET_0_END) {
         coreMemory->set_8(address, value);
         gpu->set_8(address, value);
-    } else if (address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS) {
+    } else if (address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS || address == 0xFF4D) {
         cpu->set_8(address, value);
         return;
     } else if (address == ADDRESS_JOYPAD) {
@@ -111,6 +111,9 @@ void Memory::set_8(uint16 address, uint8 value) {
         apu->set_8(address, value);
     } else if (address >= WAVE_START && address < WAVE_START + 5) {
         apu->set_8(address, value);
+    } else if (address == 0xFF26) {
+        apu->set_8(address, value);
+        return;
     }
 
     coreMemory->set_8(address, value);

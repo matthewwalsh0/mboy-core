@@ -291,18 +291,36 @@ uint16 CPU::checkInterrupts(Memory* memory) {
 }
 
 uint8 CPU::get_8(uint16 address) {
+    uint8 value = 0;
+    
     switch(address) {
         case ADDRESS_INTERRUPT_ENABLE:
             return getInterruptEnable();
         case ADDRESS_INTERRUPT_FLAGS:
             return getInterruptFlags();
+        case 0xFF4D:
+            if(currentSpeed == 2) {
+                value = Bytes::setBit_8(value, 7);
+            }
+            if(swapSpeed) {
+                value = Bytes::setBit_8(value, 0);
+            }
+            return value;
         default:
             throw std::invalid_argument("Invalid read from CPU.");
     }
 }
 
 bool CPU::set_8(uint16 address, uint8 value) {
+    bool swap = false;
+
     switch(address) {
+        case 0xFF4D:
+            swap = Bytes::getBit_8(value, 0);
+            if(swap) {
+                swapSpeed = true;
+            }
+            return true;
         case ADDRESS_INTERRUPT_ENABLE:
             setInterruptEnable(value);
             return true;

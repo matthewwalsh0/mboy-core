@@ -6,6 +6,7 @@
 #include <fstream>
 #include <MemoryMap.h>
 #include <MBC3.h>
+#include "MBC5.h"
 
 const uint16 ADDRESS_TITLE_START = 0x0134;
 const uint16 ROM_SIZE = 0x8000;
@@ -17,6 +18,10 @@ static Controller* getController(uint8* rom) {
     if(value == 0x0) return nullptr;
     if(value == 0x10 || value == 0x13) {
         MBC3* controller = new MBC3();
+        return (Controller*) controller;
+    }
+    if(value >= 0x19 && value <= 0x1E) {
+        MBC5* controller = new MBC5();
         return (Controller*) controller;
     }
 

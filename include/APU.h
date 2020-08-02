@@ -32,6 +32,7 @@ private:
     uint16 frameSequencerCycleCount = 0;
     uint32 volumeEnvelopeCounter = 0;
     bool ready = false;
+    bool power = false;
 public:
     APU(GUI* gui, Memory* memory);
     void step(uint16 lastInstructionDuration, uint32 count);

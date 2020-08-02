@@ -40,12 +40,12 @@ void TileMap::drawTile(uint16 tileIndexX, uint16 tileIndexY, palette monochromeP
         palette = colourPaletteData->getPalette(tileAttributes.paletteNumber);
     }
 
-    Tile* tile = tileSet->getTile(tileIndex, false, false, true);
+    Tile* tile = tileSet->getTile(tileIndex, false, alternateBank, true);
     uint16 targetX = tileIndexX * TILE_SIZE;
 
     for(uint8 y = 0; y < TILE_SIZE; y++) {
         uint16 targetY = tileIndexY * TILE_SIZE + y;
-        tile->drawLine(&pixels, palette, y, targetX, targetY, false, false);
+        tile->drawLine(&pixels, palette, y, targetX, targetY, flipX, flipY);
     }
 
     invalidTiles[index] = false;

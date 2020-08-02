@@ -262,7 +262,7 @@ void GPU::setHDMA(uint16 address, uint8 value) {
             return;
         case 4:
             uint8 length = value & 0b1111111;
-            uint8 size = (length + 1) * 0x10;
+            uint16 size = (length + 1) * 0x10;
             bool hblank = Bytes::getBit_8(value, 7);
 
             if(!hblank) {

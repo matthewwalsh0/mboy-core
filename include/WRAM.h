@@ -10,7 +10,7 @@
 
 class WRAM {
 private:
-    uint8 data[2][8 * 1024];
+    uint8 data[8][4 * 1024];
     uint8 bank = 1;
 public:
     uint8 getBank();

@@ -25,7 +25,11 @@ void Gameboy::run() {
             apu.step(instructionDuration, count);
         }
 
-        timer.step(instructionDuration, &memory);
+        uint8 timerInstructionDuration = cpu.currentSpeed == 2 ?
+            instructionDuration * 4 :
+            instructionDuration;
+
+        timer.step(timerInstructionDuration, &memory);
 
         count += 1;
     }

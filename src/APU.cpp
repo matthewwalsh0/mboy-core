@@ -8,6 +8,7 @@
 #include "Types.h"
 #include "GUI.h"
 #include "WaveChannel.h"
+#include "Bytes.h"
 
 const uint16 CHANNEL_VOLUME = 15;
 
@@ -20,7 +21,7 @@ APU::APU(GUI* gui, Memory* memory) :
 }
 
 void APU::step(uint16 lastInstructionDuration, uint32 count) {
-    //if(!m_power.On) return;
+    if(!power) return;
 
     square_1.step(lastInstructionDuration);
     square_2.step(lastInstructionDuration);
@@ -82,6 +83,11 @@ bool APU::set_8(uint16 address, uint8 value) {
 
     if(address >= WAVE_START && address < WAVE_START + 5)
         return wave.set_8(address, value);
+
+    if(address == 0xFF26) {
+        power = Bytes::getBit_8(value, 7);
+        return true;
+    }
 
     throw std::invalid_argument("Invalid write to APU.");
 }

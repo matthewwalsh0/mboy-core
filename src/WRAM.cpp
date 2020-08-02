@@ -12,8 +12,8 @@ uint8 WRAM::getBank() {
 }
 
 void WRAM::setBank(uint8 value) {
-    uint8 bank = value & 0b111;
-    this->bank = bank == 0 ? 1 : bank;
+    uint8 tempBank = value & 0b111;
+    this->bank = tempBank == 0 ? 1 : tempBank;
 }
 
 uint8 WRAM::get_8(uint16 address) {

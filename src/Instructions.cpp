@@ -1144,6 +1144,10 @@ static void halt(CPU* cpu) {
 }
 
 static void stop(CPU* cpu) {
+    if(cpu->swapSpeed) {
+        cpu->currentSpeed = cpu->currentSpeed == 1 ? 2 : 1;
+        cpu->swapSpeed = false;
+    }
 }
 
 static void toggle_carry(CPU* cpu) {

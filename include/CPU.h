@@ -45,7 +45,7 @@ public:
     bool interruptsEnabled;
     bool halt;
     bool swapSpeed;
-    bool currentSpeed;
+    uint8 currentSpeed;
 
     bool interruptEnableVerticalBlank = false;
     bool interruptEnableLcd = false;
