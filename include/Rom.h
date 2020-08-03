@@ -7,19 +7,21 @@
 
 #include "Types.h"
 #include "MemoryHook.h"
+#include "SaveFile.h"
 #include <string>
+#include "Ram.h"
 
 class Controller {
 public:
-    virtual int16 get_8(uint16 address, uint8* rom, uint8* ram) { return 0; };
-    virtual bool set_8(uint16 address, uint8 value, uint8* rom, uint8* ram) { return false; };
+    virtual int16 get_8(uint16 address, uint8* rom, Ram* ram) { return 0; };
+    virtual bool set_8(uint16 address, uint8 value, uint8* rom, Ram* ram) { return false; };
 };
 
 class Rom {
 
 private:
     uint8* rom;
-    uint8 ram[128 * 1024] = {0};
+    Ram* ram;
     Controller* controller;
 
     std::string readName(uint8* rom);

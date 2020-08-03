@@ -49,6 +49,8 @@ Rom::Rom(std::string filename) {
     name = readName(this->rom);
     controller = getController(rom);
     isColour = rom[ADDRESS_COLOUR_FLAG] == 0x80 || rom[ADDRESS_COLOUR_FLAG] == 0xC0;
+
+    ram = (Ram*) new SaveFile(filename);
 }
 
 uint8 Rom::get_8(uint16 address) {

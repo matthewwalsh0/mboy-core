@@ -6,7 +6,7 @@
 #include "Bytes.h"
 #include "MemoryMap.h"
 
-int16 MBC5::get_8(uint16 address, uint8 *rom, uint8* ram) {
+int16 MBC5::get_8(uint16 address, uint8 *rom, Ram* ram) {
     if(address >= 0x4000 && address <= 0x7FFF) {
         uint32 finalAddress = (romBank * 0x4000) + (address - 0x4000);
         return rom[finalAddress];
@@ -15,13 +15,13 @@ int16 MBC5::get_8(uint16 address, uint8 *rom, uint8* ram) {
     if(address >= 0xA000 && address <= 0xBFFF) {
         if(!ramEnabled) return 0xFF;
         uint32 finalAddress = (ramBank * 0x2000) + (address - 0xA000);
-        return ram[finalAddress];
+        return ram->get_8(finalAddress);
     }
 
     return -1;
 }
 
-bool MBC5::set_8(uint16 address, uint8 value, uint8 *rom, uint8* ram) {
+bool MBC5::set_8(uint16 address, uint8 value, uint8 *rom, Ram* ram) {
     bool set = true;
 
     if(address >= 0x0000 && address <= 0x1FFF) {
@@ -35,7 +35,7 @@ bool MBC5::set_8(uint16 address, uint8 value, uint8 *rom, uint8* ram) {
     } else if (address >= 0xA000 && address <= 0xBFFF) {
         if(!ramEnabled) return false;
         uint32 finalAddress = (ramBank * 0x2000) + (address - 0xA000);
-        ram[finalAddress] = value;
+        ram->set_8(finalAddress, value);
     } else {
         set = false;
     }

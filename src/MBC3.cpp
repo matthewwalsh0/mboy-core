@@ -16,7 +16,7 @@ static uint8 getRomBank(uint8 bank) {
     return finalBank;
 }
 
-int16 MBC3::get_8(uint16 address, uint8 *rom, uint8* ram) {
+int16 MBC3::get_8(uint16 address, uint8 *rom, Ram* ram) {
     if(address >= 0x4000 && address <= 0x7FFF) {
         uint32 finalAddress = (romBank * 0x4000) + (address - 0x4000);
         return rom[finalAddress];
@@ -25,7 +25,7 @@ int16 MBC3::get_8(uint16 address, uint8 *rom, uint8* ram) {
     if(address >= 0xA000 && address <= 0xBFFF) {
         if(ramBank > -1) {
             uint32 finalAddress = (ramBank * 0x2000) + (address - 0xA000);
-            return ram[finalAddress];
+            return ram->get_8(finalAddress);
         } else {
             return 0;
         }
@@ -34,7 +34,7 @@ int16 MBC3::get_8(uint16 address, uint8 *rom, uint8* ram) {
     return -1;
 }
 
-bool MBC3::set_8(uint16 address, uint8 value, uint8 *rom, uint8* ram) {
+bool MBC3::set_8(uint16 address, uint8 value, uint8 *rom, Ram* ram) {
     bool set = true;
 
     if(address >= MBC1_ENABLE_EXTERNAL_RAM_START && address <= MBC1_ENABLE_EXTERNAL_RAM_END) {
@@ -51,7 +51,7 @@ bool MBC3::set_8(uint16 address, uint8 value, uint8 *rom, uint8* ram) {
     } else if (address >= 0xA000 && address <= 0xBFFF) {
         if(ramBank > -1) {
             uint32 finalAddress = (ramBank * 0x2000) + (address - 0xA000);
-            ram[finalAddress] = value;
+            ram->set_8(finalAddress, value);
         }
     } else {
         set = false;
