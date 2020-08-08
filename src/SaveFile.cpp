@@ -4,12 +4,16 @@
 
 #include <fstream>
 #include <iostream>
-#include <filesystem>
+#include <regex>
 #include "SaveFile.h"
 
 SaveFile::SaveFile(std::string name) {
     this->name = name;
-    this->fileName = std::filesystem::path(name).stem().string() + ".sav";
+    this->fileName = name;
+
+    this->fileName = std::regex_replace(this->fileName, std::regex("\\.gbc"), "");
+    this->fileName = std::regex_replace(this->fileName, std::regex("\\.gb"), "");
+    this->fileName += ".sav";
 
     std::ifstream existingFile (this->fileName, std::ios::binary | std::ios::ate);
 
@@ -22,6 +26,10 @@ SaveFile::SaveFile(std::string name) {
     }
 
     this->file.open(this->fileName);
+    
+    if(!this->file) {
+        throw std::invalid_argument("Cannot write file.\nFile: " + this->fileName + "\nReason: " + strerror(errno));
+    }
 }
 
 uint8 SaveFile::get_8(uint32 address) {

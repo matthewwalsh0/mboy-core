@@ -17,18 +17,18 @@
 
 class Gameboy {
 private:
+    Rom rom;
     Memory memory;
     CPU cpu;
     GPU gpu;
     APU apu;
     CoreMemory coreMemory;
-    Rom* rom;
     Timer timer;
     Joypad joypad;
     GUI* gui;
     config* config;
 public:
-    Gameboy(Rom rom, GUI* gui, struct config* config);
+    Gameboy(std::string path, GUI* gui, struct config* config);
     void run();
 };
 

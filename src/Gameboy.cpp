@@ -4,8 +4,7 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(Rom rom, GUI* gui, struct config* config) : gpu(&memory, gui, config), apu(gui, &memory), joypad(gui) {
-    this->rom = &rom;
+Gameboy::Gameboy(std::string path, GUI* gui, struct config* config) : rom(path), gpu(&memory, gui, config), apu(gui, &memory), joypad(gui) {
     this->gui = gui;
     this->config = config;
 
@@ -15,7 +14,7 @@ Gameboy::Gameboy(Rom rom, GUI* gui, struct config* config) : gpu(&memory, gui, c
 
 void Gameboy::run() {
     uint32 count = 0;
-    bool isColour = rom->isColour;
+    bool isColour = rom.isColour;
 
     while(this->gui->isOpen()) {
         uint16 instructionDuration = cpu.step(&memory, count, false);
