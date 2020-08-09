@@ -26,11 +26,22 @@ void Pixels::clearLine(uint16 y, uint16 offset, uint16 width) {
     }
 }
 
-uint32 *Pixels::getLine(uint16 y, uint16 offset, uint16 width) {
+uint32* Pixels::getLine(uint16 y, uint16 offset, uint16 width) {
+    uint32* lineData = new uint32[width];
     uint16 lineStart = y * this->width;
     uint16 sourceIndex = lineStart + offset;
-   
-    return data + sourceIndex;
+    uint16 lastIndex = offset + width;
+
+    if(this->width > lastIndex) {
+        memcpy(lineData, data + sourceIndex, width * sizeof(uint32));
+    } else {
+        uint16 firstWidth = this->width - offset;
+        uint16 overflowWidth = lastIndex - this->width;
+        memcpy(lineData, data + sourceIndex, firstWidth * sizeof(uint32));
+        memcpy(lineData + firstWidth, data + lineStart, overflowWidth * sizeof(uint32));
+    }
+
+    return lineData;
 }
 
 uint16 Pixels::getIndex(uint16 x, uint16 y) {

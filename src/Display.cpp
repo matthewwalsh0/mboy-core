@@ -43,6 +43,7 @@ static void drawBackgroundLine(Pixels* pixels, Memory* memory, Control* control,
 
     uint32* linePixels = tileMap->pixels.getLine(localY, scrollX, SCREEN_WIDTH);
     pixels->setLine(line, linePixels, 0, SCREEN_WIDTH);
+    delete linePixels;
 }
 
 static void drawWindowLine(Pixels* pixels, Memory* memory, Control* control, TileMap* tileMap_0, TileMap* tileMap_1,
@@ -65,6 +66,7 @@ static void drawWindowLine(Pixels* pixels, Memory* memory, Control* control, Til
 
     uint32* linePixels = windowTileMap->pixels.getLine(localY, 0, SCREEN_WIDTH);
     pixels->setLine(line, linePixels, windowX, SCREEN_WIDTH - windowX);
+    delete linePixels;
 }
 
 static void drawSpriteLine(Pixels* pixels, Memory* memory, Control* control, uint8 line,
