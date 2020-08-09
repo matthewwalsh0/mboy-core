@@ -5,7 +5,6 @@
 #ifndef MY_APPLICATION_CPU_H
 #define MY_APPLICATION_CPU_H
 
-#include "Memory.h"
 #include "Types.h"
 #include "MemoryHook.h"
 #include "LogFile.h"
@@ -24,7 +23,7 @@ enum Register {
     AF
 };
 
-class CPU : MemoryHook {
+class CPU {
 
 public:
     uint8 a;
@@ -68,18 +67,17 @@ public:
     uint16 get_16(Register cpuRegister);
     void set_8(Register cpuRegister, uint8 value);
     void set_16(Register cpuRegister, uint16 value);
-    uint16 step(Memory* memory, uint32 count, bool debug);
+    uint16 step(MemoryHook* memory, uint32 count, bool debug);
     uint8 getInterruptEnable();
     uint8 getInterruptFlags();
     void setInterruptEnable(uint8 value);
     void setInterruptFlags(uint8 value);
     void flagInterrupt(uint8 bit);
+    uint8 get_8(uint16 address);
+    bool set_8(uint16 address, uint8 value);
 
 private:
-    uint16 checkInterrupts(Memory* memory);
-    uint8 get_8(uint16 address) override;
-    bool set_8(uint16 address, uint8 value) override;
-    void flag_interrupt(uint8 bit) override;
+    uint16 checkInterrupts(MemoryHook* memory);
 };
 
 

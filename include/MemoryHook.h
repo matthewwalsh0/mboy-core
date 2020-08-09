@@ -13,17 +13,19 @@ public:
         return 0;
     }
 
-    virtual uint8 getHDMA(uint16 address) {
+    virtual uint8 get_8(uint16 address, uint8 bank) {
         return 0;
     }
-
-    virtual void setHDMA(uint16 address, uint8 value) {};
 
     virtual bool set_8(uint16 address, uint8 value) {
         return false;
     }
 
-    virtual void flag_interrupt(uint8 bit) {};
+    virtual bool set_16(uint16 address, uint16 value) {
+        return false;
+    };
+
+    virtual void flagInterrupt(uint8 bit) {};
 };
 
 #endif //MY_APPLICATION_MEMORYHOOK_H

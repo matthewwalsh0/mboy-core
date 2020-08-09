@@ -7,6 +7,7 @@
 
 #include "Types.h"
 #include "CPU.h"
+#include "MemoryHook.h"
 
 struct instructionInfo {
     uint8 length;
@@ -18,8 +19,8 @@ struct instructionInfo {
 class Instructions {
 public:
     static instructionInfo getInfo(uint8 index, uint8 arg);
-    static bool run(uint8 index, CPU* cpu, Memory* memory, uint8 arg_8, uint16 arg_16);
-    static void call(CPU* cpu, Memory* memory, uint16 value);
+    static bool run(uint8 index, CPU* cpu, MemoryHook* memory, uint8 arg_8, uint16 arg_16);
+    static void call(CPU* cpu, MemoryHook* memory, uint16 value);
 };
 
 

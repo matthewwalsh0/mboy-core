@@ -17,6 +17,6 @@ Control::Control(uint8 value) {
     display = Bytes::getBit_8(value, 7);
 }
 
-Control::Control(Memory *memory) {
-    Control(memory->coreMemory->get_8(LCD_CONTROL));
+Control::Control(MemoryHook *memory) {
+    Control(memory->get_8(LCD_CONTROL));
 }

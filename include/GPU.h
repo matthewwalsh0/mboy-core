@@ -6,7 +6,6 @@
 #define MY_APPLICATION_GPU_H
 
 #include "Types.h"
-#include "Memory.h"
 #include "Control.h"
 #include "Pixels.h"
 #include "Display.h"
@@ -18,14 +17,14 @@
 const uint8 SCREEN_HEIGHT = 144;
 const uint8 SCREEN_WIDTH = 160;
 
-class GPU : MemoryHook {
+class GPU {
 private:
     uint8 mode;
     uint16 cycleCount;
     uint16 line;
     Pixels pixels;
     Display display;
-    Memory* memory;
+    MemoryHook* memory;
     Control* control;
     bool coincidenceInterrupt;
     bool oamInterrupt;
@@ -41,17 +40,15 @@ private:
     struct config* config;
     
 public:
-    GPU(Memory* memory, GUI* gui, struct config* config);
-    void step(uint16 lastInstructionDuration, Memory* memory, bool isColour, uint32 count);
+    GPU(MemoryHook* memory, GUI* gui, struct config* config);
+    void step(uint16 lastInstructionDuration, MemoryHook* memory, bool isColour, uint32 count);
     uint8 getStat();
     void setStat(uint8 value);
     void setControl(uint8 value);
-
-private:
-    uint8 getHDMA(uint16 address) override;
-    void setHDMA(uint16 address, uint8 value) override;
-    uint8 get_8(uint16 address) override;
-    bool set_8(uint16 address, uint8 value) override;
+    uint8 getHDMA(uint16 address);
+    void setHDMA(uint16 address, uint8 value);
+    uint8 get_8(uint16 address);
+    bool set_8(uint16 address, uint8 value);
 };
 
 

@@ -144,7 +144,7 @@ void CPU::set_16(Register cpuRegister, uint16 value) {
     }
 }
 
-uint16 CPU::step(Memory* memory, uint32 count, bool debug) {
+uint16 CPU::step(MemoryHook* memory, uint32 count, bool debug) {
     uint8 instructionCode = memory->get_8(pc);
     uint8 arg_1 = 0;
     uint8 arg_2 = 0;
@@ -255,7 +255,7 @@ void CPU::flagInterrupt(uint8 bit) {
     }
 }
 
-uint16 CPU::checkInterrupts(Memory* memory) {
+uint16 CPU::checkInterrupts(MemoryHook* memory) {
     if (!halt && !interruptsEnabled) {
         return 0;
     }
@@ -332,6 +332,3 @@ bool CPU::set_8(uint16 address, uint8 value) {
     }
 }
 
-void CPU::flag_interrupt(uint8 bit) {
-    flagInterrupt(bit);
-}

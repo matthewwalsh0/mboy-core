@@ -6,7 +6,7 @@
 #define MY_APPLICATION_CONTROL_H
 
 #include "Types.h"
-#include "Memory.h"
+#include "MemoryHook.h"
 
 class Control {
 public:
@@ -20,7 +20,7 @@ public:
     bool display;
 
     Control(uint8 value);
-    Control(Memory* memory);
+    Control(MemoryHook* memory);
 };
 
 #endif //MY_APPLICATION_CONTROL_H

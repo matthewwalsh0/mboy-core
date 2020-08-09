@@ -6,16 +6,16 @@
 #define MBOY_SPRITE_H
 
 
-#include "../include/Types.h"
-#include "../include/Memory.h"
-#include "../include/Tile.h"
+#include "Types.h"
+#include "MemoryHook.h"
+#include "Tile.h"
 
 class Sprite {
 public:
     uint8 x;
     uint8 y;
 
-    Sprite(Memory* memory, uint16 start, bool largeSprites);
+    Sprite(MemoryHook* memory, uint16 start, bool largeSprites);
     void drawLine(Pixels* pixels, TileSet* tileSet, uint16 scrollX, uint16 scrollY,
                   uint16 localY, palette backgroundPalette, palette palette_0, palette palette_1,
                   bool isColour, ColourPaletteData* backgroundColourPaletteData, ColourPaletteData* spriteColourPaletteData, TileMap* tileMap);
@@ -28,7 +28,7 @@ private:
     bool alternateBank;
     uint8 colourPaletteIndex;
     bool large;
-    Memory* memory;
+    MemoryHook* memory;
 };
 
 

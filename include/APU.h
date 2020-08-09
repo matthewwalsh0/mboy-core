@@ -22,7 +22,7 @@ public:
     virtual float* getSamples() { return nullptr; }
 };
 
-class APU : MemoryHook {
+class APU {
 private:
     GUI *gui;
     Downsampler *downsampler;
@@ -34,10 +34,10 @@ private:
     bool ready = false;
     bool power = false;
 public:
-    APU(GUI* gui, Memory* memory);
+    APU(GUI* gui, MemoryHook* memory);
     void step(uint16 lastInstructionDuration, uint32 count);
-    uint8 get_8(uint16 address) override;
-    bool set_8(uint16 address, uint8 value) override;
+    uint8 get_8(uint16 address);
+    bool set_8(uint16 address, uint8 value);
 };
 
 

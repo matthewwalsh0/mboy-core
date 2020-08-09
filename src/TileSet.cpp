@@ -5,10 +5,11 @@
 #include "TileSet.h"
 #include "Bytes.h"
 
-TileSet::TileSet(Memory* memory, uint16 start, bool isSigned) {
+TileSet::TileSet(MemoryHook* memory, uint16 start, bool isSigned, bool* disableCache) {
     this->memory = memory;
     this->start = start;
     this->isSigned = isSigned;
+    this->disableCache = disableCache;
 }
 
 Tile* TileSet::getTile(uint8 index, bool large, bool alternateBank, bool useCache) {
@@ -16,7 +17,7 @@ Tile* TileSet::getTile(uint8 index, bool large, bool alternateBank, bool useCach
     uint16 cacheIndex = ((alternateBank ? 1 : 0) * 1024) + actualIndex;
     bool tileCached = tileCacheSet[cacheIndex];
 
-    if(useCache && tileCached) {
+    if(!*disableCache && useCache && tileCached) {
         Tile* cachedTile = tileCache[cacheIndex];
         return cachedTile;
     }

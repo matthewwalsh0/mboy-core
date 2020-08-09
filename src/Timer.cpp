@@ -2,13 +2,14 @@
 // Created by matthew on 05/07/2020.
 //
 
+#include <stdexcept>
 #include "Timer.h"
 #include "Bytes.h"
 #include "MemoryMap.h"
 
 const uint16 SPEEDS[] = {1024, 16, 64, 256};
 
-void Timer::step(uint16 cycleCount, Memory *memory) {
+void Timer::step(uint16 cycleCount, MemoryHook *memory) {
     for(uint16 i = 0; i < cycleCount; i++) {
         dividerCycleCount += 1;
 
@@ -26,7 +27,7 @@ void Timer::step(uint16 cycleCount, Memory *memory) {
 
                 if(counter == 0) {
                     counter = modulo;
-                    memory->flag_interrupt(INTERRUPT_BIT_TIMER);
+                    memory->flagInterrupt(INTERRUPT_BIT_TIMER);
                 }
             }
         }

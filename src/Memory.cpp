@@ -9,8 +9,8 @@
 const uint16 ADDRESS_DMA_TRANSFER = 0xFF46;
 const uint16 ADDRESS_SPRITE_INFO_START = 0xFE00;
 
-void Memory::init(CoreMemory *coreMemory, Rom *rom, MemoryHook *cpu, MemoryHook *gpu,
-        MemoryHook* timer, MemoryHook* apu, MemoryHook* joypad) {
+void Memory::init(CoreMemory *coreMemory, Rom *rom, CPU *cpu, GPU *gpu,
+        Timer* timer, APU* apu, Joypad* joypad) {
     this->coreMemory = coreMemory;
     this->rom = rom;
     this->cpu = cpu;
@@ -46,6 +46,7 @@ uint8 Memory::get_8(uint16 address) {
         case 0xD:
             return wram.get_8(address);
         case 0xE:
+            return 0;
         case 0xF:
             if(address == ADDRESS_VRAM_BANK) {
                 return vram.bank;
@@ -67,42 +68,54 @@ uint8 Memory::get_8(uint16 address) {
     }
 }
 
-void Memory::set_8(uint16 address, uint8 value) {
+uint8 Memory::get_8(uint16 address, uint8 bank) {
+    uint8 nibble_1 = (address & 0xF000) >> 12;
+
+    switch(nibble_1) {
+        case 8:
+        case 9:
+            return vram.get_8(address, bank);
+        default:
+            return 0;
+    }
+}
+
+bool Memory::set_8(uint16 address, uint8 value) {
     if((address >= 0x0000 && address <= 0x7FFF)  || (address >= 0xA000 && address <= 0xBFFF)) {
         rom->set_8(address, value);
-        return;
+        return true;
     } else if (address == ADDRESS_VRAM_BANK) {
         vram.setBank(value);
-        return;
+        return true;
     } else if (address >= ADDRESS_VRAM_START && address <= ADDRESS_VRAM_END) {
         vram.set_8(address, value);
         gpu->set_8(address, value);
-        return;
+        return true;
     } else if (address == ADDRESS_WRAM_BANK) {
         wram.setBank(value);
-        return;
+        return true;
     } else if (address >= ADDRESS_WRAM_START && address <= ADDRESS_WRAM_END) {
         wram.set_8(address, value);
-        return;
+        return true;
     } else if (address >= 0xFF04 && address <= 0xFF07) {
         timer->set_8(address, value);
-        return;
+        return true;
     } else if (address == ADDRESS_DMA_TRANSFER) {
         dma(value);
-        return;
+        return true;
     } else if (address >= 0xFF51 && address <= 0xFF55) {
         gpu->setHDMA(address, value);
-        return;
+        return true;
     } else if (address == LCD_CONTROL || address == ADDRESS_STAT || address == ADDRESS_TARGET_LINE || address == ADDRESS_LINE || address == 0xFF68 || address == 0xFF69 || address == 0xFF6A || address == 0xFF6B) {
         coreMemory->set_8(address, value);
         gpu->set_8(address, value);
-        return;
+        return true;
     } else if (address >= TILE_SET_1_START && address < TILE_SET_0_END) {
         coreMemory->set_8(address, value);
         gpu->set_8(address, value);
     } else if (address == ADDRESS_INTERRUPT_ENABLE || address == ADDRESS_INTERRUPT_FLAGS || address == 0xFF4D) {
         cpu->set_8(address, value);
-        return;
+        return true;
     } else if (address == ADDRESS_JOYPAD) {
         joypad->set_8(address, value);
     } else if (address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4) {
@@ -113,19 +126,21 @@ void Memory::set_8(uint16 address, uint8 value) {
         apu->set_8(address, value);
     } else if (address == 0xFF26) {
         apu->set_8(address, value);
-        return;
+        return true;
     }
 
     coreMemory->set_8(address, value);
+    return true;
 }
 
-void Memory::set_16(uint16 address, uint16 value) {
+bool Memory::set_16(uint16 address, uint16 value) {
     set_8(address,  Bytes::split_16_lower(value));
     set_8(address + 1, Bytes::split_16_upper(value));
+    return true;
 }
 
-void Memory::flag_interrupt(uint8 bit) {
-    cpu->flag_interrupt(bit);
+void Memory::flagInterrupt(uint8 bit) {
+    cpu->flagInterrupt(bit);
 }
 
 void Memory::dma(uint8 value) {

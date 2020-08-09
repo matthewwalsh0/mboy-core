@@ -6,18 +6,19 @@
 #define MY_APPLICATION_TILESET_H
 
 #include "Types.h"
-#include "Memory.h"
+#include "MemoryHook.h"
 #include "Tile.h"
 
-class TileSet : MemoryHook {
+class TileSet {
 private:
     uint16 start;
     bool isSigned;
     Tile* tileCache[1024 * 2];
     bool tileCacheSet[1024 * 2] = {[0 ... 2047] = false};
-    Memory* memory;
+    MemoryHook* memory;
+    bool* disableCache;
 public:
-    TileSet(Memory* memory, uint16 start, bool isSigned);
+    TileSet(MemoryHook* memory, uint16 start, bool isSigned, bool* disableCache);
     Tile* getTile(uint8 index, bool large, bool alternateBank, bool useCache);
     void clearCache();
 };

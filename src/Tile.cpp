@@ -5,14 +5,14 @@
 #include "Tile.h"
 #include "Bytes.h"
 
-static void getColours(Memory* memory, uint16 start, uint32* colourIndexes, bool large, bool alternateBank) {
+static void getColours(MemoryHook* memory, uint16 start, uint32* colourIndexes, bool large, bool alternateBank) {
     uint16 y = 0;
     uint16 bytesEnd = large ? TILE_SIZE_LARGE * 2 : TILE_SIZE * 2;
     uint8 vramBank = alternateBank ? 1 : 0;
 
     for(uint16 index = 0; index < bytesEnd; index += 2) {
-        uint8 byte_1 = memory->vram.get_8(start + index, vramBank);
-        uint8 byte_2 =  memory->vram.get_8(start + index + 1, vramBank);
+        uint8 byte_1 = memory->get_8(start + index, vramBank);
+        uint8 byte_2 =  memory->get_8(start + index + 1, vramBank);
         uint16 x = 0;
 
         for(uint8 i = 0; i < TILE_SIZE; i++) {
@@ -38,7 +38,7 @@ static void getColours(Memory* memory, uint16 start, uint32* colourIndexes, bool
     }
 }
 
-Tile::Tile(Memory *memory, uint16 start, bool large, bool alternateBank) {
+Tile::Tile(MemoryHook *memory, uint16 start, bool large, bool alternateBank) {
     this->large = large;
     getColours(memory, start, colourIndexes, large, alternateBank);
 }

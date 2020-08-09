@@ -7,17 +7,17 @@
 #include "Sprite.h"
 #include "Bytes.h"
 
-Sprite::Sprite(Memory *memory, uint16 start, bool largeSprites) {
-    y = memory->coreMemory->get_8(start);
-    x = memory->coreMemory->get_8(start + 1);
-    tileIndex = !largeSprites ? memory->coreMemory->get_8(start + 2) :
-            Bytes::clearBit_8(memory->coreMemory->get_8(start + 2), 0);
-    priority = !Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 7);
-    yFlip = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 6);
-    xFlip = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 5);
-    alternatePalette = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 4);
-    colourPaletteIndex = memory->coreMemory->get_8(start + 3) & 0x7;
-    alternateBank = Bytes::getBit_8(memory->coreMemory->get_8(start + 3), 3);
+Sprite::Sprite(MemoryHook *memory, uint16 start, bool largeSprites) {
+    y = memory->get_8(start);
+    x = memory->get_8(start + 1);
+    tileIndex = !largeSprites ? memory->get_8(start + 2) :
+            Bytes::clearBit_8(memory->get_8(start + 2), 0);
+    priority = !Bytes::getBit_8(memory->get_8(start + 3), 7);
+    yFlip = Bytes::getBit_8(memory->get_8(start + 3), 6);
+    xFlip = Bytes::getBit_8(memory->get_8(start + 3), 5);
+    alternatePalette = Bytes::getBit_8(memory->get_8(start + 3), 4);
+    colourPaletteIndex = memory->get_8(start + 3) & 0x7;
+    alternateBank = Bytes::getBit_8(memory->get_8(start + 3), 3);
     large = largeSprites;
     this->memory = memory;
 }

@@ -23,7 +23,7 @@ const uint16 MODE_DURATIONS[] = {
         DURATION_SCANLINE_SPRITE,
         DURATION_SCANLINE_BACKGROUND};
 
-GPU::GPU(Memory *memory, GUI* gui, struct config* config) :
+GPU::GPU(MemoryHook *memory, GUI* gui, struct config* config) :
 pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
 display(memory, config),
 logFile(LOG_PATH) {
@@ -42,7 +42,7 @@ logFile(LOG_PATH) {
     coincidenceLine = 0;
 }
 
-void GPU::step(uint16 lastInstructionDuration, Memory *memory, bool isColour, uint32 count) {
+void GPU::step(uint16 lastInstructionDuration, MemoryHook *memory, bool isColour, uint32 count) {
     if(!control->display) { return; }
 
     for(uint16 i = 0; i < lastInstructionDuration; i++) {
@@ -53,7 +53,7 @@ void GPU::step(uint16 lastInstructionDuration, Memory *memory, bool isColour, ui
                     line += 1;
 
                     if(coincidenceInterrupt && line == coincidenceLine) {
-                        memory->flag_interrupt(INTERRUPT_BIT_LCD_STAT);
+                        memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
                     }
 
                     if(line == SCREEN_HEIGHT) {
@@ -71,10 +71,10 @@ void GPU::step(uint16 lastInstructionDuration, Memory *memory, bool isColour, ui
                             begin = std::chrono::steady_clock::now();
                         }
 
-                        memory->flag_interrupt(INTERRUPT_BIT_VERTICAL_BLANK);
+                        memory->flagInterrupt(INTERRUPT_BIT_VERTICAL_BLANK);
 
                         if(vblankInterrupt) {
-                            memory->flag_interrupt(INTERRUPT_BIT_LCD_STAT);
+                            memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
                         }
                     } else {
                         mode = MODE_SCANLINE_SPRITE;
@@ -89,7 +89,7 @@ void GPU::step(uint16 lastInstructionDuration, Memory *memory, bool isColour, ui
                         line = 0;
 
                         if (oamInterrupt) {
-                            memory->flag_interrupt(INTERRUPT_BIT_LCD_STAT);
+                            memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
                         }
                     }
                     break;
@@ -104,7 +104,7 @@ void GPU::step(uint16 lastInstructionDuration, Memory *memory, bool isColour, ui
                     display.drawLine(&pixels, line, isColour, control);
 
                     if(hblankInterrupt) {
-                        memory->flag_interrupt(INTERRUPT_BIT_LCD_STAT);
+                        memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
                     }
                     break;
             }
@@ -270,7 +270,7 @@ void GPU::setHDMA(uint16 address, uint8 value) {
                     uint16 target = hdmaTarget + i + 0x8000;
                     uint16 source = hdmaSource + i;
                     uint16 current = memory->get_8(source);
-                    memory->vram.set_8(target, current);
+                    memory->set_8(target, current);
                 }
             }
             return;

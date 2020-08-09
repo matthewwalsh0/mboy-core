@@ -4,12 +4,16 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(std::string path, GUI* gui, struct config* config) : rom(path), gpu(&memory, gui, config), apu(gui, &memory), joypad(gui) {
+Gameboy::Gameboy(std::string path, GUI* gui, struct config* config) :
+    rom(path),
+    gpu((MemoryHook*) &memory, gui, config),
+    apu(gui, (MemoryHook*) &memory),
+    joypad(gui) {
+
     this->gui = gui;
     this->config = config;
 
-    memory.init(&coreMemory, &rom, (MemoryHook*) &cpu, (MemoryHook*) &gpu,
-            (MemoryHook*) &timer, (MemoryHook*) &apu, (MemoryHook*) &joypad);
+    memory.init(&coreMemory, &rom, &cpu, &gpu, &timer, &apu, &joypad);
 }
 
 void Gameboy::run() {
@@ -17,8 +21,8 @@ void Gameboy::run() {
     bool isColour = rom.isColour;
 
     while(this->gui->isOpen()) {
-        uint16 instructionDuration = cpu.step(&memory, count, false);
-        gpu.step(instructionDuration, &memory, isColour, count);
+        uint16 instructionDuration = cpu.step((MemoryHook*) &memory, count, false);
+        gpu.step(instructionDuration, (MemoryHook*) &memory, isColour, count);
 
         if(!config->turbo) {
             apu.step(instructionDuration, count);
@@ -28,7 +32,7 @@ void Gameboy::run() {
             instructionDuration * 4 :
             instructionDuration;
 
-        timer.step(timerInstructionDuration, &memory);
+        timer.step(timerInstructionDuration, (MemoryHook*) &memory);
 
         count += 1;
     }

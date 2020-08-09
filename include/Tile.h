@@ -6,8 +6,9 @@
 #define MY_APPLICATION_TILE_H
 
 #include "Types.h"
-#include "Memory.h"
+#include "MemoryHook.h"
 #include "Pixels.h"
+#include "VRAM.h"
 
 const uint16 TILE_SIZE = 8;
 const uint16 TILE_SIZE_LARGE = 16;
@@ -25,7 +26,7 @@ private:
     uint32 paletteCache[256 * TILE_SIZE * TILE_SIZE];
     bool paletteCacheSet[256 * TILE_SIZE] = {[0 ... 256 * TILE_SIZE - 1] = false};
 public:
-    Tile(Memory* memory, uint16 start, bool large, bool alternateBank);
+    Tile(MemoryHook* memory, uint16 start, bool large, bool alternateBank);
     void drawLine(Pixels* pixels, palette palette, uint16 localY,
             uint16 targetX, uint16 targetY, bool flipX, bool flipY);
     void drawLineAdvanced(Pixels *pixels, palette palette, uint16 localY, uint16 targetX, uint16 targetY,

@@ -13,25 +13,31 @@
 #include "Joypad.h"
 #include "VRAM.h"
 #include "WRAM.h"
+#include "CPU.h"
+#include "GPU.h"
+#include "Timer.h"
+#include "APU.h"
 
-class Memory {
+class Memory : MemoryHook {
 public:
     CoreMemory* coreMemory;
     Rom* rom;
-    MemoryHook* cpu;
-    MemoryHook* gpu;
-    MemoryHook* timer;
-    MemoryHook* apu;
-    MemoryHook* joypad;
+    CPU* cpu;
+    GPU* gpu;
+    Timer* timer;
+    APU* apu;
+    Joypad* joypad;
     VRAM vram;
     WRAM wram;
 
-    void init(CoreMemory* coreMemory, Rom* rom, MemoryHook* cpu, MemoryHook* gpu,
-            MemoryHook* timer, MemoryHook* apu, MemoryHook* joypad);
-    uint8 get_8(uint16 address);
-    void set_8(uint16 address, uint8 value);
-    void set_16(uint16 address, uint16 value);
-    void flag_interrupt(uint8 bit);
+    void init(CoreMemory* coreMemory, Rom* rom, CPU* cpu, GPU* gpu,
+            Timer* timer, APU* apu, Joypad* joypad);
     void dma(uint8 value);
+
+    uint8 get_8(uint16 address) override;
+    uint8 get_8(uint16 address, uint8 bank) override;
+    bool set_8(uint16 address, uint8 value) override;
+    bool set_16(uint16 address, uint16 value) override;
+    void flagInterrupt(uint8 bit) override;
 };
 #endif //MY_APPLICATION_MEMORY_H

@@ -11,7 +11,7 @@
 
 class Display : MemoryHook {
 private:
-    Memory* memory;
+    MemoryHook* memory;
     TileMap tileMap_0;
     TileMap tileMap_1;
     TileSet tileSet_0;
@@ -20,7 +20,7 @@ private:
     ColourPaletteData spriteColourPaletteData;
     struct config* config;
 public:
-    Display(Memory* memory, struct config* config);
+    Display(MemoryHook* memory, struct config* config);
     void drawLine(Pixels* pixels, uint8 line, bool isColour, Control* control);
     uint8 get_8(uint16 address) override;
     bool set_8(uint16 address, uint8 value) override;

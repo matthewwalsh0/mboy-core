@@ -9,6 +9,8 @@
 
 struct config {
     bool turbo = false;
+    bool disableTileMapCache = false;
+    bool disableTileSetCache = false;
     palette* backgroundColourPalettes;
     palette* spriteColourPalettes;
     Pixels* tileMap_0;

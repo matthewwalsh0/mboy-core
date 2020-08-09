@@ -7,24 +7,25 @@
 const uint16 WIDTH = TILE_COUNT * TILE_SIZE;
 const uint16 HEIGHT = WIDTH;
 
-TileMap::TileMap(Memory *memory, uint16 start, uint16 end) : pixels(WIDTH, HEIGHT) {
+TileMap::TileMap(MemoryHook *memory, uint16 start, uint16 end, bool* disableCache) : pixels(WIDTH, HEIGHT) {
     this->memory = memory;
     this->start = start;
     this->end = end;
+    this->disableCache = disableCache;
 }
 
 uint16 TileMap::getIndex(uint16 tileX, uint16 tileY) {
-    return memory->vram.get_8(tileY * 32 + tileX + start, 0);
+    return memory->get_8(tileY * 32 + tileX + start, 0);
 }
 
 uint16 TileMap::getAttributeIndex(uint16 tileX, uint16 tileY) {
-    return memory->vram.get_8(tileY * 32 + tileX + start, 1);
+    return memory->get_8(tileY * 32 + tileX + start, 1);
 }
 
 void TileMap::drawTile(uint16 tileIndexX, uint16 tileIndexY, palette monochromePalette, TileSet *tileSet,
     bool isColour, ColourPaletteData* colourPaletteData) {
     uint16 index = tileIndexY * TILE_COUNT + tileIndexX;
-    if(!invalidTiles[index]) return;
+    if(!*disableCache && !invalidTiles[index]) return;
 
     uint16 tileIndex = getIndex(tileIndexX, tileIndexY);
     bool flipX = false;

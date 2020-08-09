@@ -12,7 +12,7 @@
 
 const uint16 CHANNEL_VOLUME = 15;
 
-APU::APU(GUI* gui, Memory* memory) :
+APU::APU(GUI* gui, MemoryHook* memory) :
     square_1(SQUARE_1_ADDRESS_START),
     square_2(SQUARE_2_ADDRESS_START),
     wave(memory, WAVE_TABLE_START) {

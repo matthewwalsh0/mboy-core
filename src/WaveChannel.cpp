@@ -10,7 +10,7 @@
 
 const uint8 WAVE_VOLUME_SHIFT[] = {4, 0, 1, 2};
 
-WaveChannel::WaveChannel(Memory* memory, uint16 addressStart) {
+WaveChannel::WaveChannel(MemoryHook* memory, uint16 addressStart) {
     this->memory = memory;
     this->waveTableStart = addressStart;
 }
@@ -47,7 +47,7 @@ void WaveChannel::step(uint16 lastInstructionDuration) {
     if(enabled && dacEnabled) {
         uint16 byteIndex = position / 2;
         bool useUpper = position % 2 == 0;
-        uint8 currentByte = memory->coreMemory->get_8(waveTableStart + byteIndex);
+        uint8 currentByte = memory->get_8(waveTableStart + byteIndex);
         uint8 upper = Bytes::split_8_upper(currentByte);
         uint8 lower = Bytes::split_8_lower(currentByte);
         uint8 originalSample = useUpper ? upper : lower;
