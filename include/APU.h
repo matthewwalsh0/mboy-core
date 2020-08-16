@@ -11,6 +11,7 @@
 #include "MemoryMap.h"
 #include "Types.h"
 #include "MemoryHook.h"
+#include "Config.h"
 
 const uint16 SAMPLE_PLAY_COUNT = 1024;
 const uint32 SAMPLE_RATE = 65536;
@@ -33,8 +34,9 @@ private:
     uint32 volumeEnvelopeCounter = 0;
     bool ready = false;
     bool power = false;
+    struct config* config;
 public:
-    APU(GUI* gui, MemoryHook* memory);
+    APU(GUI* gui, MemoryHook* memory, struct config* config);
     void step(uint16 lastInstructionDuration, uint32 count);
     uint8 get_8(uint16 address);
     bool set_8(uint16 address, uint8 value);

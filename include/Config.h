@@ -6,8 +6,16 @@
 #define MY_APPLICATION_CONFIG_H
 
 #include "Tile.h"
+#include "TileSet.h"
 
 struct config {
+    bool background = true;
+    bool window = true;
+    bool sprites = true;
+    bool audio = true;
+    bool square1 = true;
+    bool square2 = true;
+    bool wave = true;
     bool turbo = false;
     bool disableTileMapCache = false;
     bool disableTileSetCache = false;

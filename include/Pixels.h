@@ -7,7 +7,7 @@
 
 #include "Types.h"
 
-const uint32 WHITE = 0x00FFFFFF;
+const uint32 WHITE = 0xFFFFFFFF;
 
 class Pixels {
 private:

@@ -7,7 +7,7 @@
 Gameboy::Gameboy(std::string path, GUI* gui, struct config* config) :
     rom(path),
     gpu((MemoryHook*) &memory, gui, config),
-    apu(gui, (MemoryHook*) &memory),
+    apu(gui, (MemoryHook*) &memory, config),
     joypad(gui) {
 
     this->gui = gui;

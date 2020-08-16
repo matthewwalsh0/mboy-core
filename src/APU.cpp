@@ -12,12 +12,13 @@
 
 const uint16 CHANNEL_VOLUME = 15;
 
-APU::APU(GUI* gui, MemoryHook* memory) :
+APU::APU(GUI* gui, MemoryHook* memory, struct config* config) :
     square_1(SQUARE_1_ADDRESS_START),
     square_2(SQUARE_2_ADDRESS_START),
     wave(memory, WAVE_TABLE_START) {
     this->gui = gui;
     this->downsampler = (Downsampler*) new NearestNeighbourDownsampler();
+    this->config = config;
 }
 
 void APU::step(uint16 lastInstructionDuration, uint32 count) {
@@ -33,14 +34,20 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     uint16 finalVolume = 0;
     uint16 maxVolume = 0;
 
-    finalVolume += square_1.sample;
-    maxVolume += CHANNEL_VOLUME;
+    if(this->config->square1) {
+        finalVolume += square_1.sample;
+        maxVolume += CHANNEL_VOLUME;
+    }
 
-    finalVolume += square_2.sample;
-    maxVolume += CHANNEL_VOLUME;
+    if(this->config->square2) {
+        finalVolume += square_2.sample;
+        maxVolume += CHANNEL_VOLUME;
+    }
 
-    finalVolume += wave.sample;
-    maxVolume += CHANNEL_VOLUME;
+    if(this->config->wave) {
+        finalVolume += wave.sample;
+        maxVolume += CHANNEL_VOLUME;
+    }
 
     if(finalVolume > maxVolume) {
         finalVolume = maxVolume;
@@ -51,6 +58,8 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     }
 
     if(!ready) return;
+
+    finalVolume = config->audio ? finalVolume : 0;
 
     downsampler->addSample(finalVolume, lastInstructionDuration, count, maxVolume);
 
