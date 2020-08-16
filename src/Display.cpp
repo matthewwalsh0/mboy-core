@@ -69,8 +69,9 @@ static void drawWindowLine(Pixels* pixels, MemoryHook* memory, Control* control,
         windowTileMap->drawTile(tileIndexX, tileIndexY, palette, tileSet, isColour, colourPaletteData);
     }
 
+    uint8 width = windowX > SCREEN_WIDTH ? SCREEN_WIDTH : SCREEN_WIDTH - windowX;
     uint32* linePixels = windowTileMap->pixels.getLine(localY, 0, SCREEN_WIDTH);
-    pixels->setLine(line, linePixels, windowX, SCREEN_WIDTH - windowX);
+    pixels->setLine(line, linePixels, windowX, width);
     delete linePixels;
 }
 
