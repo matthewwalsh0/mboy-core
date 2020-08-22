@@ -5,7 +5,8 @@
 #include "Rom.h"
 #include <fstream>
 #include <MemoryMap.h>
-#include <MBC3.h>
+#include "MBC1.h"
+#include "MBC3.h"
 #include "MBC5.h"
 
 const uint16 ADDRESS_TITLE_START = 0x0134;
@@ -16,6 +17,10 @@ static Controller* getController(uint8* rom) {
     uint8 value = rom[ADDRESS_TYPE];
 
     if(value == 0x0) return nullptr;
+    if(value == 0x1 || value == 0x3) {
+        MBC1* controller = new MBC1();
+        return (Controller*) controller;
+    }
     if(value == 0x10 || value == 0x13) {
         MBC3* controller = new MBC3();
         return (Controller*) controller;
