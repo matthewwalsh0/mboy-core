@@ -124,6 +124,9 @@ bool Memory::set_8(uint16 address, uint8 value) {
         apu->set_8(address, value);
     } else if (address >= WAVE_START && address < WAVE_START + 5) {
         apu->set_8(address, value);
+    } else if (address >= 0xFF20 && address <= 0xFF23) {
+        apu->set_8(address, value);
+        coreMemory->set_8(address, value);
     } else if (address == 0xFF26) {
         apu->set_8(address, value);
         return true;

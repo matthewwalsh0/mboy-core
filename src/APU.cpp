@@ -27,6 +27,7 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     square_1.step(lastInstructionDuration);
     square_2.step(lastInstructionDuration);
     wave.step(lastInstructionDuration);
+    noise.step(lastInstructionDuration);
 
     frameSequencerCycleCount += lastInstructionDuration;
     volumeEnvelopeCounter += lastInstructionDuration;
@@ -34,18 +35,23 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     uint16 finalVolume = 0;
     uint16 maxVolume = 0;
 
-    if(this->config->square1) {
+    if(config->square1) {
         finalVolume += square_1.sample;
         maxVolume += CHANNEL_VOLUME;
     }
 
-    if(this->config->square2) {
+    if(config->square2) {
         finalVolume += square_2.sample;
         maxVolume += CHANNEL_VOLUME;
     }
 
-    if(this->config->wave) {
+    if(config->wave) {
         finalVolume += wave.sample;
+        maxVolume += CHANNEL_VOLUME;
+    }
+
+    if(config->noise) {
+        finalVolume += noise.sample;
         maxVolume += CHANNEL_VOLUME;
     }
 
@@ -66,10 +72,12 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     if(frameSequencerCycleCount >= 16384) {
         square_1.lengthStep();
         square_2.lengthStep();
+        noise.lengthStep();
         frameSequencerCycleCount = 0;
     }
 
     if(volumeEnvelopeCounter >= 65536) {
+        noise.volumeStep();
         volumeEnvelopeCounter = 0;
     }
 
@@ -92,6 +100,9 @@ bool APU::set_8(uint16 address, uint8 value) {
 
     if(address >= WAVE_START && address < WAVE_START + 5)
         return wave.set_8(address, value);
+
+    if(address >= 0xFF20 && address <= 0xFF23)
+        return noise.set_8(address, value);
 
     if(address == 0xFF26) {
         power = Bytes::getBit_8(value, 7);

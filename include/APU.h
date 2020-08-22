@@ -8,6 +8,7 @@
 #include "GUI.h"
 #include "SquareChannel.h"
 #include "WaveChannel.h"
+#include "NoiseChannel.h"
 #include "MemoryMap.h"
 #include "Types.h"
 #include "MemoryHook.h"
@@ -30,6 +31,7 @@ private:
     SquareChannel square_1;
     SquareChannel square_2;
     WaveChannel wave;
+    NoiseChannel noise;
     uint16 frameSequencerCycleCount = 0;
     uint32 volumeEnvelopeCounter = 0;
     bool ready = false;

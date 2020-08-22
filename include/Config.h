@@ -16,6 +16,7 @@ struct config {
     bool square1 = true;
     bool square2 = true;
     bool wave = true;
+    bool noise = true;
     bool turbo = false;
     bool disableTileMapCache = false;
     bool disableTileSetCache = false;
