@@ -8,6 +8,7 @@
 #include "TileMap.h"
 #include "Control.h"
 #include "ColourPaletteData.h"
+#include "Sprite.h"
 
 class Display : MemoryHook {
 private:
@@ -19,9 +20,12 @@ private:
     ColourPaletteData backgroundColourPaletteData;
     ColourPaletteData spriteColourPaletteData;
     struct config* config;
+    Sprite* spriteCache[40];
 public:
     Display(MemoryHook* memory, struct config* config);
     void drawLine(Pixels* pixels, uint8 line, bool isColour, Control* control);
+    void clearSprite(uint16 address);
+
     uint8 get_8(uint16 address) override;
     bool set_8(uint16 address, uint8 value) override;
 };

@@ -25,8 +25,8 @@ const uint16 MODE_DURATIONS[] = {
 
 GPU::GPU(MemoryHook *memory, GUI* gui, struct config* config) :
 pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
-display(memory, config),
-logFile(LOG_PATH) {
+logFile(LOG_PATH),
+display(memory, config) {
     this->memory = memory;
     this->control = new Control((uint8) 0);
     this->gui = gui;
@@ -45,75 +45,72 @@ logFile(LOG_PATH) {
 void GPU::step(uint16 lastInstructionDuration, MemoryHook *memory, bool isColour, uint32 count) {
     if(!control->display) { return; }
 
-    for(uint16 i = 0; i < lastInstructionDuration; i++) {
-        if(cycleCount >= MODE_DURATIONS[mode]) {
-            switch (mode) {
-                case MODE_HORIZONTAL_BLANK:
-                    cycleCount = 0;
-                    line += 1;
+    uint16 newCycleCount = cycleCount += lastInstructionDuration;
+    uint16 targetCycleCount = MODE_DURATIONS[mode];
 
-                    if(coincidenceInterrupt && line == coincidenceLine) {
+    if(newCycleCount >= targetCycleCount) {
+        switch (mode) {
+            case MODE_HORIZONTAL_BLANK:
+                line += 1;
+
+                if(coincidenceInterrupt && line == coincidenceLine) {
+                    memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
+                }
+
+                if(line == SCREEN_HEIGHT) {
+                    mode = MODE_VERTICAL_BLANK;
+
+                    gui->displayBuffer(pixels.data);
+                    frameCount += 1;
+
+                    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+                    uint32 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+
+                    if(duration > 1000) {
+                        gui->displayFPS(frameCount);
+                        frameCount = 0;
+                        begin = std::chrono::steady_clock::now();
+                    }
+
+                    memory->flagInterrupt(INTERRUPT_BIT_VERTICAL_BLANK);
+
+                    if(vblankInterrupt) {
                         memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
                     }
+                } else {
+                    mode = MODE_SCANLINE_SPRITE;
+                }
+                break;
+            case MODE_VERTICAL_BLANK:
+                line += 1;
 
-                    if(line == SCREEN_HEIGHT) {
-                        mode = MODE_VERTICAL_BLANK;
+                if(line > 153) {
+                    mode = MODE_SCANLINE_SPRITE;
+                    line = 0;
 
-                        gui->displayBuffer(pixels.data);
-                        frameCount += 1;
-
-                        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-                        uint32 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
-
-                        if(duration > 1000) {
-                            gui->displayFPS(frameCount);
-                            frameCount = 0;
-                            begin = std::chrono::steady_clock::now();
-                        }
-
-                        memory->flagInterrupt(INTERRUPT_BIT_VERTICAL_BLANK);
-
-                        if(vblankInterrupt) {
-                            memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
-                        }
-                    } else {
-                        mode = MODE_SCANLINE_SPRITE;
-                    }
-                    break;
-                case MODE_VERTICAL_BLANK:
-                    line += 1;
-                    cycleCount = 0;
-
-                    if(line > 153) {
-                        mode = MODE_SCANLINE_SPRITE;
-                        line = 0;
-
-                        if (oamInterrupt) {
-                            memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
-                        }
-                    }
-                    break;
-                case MODE_SCANLINE_SPRITE:
-                    mode = MODE_SCANLINE_BACKGROUND;
-                    cycleCount = 0;
-                    break;
-                case MODE_SCANLINE_BACKGROUND:
-                    mode = MODE_HORIZONTAL_BLANK;
-                    cycleCount = 0;
-
-                    display.drawLine(&pixels, line, isColour, control);
-
-                    if(hblankInterrupt) {
+                    if (oamInterrupt) {
                         memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
                     }
-                    break;
-            }
+                }
+                break;
+            case MODE_SCANLINE_SPRITE:
+                mode = MODE_SCANLINE_BACKGROUND;
+                break;
+            case MODE_SCANLINE_BACKGROUND:
+                mode = MODE_HORIZONTAL_BLANK;
+
+                display.drawLine(&pixels, line, isColour, control);
+
+                if(hblankInterrupt) {
+                    memory->flagInterrupt(INTERRUPT_BIT_LCD_STAT);
+                }
+                break;
         }
 
-        cycleCount += 1;
+        newCycleCount = newCycleCount - targetCycleCount;
     }
 
-    //logFile.write("%d - %d - %d - %d - %d", count, mode, cycleCount, line, coincidenceLine);
+    cycleCount = newCycleCount;
 }
 
 uint8 GPU::getStat() {

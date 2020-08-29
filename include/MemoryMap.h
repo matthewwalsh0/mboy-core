@@ -30,6 +30,7 @@ const uint16 TILE_MAP_0_END = 0x9BFF + 1;
 const uint16 TILE_MAP_1_START = 0x9C00;
 const uint16 TILE_MAP_1_END = 0x9FFF + 1;
 const uint16 SPRITE_INFO_START = 0xFE00;
+const uint16 SPRITE_INFO_END = 0xFE9F + 1;
 const uint16 LCD_CONTROL = 0xFF40;
 const uint16 ADDRESS_STAT = 0xFF41;
 const uint16 SCROLL_Y = 0xFF42;

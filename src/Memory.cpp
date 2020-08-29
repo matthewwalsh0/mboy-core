@@ -80,6 +80,10 @@ uint8 Memory::get_8(uint16 address, uint8 bank) {
     }
 }
 
+uint8 Memory::get_core_8(uint16 address) {
+    return coreMemory->get_8(address);
+}
+
 bool Memory::set_8(uint16 address, uint8 value) {
     if((address >= 0x0000 && address <= 0x7FFF)  || (address >= 0xA000 && address <= 0xBFFF)) {
         rom->set_8(address, value);
@@ -129,6 +133,10 @@ bool Memory::set_8(uint16 address, uint8 value) {
         coreMemory->set_8(address, value);
     } else if (address == 0xFF26) {
         apu->set_8(address, value);
+        return true;
+    } else if (address >= SPRITE_INFO_START && address < SPRITE_INFO_END) {
+        coreMemory->set_8(address, value);
+        gpu->display.clearSprite(address);
         return true;
     }
 

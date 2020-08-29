@@ -23,7 +23,6 @@ private:
     uint16 cycleCount;
     uint16 line;
     Pixels pixels;
-    Display display;
     MemoryHook* memory;
     Control* control;
     bool coincidenceInterrupt;
@@ -40,6 +39,8 @@ private:
     struct config* config;
     
 public:
+    Display display;
+
     GPU(MemoryHook* memory, GUI* gui, struct config* config);
     void step(uint16 lastInstructionDuration, MemoryHook* memory, bool isColour, uint32 count);
     uint8 getStat();
