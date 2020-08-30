@@ -3,7 +3,7 @@
 //
 
 #include "BackgroundAttributes.h"
-#include "../include/Bytes.h"
+#include "Bytes.h"
 
 BackgroundAttributes::BackgroundAttributes(uint8 data) {
     paletteNumber = data & 0x7;

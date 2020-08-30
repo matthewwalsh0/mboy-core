@@ -6,8 +6,7 @@
 #define MBOY_ANDROID_SQUARECHANNEL_H
 
 #include "Types.h"
-#include "../include/Types.h"
-#include "../include/MemoryHook.h"
+#include "MemoryHook.h"
 
 class SquareChannel : MemoryHook {
 private:

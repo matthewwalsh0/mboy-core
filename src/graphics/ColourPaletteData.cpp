@@ -2,9 +2,9 @@
 // Created by matthew on 28/07/2020.
 //
 
-#include "../include/ColourPaletteData.h"
-#include "../include/Bytes.h"
-#include "../include/ColourPalette.h"
+#include "ColourPaletteData.h"
+#include "Bytes.h"
+#include "ColourPalette.h"
 
 ColourPaletteData::ColourPaletteData(uint16 address) {
     this->address = address;

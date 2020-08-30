@@ -3,8 +3,8 @@
 //
 
 #include "WRAM.h"
-#include "../include/MemoryMap.h"
-#include "../include/WRAM.h"
+#include "MemoryMap.h"
+#include "WRAM.h"
 
 
 uint8 WRAM::getBank() {

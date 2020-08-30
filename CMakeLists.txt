@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.10.2)
 project(mboy_core)
+
 set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
+
 include_directories(include)
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "src/*/*.cpp")
 add_library(mboy_core STATIC ${SOURCES})
