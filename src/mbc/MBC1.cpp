@@ -6,8 +6,8 @@
 #include "Bytes.h"
 #include "MemoryMap.h"
 
-static uint8 getRomBank(uint8 bank) {
-    uint8 finalBank = bank;
+static u_int8_t getRomBank(u_int8_t bank) {
+    u_int8_t finalBank = bank;
 
     if(bank == 0x0 || bank == 0x20 || bank == 0x40 || bank == 0x60) {
         finalBank += 1;
@@ -16,21 +16,21 @@ static uint8 getRomBank(uint8 bank) {
     return finalBank;
 }
 
-int16 MBC1::get_8(uint16 address, uint8 *rom, Ram* ram) {
+int16_t MBC1::get_8(u_int16_t address, u_int8_t *rom, Ram* ram) {
     if(address >= 0x4000 && address <= 0x7FFF) {
-        uint32 finalAddress = (romBank * 0x4000) + (address - 0x4000);
+        u_int32_t finalAddress = (romBank * 0x4000) + (address - 0x4000);
         return rom[finalAddress];
     }
 
     if(address >= 0xA000 && address <= 0xBFFF) {
-        uint32 finalAddress = (ramBank * 0x2000) + (address - 0xA000);
+        u_int32_t finalAddress = (ramBank * 0x2000) + (address - 0xA000);
         return ram->get_8(finalAddress);
     }
 
     return -1;
 }
 
-bool MBC1::set_8(uint16 address, uint8 value, uint8 *rom, Ram* ram) {
+bool MBC1::set_8(u_int16_t address, u_int8_t value, u_int8_t *rom, Ram* ram) {
     bool set = true;
 
     if(address >= MBC1_ENABLE_EXTERNAL_RAM_START && address <= MBC1_ENABLE_EXTERNAL_RAM_END) {
@@ -38,13 +38,13 @@ bool MBC1::set_8(uint16 address, uint8 value, uint8 *rom, Ram* ram) {
     } else if (address >= MBC1_MODE_START && address <= MBC1_MODE_END) {
         ramMode = (value & 0x1) == 0x1;
     } else if(address >= MBC1_ROM_BANK_LOW_START && address <= MBC1_ROM_BANK_LOW_END) {
-        uint8 newRomBank = (romBank & 0x60) + (value & 0x1F);
+        u_int8_t newRomBank = (romBank & 0x60) + (value & 0x1F);
         romBank = getRomBank(newRomBank);
     } else if (address >= MBC1_ROM_BANK_HIGH_START && address <= MBC1_ROM_BANK_HIGH_END) {
         if(ramMode) {
             ramBank = value & 0x3;
         } else {
-            uint8 newRomBank = (romBank & 0x1F) + ((value & 0x3) << 5);
+            u_int8_t newRomBank = (romBank & 0x1F) + ((value & 0x3) << 5);
             romBank = getRomBank(newRomBank);
         }
     } else if (address >= 0xA000 && address <= 0xBFFF) {

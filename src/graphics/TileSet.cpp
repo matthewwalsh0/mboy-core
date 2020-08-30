@@ -5,16 +5,16 @@
 #include "TileSet.h"
 #include "Bytes.h"
 
-TileSet::TileSet(MemoryHook* memory, uint16 start, bool isSigned, bool* disableCache) {
+TileSet::TileSet(MemoryHook* memory, u_int16_t start, bool isSigned, bool* disableCache) {
     this->memory = memory;
     this->start = start;
     this->isSigned = isSigned;
     this->disableCache = disableCache;
 }
 
-Tile* TileSet::getTile(uint8 index, bool large, bool alternateBank, bool useCache) {
-    uint16 actualIndex = isSigned ? Bytes::wrappingAdd_8(Bytes::toSigned_8(index), 128) : index;
-    uint16 cacheIndex = ((alternateBank ? 1 : 0) * 1024) + actualIndex;
+Tile* TileSet::getTile(u_int8_t index, bool large, bool alternateBank, bool useCache) {
+    u_int16_t actualIndex = isSigned ? Bytes::wrappingAdd_8(Bytes::toSigned_8(index), 128) : index;
+    u_int16_t cacheIndex = ((alternateBank ? 1 : 0) * 1024) + actualIndex;
     bool tileCached = tileCacheSet[cacheIndex];
 
     if(!*disableCache && useCache && tileCached) {
@@ -22,7 +22,7 @@ Tile* TileSet::getTile(uint8 index, bool large, bool alternateBank, bool useCach
         return cachedTile;
     }
 
-    uint16 tileStart = actualIndex * 16;
+    u_int16_t tileStart = actualIndex * 16;
     Tile* tile = new Tile(memory, start + tileStart, large, alternateBank);
 
     if(useCache) {
@@ -34,7 +34,7 @@ Tile* TileSet::getTile(uint8 index, bool large, bool alternateBank, bool useCach
 }
 
 void TileSet::clearCache() {
-    for(uint16 i = 0; i < 2048; i++) {
+    for(u_int16_t i = 0; i < 2048; i++) {
         bool isCached = tileCacheSet[i];
 
         if(isCached) {

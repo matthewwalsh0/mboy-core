@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_MEMORY_H
 #define MY_APPLICATION_MEMORY_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "CoreMemory.h"
 #include "Rom.h"
 #include "MemoryHook.h"
@@ -32,13 +32,13 @@ public:
 
     void init(CoreMemory* coreMemory, Rom* rom, CPU* cpu, GPU* gpu,
             Timer* timer, APU* apu, Joypad* joypad);
-    void dma(uint8 value);
+    void dma(u_int8_t value);
 
-    uint8 get_8(uint16 address) override;
-    uint8 get_8(uint16 address, uint8 bank) override;
-    uint8 get_core_8(uint16 address) override;
-    bool set_8(uint16 address, uint8 value) override;
-    bool set_16(uint16 address, uint16 value) override;
-    void flagInterrupt(uint8 bit) override;
+    u_int8_t get_8(u_int16_t address) override;
+    u_int8_t get_8(u_int16_t address, u_int8_t bank) override;
+    u_int8_t get_core_8(u_int16_t address) override;
+    bool set_8(u_int16_t address, u_int8_t value) override;
+    bool set_16(u_int16_t address, u_int16_t value) override;
+    void flagInterrupt(u_int8_t bit) override;
 };
 #endif //MY_APPLICATION_MEMORY_H

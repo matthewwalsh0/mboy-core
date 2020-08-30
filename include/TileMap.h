@@ -14,24 +14,24 @@
 #include "ColourPaletteData.h"
 #include "Config.h"
 
-const uint8 TILE_COUNT = 32;
+const u_int8_t TILE_COUNT = 32;
 
 class TileMap {
 private:
     MemoryHook* memory;
-    uint16 end;
+    u_int16_t end;
     bool invalidTiles[TILE_COUNT * TILE_COUNT] = {[0 ... TILE_COUNT * TILE_COUNT - 1] = true};
     bool* disableCache;
 public:
-    uint16 start;
+    u_int16_t start;
     Pixels pixels;
 
-    TileMap(MemoryHook* memory, uint16 start, uint16 end, bool* disableCache);
-    uint16 getIndex(uint16 tileX, uint16 tileY);
-    uint16 getAttributeIndex(uint16 tileX, uint16 tileY);
-    BackgroundAttributes getBackgroundAttributes(uint8 tileX, uint8 tileY);
-    void drawTile(uint16 tileIndexX, uint16 tileIndexY, palette palette, TileSet* tileSet, bool isColour, ColourPaletteData* colourPaletteData);
-    void invalidateTile(uint16 tileIndexX, uint16 tileIndexY);
+    TileMap(MemoryHook* memory, u_int16_t start, u_int16_t end, bool* disableCache);
+    u_int16_t getIndex(u_int16_t tileX, u_int16_t tileY);
+    u_int16_t getAttributeIndex(u_int16_t tileX, u_int16_t tileY);
+    BackgroundAttributes getBackgroundAttributes(u_int8_t tileX, u_int8_t tileY);
+    void drawTile(u_int16_t tileIndexX, u_int16_t tileIndexY, palette palette, TileSet* tileSet, bool isColour, ColourPaletteData* colourPaletteData);
+    void invalidateTile(u_int16_t tileIndexX, u_int16_t tileIndexY);
     void invalidateAllTiles();
 };
 

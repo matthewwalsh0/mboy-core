@@ -23,11 +23,11 @@ private:
     Sprite* spriteCache[40];
 public:
     Display(MemoryHook* memory, struct config* config);
-    void drawLine(Pixels* pixels, uint8 line, bool isColour, Control* control);
-    void clearSprite(uint16 address);
+    void drawLine(Pixels* pixels, u_int8_t line, bool isColour, Control* control);
+    void clearSprite(u_int16_t address);
 
-    uint8 get_8(uint16 address) override;
-    bool set_8(uint16 address, uint8 value) override;
+    u_int8_t get_8(u_int16_t address) override;
+    bool set_8(u_int16_t address, u_int8_t value) override;
 };
 
 

@@ -9,7 +9,7 @@
 #include "GPU.h"
 #include "Sprite.h"
 
-const uint8 FINAL_INDEX = SCREEN_WIDTH / TILE_SIZE;
+const u_int8_t FINAL_INDEX = SCREEN_WIDTH / TILE_SIZE;
 
 Display::Display(MemoryHook *memory, struct config* config) :
 tileMap_0(memory, TILE_MAP_0_START, TILE_MAP_0_END, &config->disableTileMapCache),
@@ -30,7 +30,7 @@ spriteColourPaletteData(0xFF6A) {
 }
 
 static void drawBackgroundLine(Pixels* pixels, MemoryHook* memory, Control* control, TileMap* tileMap,
-    TileSet* tileSet, palette palette, uint8 line, uint16 scrollX, uint16 scrollY, bool isColour,
+    TileSet* tileSet, palette palette, u_int8_t line, u_int16_t scrollX, u_int16_t scrollY, bool isColour,
     ColourPaletteData* colourPaletteData, bool enable) {
     if(!enable) {
         pixels->clearLine(line, 0, SCREEN_WIDTH);
@@ -39,44 +39,44 @@ static void drawBackgroundLine(Pixels* pixels, MemoryHook* memory, Control* cont
 
     if(!control->background) return;
 
-    uint16 localY = Bytes::wrappingAdd_8(scrollY, line);
-    uint16 tileIndexY = localY / TILE_SIZE;
+    u_int16_t localY = Bytes::wrappingAdd_8(scrollY, line);
+    u_int16_t tileIndexY = localY / TILE_SIZE;
 
-    for(uint16 tileIndexX = 0; tileIndexX < TILE_COUNT; tileIndexX++) {
+    for(u_int16_t tileIndexX = 0; tileIndexX < TILE_COUNT; tileIndexX++) {
         tileMap->drawTile(tileIndexX, tileIndexY, palette, tileSet, isColour, colourPaletteData);
     }
 
-    uint32* linePixels = tileMap->pixels.getLine(localY, scrollX, SCREEN_WIDTH);
+    u_int32_t* linePixels = tileMap->pixels.getLine(localY, scrollX, SCREEN_WIDTH);
     pixels->setLine(line, linePixels, 0, SCREEN_WIDTH);
     delete linePixels;
 }
 
 static void drawWindowLine(Pixels* pixels, MemoryHook* memory, Control* control, TileMap* tileMap_0, TileMap* tileMap_1,
-        TileSet* tileSet, palette palette, uint8 line, bool isColour, ColourPaletteData* colourPaletteData, bool enable) {
+        TileSet* tileSet, palette palette, u_int8_t line, bool isColour, ColourPaletteData* colourPaletteData, bool enable) {
     if(!control->window || !enable) return;
 
-    uint8 windowX = memory->get_8(WINDOW_X) - 7;
-    uint8 windowY = memory->get_8(WINDOW_Y);
+    u_int8_t windowX = memory->get_8(WINDOW_X) - 7;
+    u_int8_t windowY = memory->get_8(WINDOW_Y);
 
     if(line < windowY) return;
 
-    uint8 localY = Bytes::wrappingSub_8(line, windowY);
-    uint8 tileIndexY = localY / 8;
+    u_int8_t localY = Bytes::wrappingSub_8(line, windowY);
+    u_int8_t tileIndexY = localY / 8;
     TileMap* windowTileMap = !control->alternateWindowTileMap ? tileMap_0 : tileMap_1;
 
-    for(uint8 tileIndexX = 0; tileIndexX < TILE_COUNT; tileIndexX++) {
+    for(u_int8_t tileIndexX = 0; tileIndexX < TILE_COUNT; tileIndexX++) {
         if(tileIndexX > FINAL_INDEX) continue;
         windowTileMap->drawTile(tileIndexX, tileIndexY, palette, tileSet, isColour, colourPaletteData);
     }
 
-    uint8 width = windowX > SCREEN_WIDTH ? SCREEN_WIDTH : SCREEN_WIDTH - windowX;
-    uint32* linePixels = windowTileMap->pixels.getLine(localY, 0, SCREEN_WIDTH);
+    u_int8_t width = windowX > SCREEN_WIDTH ? SCREEN_WIDTH : SCREEN_WIDTH - windowX;
+    u_int32_t* linePixels = windowTileMap->pixels.getLine(localY, 0, SCREEN_WIDTH);
     pixels->setLine(line, linePixels, windowX, width);
     delete linePixels;
 }
 
-static void drawSpriteLine(Pixels* pixels, MemoryHook* memory, Control* control, uint8 line,
-        TileSet* tileSet, uint16 scrollX, uint16 scrollY, palette backgroundPalette, bool isColour,
+static void drawSpriteLine(Pixels* pixels, MemoryHook* memory, Control* control, u_int8_t line,
+        TileSet* tileSet, u_int16_t scrollX, u_int16_t scrollY, palette backgroundPalette, bool isColour,
         ColourPaletteData* backgroundColourPaletteData, ColourPaletteData* spriteColourPaletteData,
         TileMap* tileMap, bool enable, Sprite** spriteCache) {
     if(!control->sprites || !enable) return;
@@ -84,22 +84,22 @@ static void drawSpriteLine(Pixels* pixels, MemoryHook* memory, Control* control,
     palette spritePalette_0 = MonochromePalette::get(memory->get_8(SPRITE_PALETTE_0));
     palette spritePalette_1 = MonochromePalette::get(memory->get_8(SPRITE_PALETTE_1));
 
-    for(int8 i = 39; i >= 0; i--) {
+    for(int8_t i = 39; i >= 0; i--) {
         Sprite* sprite = spriteCache[i];
 
         if(sprite == nullptr) {
-            uint16 spriteStart = SPRITE_INFO_START + (4 * i);
+            u_int16_t spriteStart = SPRITE_INFO_START + (4 * i);
             sprite = new Sprite(memory, spriteStart, control->largeSprites);
             spriteCache[i] = sprite;
         }
 
         if(sprite->y == 0 && sprite->x == 0) continue;
 
-        uint16 spriteYStart = sprite->y - 16;
-        uint16 spriteYEnd = control->largeSprites ? spriteYStart + 16 : spriteYStart + 8;
+        u_int16_t spriteYStart = sprite->y - 16;
+        u_int16_t spriteYEnd = control->largeSprites ? spriteYStart + 16 : spriteYStart + 8;
 
         if(line >= spriteYStart && line < spriteYEnd) {
-            uint16 localY = line - spriteYStart;
+            u_int16_t localY = line - spriteYStart;
             sprite->drawLine(pixels, tileSet, scrollX, scrollY, localY,
                     backgroundPalette, spritePalette_0, spritePalette_1, isColour, backgroundColourPaletteData,
                     spriteColourPaletteData, tileMap);
@@ -107,24 +107,24 @@ static void drawSpriteLine(Pixels* pixels, MemoryHook* memory, Control* control,
     }
 }
 
-void Display::clearSprite(uint16 address) {
-    uint16 index = (address - SPRITE_INFO_START) / 4;
+void Display::clearSprite(u_int16_t address) {
+    u_int16_t index = (address - SPRITE_INFO_START) / 4;
     spriteCache[index] = nullptr;
 }
 
-void Display::drawLine(Pixels *pixels, uint8 line, bool isColour, Control *control) {
+void Display::drawLine(Pixels *pixels, u_int8_t line, bool isColour, Control *control) {
     TileSet* tileSet = !control->alternateBackgroundTileSet ? &tileSet_0 : &tileSet_1;
     TileMap* tileMap = !control->alternateBackgroundTileMap ? &tileMap_0 : &tileMap_1;
     palette backgroundMonochromePalette = MonochromePalette::get(memory->get_8(BACKGROUND_PALETTE));
-    uint16 scrollX = memory->get_8(SCROLL_X);
-    uint16 scrollY = memory->get_8(SCROLL_Y);;
+    u_int16_t scrollX = memory->get_8(SCROLL_X);
+    u_int16_t scrollY = memory->get_8(SCROLL_Y);;
 
     drawBackgroundLine(pixels, memory, control, tileMap, tileSet, backgroundMonochromePalette, line, scrollX, scrollY, isColour, &backgroundColourPaletteData, config->background);
     drawWindowLine(pixels, memory, control, &tileMap_0, &tileMap_1, tileSet, backgroundMonochromePalette, line, isColour, &backgroundColourPaletteData, config->window);
     drawSpriteLine(pixels, memory, control, line, &tileSet_1, scrollX, scrollY, backgroundMonochromePalette, isColour, &backgroundColourPaletteData, &spriteColourPaletteData, tileMap, config->sprites, spriteCache);
 }
 
-uint8 Display::get_8(uint16 address) {
+u_int8_t Display::get_8(u_int16_t address) {
     if(address == 0xFF69)
         return backgroundColourPaletteData.get_8(address);
 
@@ -134,14 +134,14 @@ uint8 Display::get_8(uint16 address) {
     return 0;
 }
 
-static void invalidateTile(TileMap* tileMap, uint16 address) {
-    uint16 index = address - tileMap->start;
+static void invalidateTile(TileMap* tileMap, u_int16_t address) {
+    u_int16_t index = address - tileMap->start;
     int tileIndexY = index / TILE_COUNT;
     int tileIndexX = index % TILE_COUNT;
     tileMap->invalidateTile(tileIndexX, tileIndexY);
 }
 
-bool Display::set_8(uint16 address, uint8 value) {
+bool Display::set_8(u_int16_t address, u_int8_t value) {
     if(address >= TILE_SET_0_START && address < TILE_SET_0_END) {
         tileSet_0.clearCache();
         tileMap_0.invalidateAllTiles();

@@ -8,10 +8,10 @@
 #include "MemoryMap.h"
 #include "NoiseChannel.h"
 
-const uint8 DIVISORS[] = {8, 16, 32, 48, 64, 80, 96, 112};
+const u_int8_t DIVISORS[] = {8, 16, 32, 48, 64, 80, 96, 112};
 
-void NoiseChannel::step(uint16 lastInstructionDuration) {
-    for(uint16 cycle = 0; cycle < lastInstructionDuration; cycle++) {
+void NoiseChannel::step(u_int16_t lastInstructionDuration) {
+    for(u_int16_t cycle = 0; cycle < lastInstructionDuration; cycle++) {
         frequencyTimer -= 1;
 
         if(trigger) {
@@ -26,8 +26,8 @@ void NoiseChannel::step(uint16 lastInstructionDuration) {
 
         if(frequencyTimer == 0) {
             frequencyTimer = DIVISORS[divisor] << shift;
-            uint16 xorValue = (lsfr & 0x1) ^ ((lsfr >> 1) & 0x1);
-            uint16 newLsfr = lsfr >> 1;
+            u_int16_t xorValue = (lsfr & 0x1) ^ ((lsfr >> 1) & 0x1);
+            u_int16_t newLsfr = lsfr >> 1;
             newLsfr = xorValue > 0 ? Bytes::setBit_8(newLsfr, 15) : Bytes::setBit_8(newLsfr, 15);
 
             if(widthMode == 1) {
@@ -78,12 +78,12 @@ void NoiseChannel::volumeStep() {
     }
 }
 
-uint8 NoiseChannel::get_8(uint16 address) {
+u_int8_t NoiseChannel::get_8(u_int16_t address) {
     throw std::invalid_argument("Bad read from noise channel.");
 }
 
-bool NoiseChannel::set_8(uint16 address, uint8 value) {
-    uint16 relativeAddress = address - 0xFF20;
+bool NoiseChannel::set_8(u_int16_t address, u_int8_t value) {
+    u_int16_t relativeAddress = address - 0xFF20;
 
     switch(relativeAddress) {
         case 0:

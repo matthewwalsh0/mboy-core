@@ -4,122 +4,122 @@
 
 #include "Bytes.h"
 
-uint8 Bytes::setBit_8(uint8 value, uint8 index) {
+u_int8_t Bytes::setBit_8(u_int8_t value, u_int8_t index) {
     return value | (1 << index);
 }
 
-uint8 Bytes::getBit_8(uint8 value, uint8 index) {
+u_int8_t Bytes::getBit_8(u_int8_t value, u_int8_t index) {
     return (value & (1 << index)) != 0;
 }
 
-uint16 Bytes::join_8(uint8 upper, uint8 lower) {
+u_int16_t Bytes::join_8(u_int8_t upper, u_int8_t lower) {
     return (upper << 8) | lower;
 }
 
-uint8 Bytes::split_16_upper(uint16 value) {
+u_int8_t Bytes::split_16_upper(u_int16_t value) {
     return value >> 8;
 }
 
-uint8 Bytes::split_16_lower(uint16 value) {
+u_int8_t Bytes::split_16_lower(u_int16_t value) {
     return value & 0x00FF;
 }
 
-uint8 Bytes::clearBit_8(uint8 value, uint8 index) {
+u_int8_t Bytes::clearBit_8(u_int8_t value, u_int8_t index) {
     return value & ~(1 << index);
 }
 
-uint8 Bytes::join_4(uint8 upper, uint8 lower) {
+u_int8_t Bytes::join_4(u_int8_t upper, u_int8_t lower) {
     return upper << 4 | lower;
 }
 
-uint32 Bytes::join_32(uint8 first, uint8 second, uint8 third) {
+u_int32_t Bytes::join_32(u_int8_t first, u_int8_t second, u_int8_t third) {
     return ((first << 16) | (second << 8)) | third;
 }
 
-uint8 Bytes::split_8_upper(uint8 value) {
+u_int8_t Bytes::split_8_upper(u_int8_t value) {
     return value >> 4;
 }
 
-uint8 Bytes::split_8_lower(uint8 value) {
+u_int8_t Bytes::split_8_lower(u_int8_t value) {
     return value & 0x0F;
 }
 
-bool Bytes::isHalfCarrySub_8(uint8 value_1, uint8 value_2) {
-    int8 result = (value_1 & 0xF) - (value_2 & 0xF);
+bool Bytes::isHalfCarrySub_8(u_int8_t value_1, u_int8_t value_2) {
+    int8_t result = (value_1 & 0xF) - (value_2 & 0xF);
     return result < 0;
 }
 
-bool Bytes::isHalfCarrySub_8_three(uint8 value_1, uint8 value_2, uint8 value_3) {
-    int16 result = (value_1 & 0xF) - (value_2 & 0xF) - (value_3 & 0xF);
+bool Bytes::isHalfCarrySub_8_three(u_int8_t value_1, u_int8_t value_2, u_int8_t value_3) {
+    int16_t result = (value_1 & 0xF) - (value_2 & 0xF) - (value_3 & 0xF);
     return result < 0;
 }
 
-bool Bytes::isHalfCarryAdd_8(uint8 value_1, uint8 value_2) {
+bool Bytes::isHalfCarryAdd_8(u_int8_t value_1, u_int8_t value_2) {
     return (((value_1 & 0xF) + (value_2 & 0xF)) & 0x10) == 0x10;
 }
 
-bool Bytes::isHalfCarryAdd_8_three(uint8 value_1, uint8 value_2, uint8 value_3) {
+bool Bytes::isHalfCarryAdd_8_three(u_int8_t value_1, u_int8_t value_2, u_int8_t value_3) {
     return (((value_1 & 0xF) + (value_2 & 0xF) + (value_3 & 0xF)) & 0x10) == 0x10;
 }
 
-bool Bytes::isHalfCarryAdd_16(uint16 value_1, uint16 value_2) {
-    uint16 value_1_nibble_3 = value_1 & 0xFFF;
-    uint16 value_2_nibble_3 = value_2 & 0xFFF;
+bool Bytes::isHalfCarryAdd_16(u_int16_t value_1, u_int16_t value_2) {
+    u_int16_t value_1_nibble_3 = value_1 & 0xFFF;
+    u_int16_t value_2_nibble_3 = value_2 & 0xFFF;
     return ((value_1_nibble_3 + value_2_nibble_3) & 0x1000) == 0x1000;
 }
 
-bool Bytes::isCarrySub_8_three(uint8 value_1, uint8 value_2, uint8 value_3) {
-    int16 result = value_1 - value_2 - value_3;
+bool Bytes::isCarrySub_8_three(u_int8_t value_1, u_int8_t value_2, u_int8_t value_3) {
+    int16_t result = value_1 - value_2 - value_3;
     return result < 0;
 }
 
-bool Bytes::isCarryAdd_8(uint8 value_1, uint8 value_2) {
-    uint16 result = value_1 + value_2;
+bool Bytes::isCarryAdd_8(u_int8_t value_1, u_int8_t value_2) {
+    u_int16_t result = value_1 + value_2;
     return result > 255;
 }
 
-bool Bytes::isCarryAdd_8_three(uint8 value_1, uint8 value_2, uint8 value_3) {
-    uint16 result = value_1 + value_2 + value_3;
+bool Bytes::isCarryAdd_8_three(u_int8_t value_1, u_int8_t value_2, u_int8_t value_3) {
+    u_int16_t result = value_1 + value_2 + value_3;
     return result > 255;
 }
 
-bool Bytes::isCarryAdd_16(uint16 value_1, uint16 value_2) {
-    uint32 result = value_1 + value_2;
+bool Bytes::isCarryAdd_16(u_int16_t value_1, u_int16_t value_2) {
+    u_int32_t result = value_1 + value_2;
     return result > 65535;
 }
 
-uint8 Bytes::wrappingAdd_8(uint8 value, uint8 add) {
-    uint16 result = value + add;
+u_int8_t Bytes::wrappingAdd_8(u_int8_t value, u_int8_t add) {
+    u_int16_t result = value + add;
     if(result > 255) {
         return result - 256;
     }
     return result;
 }
 
-uint16 Bytes::wrappingAdd_16(uint16 value, uint16 add) {
-    uint32 result = value + add;
+u_int16_t Bytes::wrappingAdd_16(u_int16_t value, u_int16_t add) {
+    u_int32_t result = value + add;
     if(result > 65535) {
         return result - 65536;
     }
     return result;
 }
 
-uint8 Bytes::wrappingSub_8(uint8 value, uint8 sub) {
+u_int8_t Bytes::wrappingSub_8(u_int8_t value, u_int8_t sub) {
     return value - sub;
 }
 
-uint16 Bytes::wrappingSub_16(uint16 value, uint16 sub) {
+u_int16_t Bytes::wrappingSub_16(u_int16_t value, u_int16_t sub) {
     return value - sub;
 }
 
-uint8 Bytes::rotateRight_8(uint8 value, uint8 n) {
+u_int8_t Bytes::rotateRight_8(u_int8_t value, u_int8_t n) {
     return ((value >> n) | (value << (8 - n))) & 0xFF;
 }
 
-uint8 Bytes::rotateLeft_8(uint8 value, uint8 n) {
+u_int8_t Bytes::rotateLeft_8(u_int8_t value, u_int8_t n) {
     return ((((value) << n) & 0xFF) | (value >> (8 - n))) & 0xFF;
 }
 
-int8 Bytes::toSigned_8(uint8 value) {
+int8_t Bytes::toSigned_8(u_int8_t value) {
     return value;
 }

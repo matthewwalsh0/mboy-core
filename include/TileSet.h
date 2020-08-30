@@ -5,21 +5,21 @@
 #ifndef MY_APPLICATION_TILESET_H
 #define MY_APPLICATION_TILESET_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 #include "Tile.h"
 
 class TileSet {
 private:
-    uint16 start;
+    u_int16_t start;
     bool isSigned;
     Tile* tileCache[1024 * 2];
     bool tileCacheSet[1024 * 2] = {[0 ... 2047] = false};
     MemoryHook* memory;
     bool* disableCache;
 public:
-    TileSet(MemoryHook* memory, uint16 start, bool isSigned, bool* disableCache);
-    Tile* getTile(uint8 index, bool large, bool alternateBank, bool useCache);
+    TileSet(MemoryHook* memory, u_int16_t start, bool isSigned, bool* disableCache);
+    Tile* getTile(u_int8_t index, bool large, bool alternateBank, bool useCache);
     void clearCache();
 };
 

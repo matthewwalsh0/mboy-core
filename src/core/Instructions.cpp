@@ -525,10 +525,10 @@ const instructionInfo CB_INSTRUCTION_INFO[256] = {
 };
 
 static void rotate_right_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool lsb = Bytes::getBit_8(value, 0);
     bool carry = cpu->flag_c;
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
     
     if (carry) {
         new_value = new_value | 128;
@@ -543,10 +543,10 @@ static void rotate_right_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_right_r8_cb(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool lsb = Bytes::getBit_8(value, 0);
     bool carry = cpu->flag_c;
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
 
     if (carry) {
         new_value = new_value | 128;
@@ -561,11 +561,11 @@ static void rotate_right_r8_cb(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_right_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool lsb = Bytes::getBit_8(value, 0);
     bool carry = cpu->flag_c;
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
 
     if (carry) {
         new_value = new_value | 128;
@@ -580,28 +580,28 @@ static void rotate_right_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister)
 }
 
 static void load_increment_r16_r8(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 value = cpu->get_8(cpuRegister_2);
-    uint16 address = cpu->get_16(cpuRegister_1);
+    u_int8_t value = cpu->get_8(cpuRegister_2);
+    u_int16_t address = cpu->get_16(cpuRegister_1);
     memory->set_8(address, value);
     cpu->set_16(cpuRegister_1, Bytes::wrappingAdd_16(address, 1));
 }
 
 static void load_increment_r8_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
     cpu->set_8(cpuRegister_1, value);
     cpu->set_16(cpuRegister_2, Bytes::wrappingAdd_16(address, 1));
 }
 
 static void load_decrement_r8_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
     cpu->set_8(cpuRegister_1, value);
     cpu->set_16(cpuRegister_2, Bytes::wrappingSub_16(address, 1));
 }
 
 static void decimal_r8(CPU* cpu, Register cpuRegister) {
-    uint16 value = cpu->get_8(cpuRegister);
+    u_int16_t value = cpu->get_8(cpuRegister);
 
     if (!cpu->flag_n) {
         if (cpu->flag_h || (value & 0x0F) > 0x9) {
@@ -636,23 +636,23 @@ static void decimal_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void complement_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
-    uint8 new_value = value ^ 0xFF;
+    u_int8_t value = cpu->get_8(cpuRegister);
+    u_int8_t new_value = value ^ 0xFF;
     cpu->set_8(cpuRegister, new_value);
 
     cpu->flag_n = true;
     cpu->flag_h = true;
 }
 
-static void load_sp_n16(CPU* cpu, uint16 value) {
+static void load_sp_n16(CPU* cpu, u_int16_t value) {
     cpu->sp = value;
 }
 
 static void swap_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
-    uint8 upper = Bytes::split_8_upper(value);
-    uint8 lower = Bytes::split_8_lower(value);
-    uint8 new_value = Bytes::join_4(lower, upper);
+    u_int8_t value = cpu->get_8(cpuRegister);
+    u_int8_t upper = Bytes::split_8_upper(value);
+    u_int8_t lower = Bytes::split_8_lower(value);
+    u_int8_t new_value = Bytes::join_4(lower, upper);
     cpu->set_8(cpuRegister, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -662,11 +662,11 @@ static void swap_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void swap_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
-    uint8 upper = Bytes::split_8_upper(value);
-    uint8 lower = Bytes::split_8_lower(value);
-    uint8 new_value = Bytes::join_4(lower, upper);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t upper = Bytes::split_8_upper(value);
+    u_int8_t lower = Bytes::split_8_lower(value);
+    u_int8_t new_value = Bytes::join_4(lower, upper);
     memory->set_8(address, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -676,9 +676,9 @@ static void swap_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
 }
 
 static void shift_left_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool hsb = Bytes::getBit_8(value, 7);
-    uint8 new_value = (value << 1) & 0xFF;
+    u_int8_t new_value = (value << 1) & 0xFF;
     cpu->set_8(cpuRegister, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -688,10 +688,10 @@ static void shift_left_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void shift_left_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool hsb = Bytes::getBit_8(value, 7);
-    uint8 new_value = (value << 1) & 0xFF;
+    u_int8_t new_value = (value << 1) & 0xFF;
     memory->set_8(address, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -701,9 +701,9 @@ static void shift_left_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
 }
 
 static void shift_right_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
     cpu->set_8(cpuRegister, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -713,10 +713,10 @@ static void shift_right_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void shift_right_weird_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool msb = Bytes::getBit_8(value, 7);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
 
     if (msb) {
         new_value = Bytes::setBit_8(new_value, 7);
@@ -731,11 +731,11 @@ static void shift_right_weird_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void shift_right_weird_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool msb = Bytes::getBit_8(value, 7);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
 
     if (msb) {
         new_value = Bytes::setBit_8(new_value, 7);
@@ -750,10 +750,10 @@ static void shift_right_weird_r16(CPU* cpu, MemoryHook* memory, Register cpuRegi
 }
 
 static void shift_right_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = value >> 1;
+    u_int8_t new_value = value >> 1;
     memory->set_8(address, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -762,7 +762,7 @@ static void shift_right_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) 
     cpu->flag_c = lsb;
 }
 
-static void bit_8(CPU* cpu, uint8 value, uint8 bit) {
+static void bit_8(CPU* cpu, u_int8_t value, u_int8_t bit) {
     bool set = Bytes::getBit_8(value, bit);
 
     cpu->flag_z = !set;
@@ -770,40 +770,40 @@ static void bit_8(CPU* cpu, uint8 value, uint8 bit) {
     cpu->flag_h = true;
 }
 
-static void bit_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister, uint8 bit) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+static void bit_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister, u_int8_t bit) {
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bit_8(cpu, value, bit);
 }
 
-static void bit_r8(CPU* cpu, Register cpuRegister, uint8 bit) {
-    uint8 value = cpu->get_8(cpuRegister);
+static void bit_r8(CPU* cpu, Register cpuRegister, u_int8_t bit) {
+    u_int8_t value = cpu->get_8(cpuRegister);
     bit_8(cpu, value, bit);
 }
 
-static void reset_r8(CPU* cpu, Register cpuRegister, uint8 bit) {
-    uint8 value = cpu->get_8(cpuRegister);
-    uint8 new_value = Bytes::clearBit_8(value, bit);
+static void reset_r8(CPU* cpu, Register cpuRegister, u_int8_t bit) {
+    u_int8_t value = cpu->get_8(cpuRegister);
+    u_int8_t new_value = Bytes::clearBit_8(value, bit);
     cpu->set_8(cpuRegister, new_value);
 }
 
-static void reset_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister, uint8 bit) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
-    uint8 new_value = Bytes::clearBit_8(value, bit);
+static void reset_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister, u_int8_t bit) {
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t new_value = Bytes::clearBit_8(value, bit);
     memory->set_8(address, new_value);
 }
 
-static void set_r8(CPU* cpu, Register cpuRegister, uint8 bit) {
-    uint8 value = cpu->get_8(cpuRegister);
-    uint8 new_value = Bytes::setBit_8(value, bit);
+static void set_r8(CPU* cpu, Register cpuRegister, u_int8_t bit) {
+    u_int8_t value = cpu->get_8(cpuRegister);
+    u_int8_t new_value = Bytes::setBit_8(value, bit);
     cpu->set_8(cpuRegister, new_value);
 }
 
-static void set_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister, uint8 bit) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
-    uint8 new_value = Bytes::setBit_8(value, bit);
+static void set_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister, u_int8_t bit) {
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t new_value = Bytes::setBit_8(value, bit);
     memory->set_8(address, new_value);
 }
 
@@ -818,11 +818,11 @@ static void set_carry(CPU* cpu) {
 }
 
 static void rotate_left_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool carry = cpu->flag_c;
     bool msb = Bytes::getBit_8(value, 7);
-    uint8 new_value = ((value) << 1) & 0xFF;
+    u_int8_t new_value = ((value) << 1) & 0xFF;
 
     if (carry) {
         new_value = new_value + 0x1;
@@ -837,10 +837,10 @@ static void rotate_left_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) 
 }
 
 static void rotate_left_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool carry = cpu->flag_c;
     bool msb = Bytes::getBit_8(value, 7);
-    uint8 new_value = ((value) << 1) & 0xFF;
+    u_int8_t new_value = ((value) << 1) & 0xFF;
 
     if (carry) {
         new_value = new_value + 0x1;
@@ -855,10 +855,10 @@ static void rotate_left_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_left_r8_cb(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool carry = cpu->flag_c;
     bool msb = Bytes::getBit_8(value, 7);
-    uint8 new_value = ((value) << 1) & 0xFF;
+    u_int8_t new_value = ((value) << 1) & 0xFF;
 
     if (carry) {
         new_value = new_value + 0x1;
@@ -873,9 +873,9 @@ static void rotate_left_r8_cb(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_left_carry_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool msb = Bytes::getBit_8(value, 7);
-    uint8 new_value = Bytes::rotateLeft_8(value, 1);
+    u_int8_t new_value = Bytes::rotateLeft_8(value, 1);
 
     cpu->set_8(cpuRegister, new_value);
 
@@ -886,9 +886,9 @@ static void rotate_left_carry_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_left_carry_r8_cb(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool msb = Bytes::getBit_8(value, 7);
-    uint8 new_value = Bytes::rotateLeft_8(value, 1);
+    u_int8_t new_value = Bytes::rotateLeft_8(value, 1);
 
     cpu->set_8(cpuRegister, new_value);
 
@@ -899,10 +899,10 @@ static void rotate_left_carry_r8_cb(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_left_carry_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool msb = Bytes::getBit_8(value, 7);
-    uint8 new_value = Bytes::rotateLeft_8(value, 1);
+    u_int8_t new_value = Bytes::rotateLeft_8(value, 1);
 
     memory->set_8(address, new_value);
 
@@ -913,9 +913,9 @@ static void rotate_left_carry_r16(CPU* cpu, MemoryHook* memory, Register cpuRegi
 }
 
 static void rotate_right_carry_r8(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = Bytes::rotateRight_8(value, 1);
+    u_int8_t new_value = Bytes::rotateRight_8(value, 1);
 
     cpu->set_8(cpuRegister, new_value);
 
@@ -926,9 +926,9 @@ static void rotate_right_carry_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_right_carry_r8_cb(CPU* cpu, Register cpuRegister) {
-    uint8 value = cpu->get_8(cpuRegister);
+    u_int8_t value = cpu->get_8(cpuRegister);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = Bytes::rotateRight_8(value, 1);
+    u_int8_t new_value = Bytes::rotateRight_8(value, 1);
 
     cpu->set_8(cpuRegister, new_value);
 
@@ -939,10 +939,10 @@ static void rotate_right_carry_r8_cb(CPU* cpu, Register cpuRegister) {
 }
 
 static void rotate_right_carry_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     bool lsb = Bytes::getBit_8(value, 0);
-    uint8 new_value = Bytes::rotateRight_8(value,1 );
+    u_int8_t new_value = Bytes::rotateRight_8(value,1 );
 
     memory->set_8(address, new_value);
 
@@ -960,9 +960,9 @@ static void enable_interrupts(CPU* cpu) {
     cpu->interruptsEnabled = true;
 }
 
-static void load_r16_sp_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    int16 signed_value = Bytes::toSigned_8(value);
-    uint16 new_value = Bytes::wrappingSub_16(Bytes::wrappingAdd_16(cpu->sp, signed_value), 0);
+static void load_r16_sp_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    int16_t signed_value = Bytes::toSigned_8(value);
+    u_int16_t new_value = Bytes::wrappingSub_16(Bytes::wrappingAdd_16(cpu->sp, signed_value), 0);
     cpu->set_16(cpuRegister, new_value);
 
     cpu->flag_z = false;
@@ -972,27 +972,27 @@ static void load_r16_sp_n8(CPU* cpu, Register cpuRegister, uint8 value) {
 }
 
 static void load_r8_ar8(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 value = memory->get_8(0xFF00 + cpu->get_8(cpuRegister_2));
+    u_int8_t value = memory->get_8(0xFF00 + cpu->get_8(cpuRegister_2));
     cpu->set_8(cpuRegister_1, value);
 }
 
-static void load_n16_sp(CPU* cpu, MemoryHook* memory, uint16 arg_16) {
+static void load_n16_sp(CPU* cpu, MemoryHook* memory, u_int16_t arg_16) {
     memory->set_16(arg_16, cpu->sp);
 }
 
-static void jump_n16(CPU* cpu, uint16 value) {
+static void jump_n16(CPU* cpu, u_int16_t value) {
     cpu->pc = value;
 }
 
 static void jump_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
+    u_int16_t address = cpu->get_16(cpuRegister);
     jump_n16(cpu, address);
 }
 
-static void add_sp_n8(CPU* cpu, uint8 value) {
-    int8 signed_value = Bytes::toSigned_8(value);
-    uint16 new_value = Bytes::wrappingSub_16(Bytes::wrappingAdd_16(cpu->sp, signed_value), 0);
-    uint8 old_value = cpu->sp;
+static void add_sp_n8(CPU* cpu, u_int8_t value) {
+    int8_t signed_value = Bytes::toSigned_8(value);
+    u_int16_t new_value = Bytes::wrappingSub_16(Bytes::wrappingAdd_16(cpu->sp, signed_value), 0);
+    u_int8_t old_value = cpu->sp;
     cpu->sp = new_value;
 
     cpu->flag_z = false;
@@ -1001,8 +1001,8 @@ static void add_sp_n8(CPU* cpu, uint8 value) {
     cpu->flag_c = Bytes::isCarryAdd_8((old_value & 0xFF), value);
 }
 
-static uint8 and_(CPU* cpu, uint8 value_1, uint8 value_2)  {
-    uint8 result = value_1 & value_2;
+static u_int8_t and_(CPU* cpu, u_int8_t value_1, u_int8_t value_2)  {
+    u_int8_t result = value_1 & value_2;
 
     cpu->flag_z = result == 0;
     cpu->flag_n = false;
@@ -1012,8 +1012,8 @@ static uint8 and_(CPU* cpu, uint8 value_1, uint8 value_2)  {
     return result;
 }
 
-static uint16 add_16(CPU* cpu, uint16 value_1, uint16 value_2) {
-    uint16 result = Bytes::wrappingAdd_16(value_1, value_2);
+static u_int16_t add_16(CPU* cpu, u_int16_t value_1, u_int16_t value_2) {
+    u_int16_t result = Bytes::wrappingAdd_16(value_1, value_2);
 
     cpu->flag_n = false;
     cpu->flag_h = Bytes::isHalfCarryAdd_16(value_1, value_2);
@@ -1023,15 +1023,15 @@ static uint16 add_16(CPU* cpu, uint16 value_1, uint16 value_2) {
 }
 
 static void and_r8_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value_2 = memory->get_8(address);
-    uint8 value_1 = cpu->get_8(cpuRegister_1);
-    uint8 result = and_(cpu, value_1, value_2);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value_2 = memory->get_8(address);
+    u_int8_t value_1 = cpu->get_8(cpuRegister_1);
+    u_int8_t result = and_(cpu, value_1, value_2);
     cpu->set_8(cpuRegister_1, result);
 }
 
-static uint8 sub(CPU* cpu, uint8 value_1, uint8 value_2) {
-    uint8 result = Bytes::wrappingSub_8(value_1, value_2);
+static u_int8_t sub(CPU* cpu, u_int8_t value_1, u_int8_t value_2) {
+    u_int8_t result = Bytes::wrappingSub_8(value_1, value_2);
 
     cpu->flag_z = result == 0;
     cpu->flag_n = true;
@@ -1042,16 +1042,16 @@ static uint8 sub(CPU* cpu, uint8 value_1, uint8 value_2) {
 }
 
 static void sub_r8_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
-    uint8 register_value_1 = cpu->get_8(cpuRegister_1);
-    uint8 result = sub(cpu, register_value_1, value);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t register_value_1 = cpu->get_8(cpuRegister_1);
+    u_int8_t result = sub(cpu, register_value_1, value);
 
     cpu->set_8(cpuRegister_1, result);
 }
 
-static uint8 add(CPU* cpu, uint8 value_1, uint8 value_2) {
-    uint8 result = Bytes::wrappingAdd_8(value_1, value_2);
+static u_int8_t add(CPU* cpu, u_int8_t value_1, u_int8_t value_2) {
+    u_int8_t result = Bytes::wrappingAdd_8(value_1, value_2);
 
     cpu->flag_z = result == 0;
     cpu->flag_n = false;
@@ -1062,18 +1062,18 @@ static uint8 add(CPU* cpu, uint8 value_1, uint8 value_2) {
 }
 
 static void add_r8_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
-    uint8 register_value_1 = cpu->get_8(cpuRegister_1);
-    uint8 result = add(cpu, register_value_1, value);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t register_value_1 = cpu->get_8(cpuRegister_1);
+    u_int8_t result = add(cpu, register_value_1, value);
 
     cpu->set_8(cpuRegister_1, result);
 }
 
 static void add_r16_r16(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 register_value_1 = cpu->get_16(cpuRegister_1);
-    uint16 register_value_2 = cpu->get_16(cpuRegister_2);
-    uint16 result = add_16(cpu, register_value_1, register_value_2);
+    u_int16_t register_value_1 = cpu->get_16(cpuRegister_1);
+    u_int16_t register_value_2 = cpu->get_16(cpuRegister_2);
+    u_int16_t result = add_16(cpu, register_value_1, register_value_2);
 
     cpu->set_16(cpuRegister_1, result);
 }
@@ -1083,17 +1083,17 @@ static void decrement_sp(CPU* cpu) {
 }
 
 static void add_r16_sp(CPU* cpu, Register cpuRegister) {
-    uint16 value_1 = cpu->get_16(cpuRegister);
-    uint16 value_2 = cpu->sp;
-    uint16 result = add_16(cpu, value_1, value_2);
+    u_int16_t value_1 = cpu->get_16(cpuRegister);
+    u_int16_t value_2 = cpu->sp;
+    u_int16_t result = add_16(cpu, value_1, value_2);
 
     cpu->set_16(cpuRegister, result);
 }
 
 static void return_(CPU* cpu, MemoryHook* memory) {
-    uint8 lower = memory->get_8(cpu->sp);
-    uint8 upper = memory->get_8(cpu->sp + 1);
-    uint16 address = Bytes::join_8(upper, lower);
+    u_int8_t lower = memory->get_8(cpu->sp);
+    u_int8_t upper = memory->get_8(cpu->sp + 1);
+    u_int16_t address = Bytes::join_8(upper, lower);
     cpu->sp += 2;
     jump_n16(cpu, address);
 }
@@ -1162,39 +1162,39 @@ static void not_used() {
 
 // Stack
 
-static void push_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
+static void push_n16(CPU* cpu, MemoryHook* memory, u_int16_t value) {
     memory->set_8(cpu->sp - 1, Bytes::split_16_upper(value));
     memory->set_8(cpu->sp - 2, Bytes::split_16_lower(value));
     cpu->sp -= 2;
 }
 
 static void push_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 register_value = cpu->get_16(cpuRegister);
+    u_int16_t register_value = cpu->get_16(cpuRegister);
     push_n16(cpu, memory, register_value);
 }
 
 static void pop_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint8 lower = memory->get_8(cpu->sp);
-    uint8 upper = memory->get_8(cpu->sp + 1);
-    uint16 value = Bytes::join_8(upper, lower);
+    u_int8_t lower = memory->get_8(cpu->sp);
+    u_int8_t upper = memory->get_8(cpu->sp + 1);
+    u_int16_t value = Bytes::join_8(upper, lower);
 
     cpu->set_16(cpuRegister, value);
     cpu->sp += 2;
 }
 
-static void restart_n8(CPU* cpu, MemoryHook* memory, uint8 value) {
-    uint16 next_instruction = cpu->pc;
+static void restart_n8(CPU* cpu, MemoryHook* memory, u_int8_t value) {
+    u_int16_t next_instruction = cpu->pc;
     push_n16(cpu, memory, next_instruction);
     jump_n16(cpu, value);
 }
 
-void Instructions::call(CPU* cpu, MemoryHook* memory, uint16 value) {
-    uint16 next_instruction = cpu->pc;
+void Instructions::call(CPU* cpu, MemoryHook* memory, u_int16_t value) {
+    u_int16_t next_instruction = cpu->pc;
     push_n16(cpu, memory, next_instruction);
     jump_n16(cpu, value);
 }
 
-static bool call_carry_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
+static bool call_carry_n16(CPU* cpu, MemoryHook* memory, u_int16_t value) {
     if (cpu->flag_c) {
         Instructions::call(cpu, memory, value);
         return true;
@@ -1203,7 +1203,7 @@ static bool call_carry_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
     return false;
 }
 
-static bool call_not_carry_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
+static bool call_not_carry_n16(CPU* cpu, MemoryHook* memory, u_int16_t value) {
     if (!cpu->flag_c) {
         Instructions::call(cpu, memory, value);
         return true;
@@ -1212,7 +1212,7 @@ static bool call_not_carry_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
     return false;
 }
 
-static bool call_not_zero_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
+static bool call_not_zero_n16(CPU* cpu, MemoryHook* memory, u_int16_t value) {
     if (!cpu->flag_z) {
         Instructions::call(cpu, memory, value);
         return true;
@@ -1221,7 +1221,7 @@ static bool call_not_zero_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
     return false;
 }
 
-static bool call_zero_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
+static bool call_zero_n16(CPU* cpu, MemoryHook* memory, u_int16_t value) {
     if (cpu->flag_z) {
         Instructions::call(cpu, memory, value);
         return true;
@@ -1232,80 +1232,80 @@ static bool call_zero_n16(CPU* cpu, MemoryHook* memory, uint16 value) {
 
 // Loads
 
-static void load_r8_an8(CPU* cpu, MemoryHook* memory, Register cpuRegister, uint8 value) {
-    uint8 new_value = memory->get_8(0xFF00 + value);
+static void load_r8_an8(CPU* cpu, MemoryHook* memory, Register cpuRegister, u_int8_t value) {
+    u_int8_t new_value = memory->get_8(0xFF00 + value);
     cpu->set_8(cpuRegister, new_value);
 }
 
 static void load_r8_r8(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 value = cpu->get_8(cpuRegister_2);
+    u_int8_t value = cpu->get_8(cpuRegister_2);
     cpu->set_8(cpuRegister_1, value);
 }
 
 static void load_r8_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
     cpu->set_8(cpuRegister_1, value);
 }
 
-static void load_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
+static void load_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
     cpu->set_8(cpuRegister, value);
 }
 
-static void load_r8_n16(CPU* cpu, MemoryHook* memory, Register cpuRegister, uint16 value) {
-    uint8 new_value = memory->get_8(value);
+static void load_r8_n16(CPU* cpu, MemoryHook* memory, Register cpuRegister, u_int16_t value) {
+    u_int8_t new_value = memory->get_8(value);
     cpu->set_8(cpuRegister, new_value);
 }
 
 static void load_r16_r8(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_1);
-    uint8 value = cpu->get_8(cpuRegister_2);
+    u_int16_t address = cpu->get_16(cpuRegister_1);
+    u_int8_t value = cpu->get_8(cpuRegister_2);
     memory->set_8(address, value);
 }
 
-static void load_r16_n16(CPU* cpu, Register cpuRegister, uint16 value) {
+static void load_r16_n16(CPU* cpu, Register cpuRegister, u_int16_t value) {
     cpu->set_16(cpuRegister, value);
 }
 
-static void load_n16_r8(CPU* cpu, MemoryHook* memory, uint16 address, Register cpuRegister) {
-    uint8 register_value = cpu->get_8(cpuRegister);
+static void load_n16_r8(CPU* cpu, MemoryHook* memory, u_int16_t address, Register cpuRegister) {
+    u_int8_t register_value = cpu->get_8(cpuRegister);
     memory->set_8(address, register_value);
 }
 
-static void load_high_n8_a(CPU* cpu, MemoryHook* memory, uint8 value) {
-    uint16 address = 0xFF00 + value;
-    uint8 register_value = cpu->get_8(A);
+static void load_high_n8_a(CPU* cpu, MemoryHook* memory, u_int8_t value) {
+    u_int16_t address = 0xFF00 + value;
+    u_int8_t register_value = cpu->get_8(A);
     memory->set_8(address, register_value);
 }
 
 static void load_decrement_hl_a(CPU* cpu, MemoryHook* memory) {
-    uint8 value = cpu->get_8(A);
-    uint16 address = cpu->get_16(HL);
+    u_int8_t value = cpu->get_8(A);
+    u_int16_t address = cpu->get_16(HL);
     memory->set_8(address, value);
     cpu->set_16(HL, address - 1);
 }
 
 static void load_sp_r16(CPU* cpu, Register cpuRegister) {
-    uint16 register_value = cpu->get_16(cpuRegister);
+    u_int16_t register_value = cpu->get_16(cpuRegister);
     cpu->sp = register_value;
 }
 
-static void load_r16_n8(CPU* cpu, MemoryHook* memory, Register cpuRegister, uint8 value) {
-    uint16 address = cpu->get_16(cpuRegister);
+static void load_r16_n8(CPU* cpu, MemoryHook* memory, Register cpuRegister, u_int8_t value) {
+    u_int16_t address = cpu->get_16(cpuRegister);
     memory->set_8(address, value);
 }
 
 static void load_ar8_r8(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 value = cpu->get_8(cpuRegister_2);
-    uint16 address = 0xFF00 + cpu->get_8(cpuRegister_1);
+    u_int8_t value = cpu->get_8(cpuRegister_2);
+    u_int16_t address = 0xFF00 + cpu->get_8(cpuRegister_1);
     memory->set_8(address, value);
 }
 
 // Math
 
 static void increment_r8(CPU* cpu, Register cpuRegister) {
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 value = Bytes::wrappingAdd_8(register_value, 1);
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t value = Bytes::wrappingAdd_8(register_value, 1);
     cpu->set_8(cpuRegister, value);
 
     cpu->flag_z = value == 0;
@@ -1314,9 +1314,9 @@ static void increment_r8(CPU* cpu, Register cpuRegister) {
 }
 
 static void increment_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
-    uint8 new_value = Bytes::wrappingAdd_8(value, 1);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t new_value = Bytes::wrappingAdd_8(value, 1);
     memory->set_8(address, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -1325,9 +1325,9 @@ static void increment_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
 }
 
 static void decrement_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
-    uint8 new_value = Bytes::wrappingSub_8(value, 1);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t new_value = Bytes::wrappingSub_8(value, 1);
     memory->set_8(address, new_value);
 
     cpu->flag_z = new_value == 0;
@@ -1336,20 +1336,20 @@ static void decrement_ar16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
 }
 
 static void increment_r16(CPU* cpu, Register cpuRegister) {
-    uint16 register_value = cpu->get_16(cpuRegister);
+    u_int16_t register_value = cpu->get_16(cpuRegister);
     cpu->set_16(cpuRegister, Bytes::wrappingAdd_16(register_value, 1));
 }
 
 static void decrement_r16(CPU* cpu, Register cpuRegister) {
-    uint16 register_value = cpu->get_16(cpuRegister);
-    uint16 newValue = Bytes::wrappingSub_16(register_value, 1);
+    u_int16_t register_value = cpu->get_16(cpuRegister);
+    u_int16_t newValue = Bytes::wrappingSub_16(register_value, 1);
     cpu->set_16(cpuRegister, newValue);
 }
 
-static void add_carry_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    uint8 carry_value =  cpu->flag_c ? 1 : 0 ;
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 result = Bytes::wrappingAdd_8(Bytes::wrappingAdd_8(register_value, value), carry_value);
+static void add_carry_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    u_int8_t carry_value =  cpu->flag_c ? 1 : 0 ;
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t result = Bytes::wrappingAdd_8(Bytes::wrappingAdd_8(register_value, value), carry_value);
 
     cpu->flag_z = result == 0;
     cpu->flag_n = false;
@@ -1360,10 +1360,10 @@ static void add_carry_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
 }
 
 
-static void sub_carry_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    uint8 carry_value = cpu->flag_c ? 1 : 0;
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 result = Bytes::wrappingSub_8(Bytes::wrappingSub_8(register_value, value), carry_value);
+static void sub_carry_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    u_int8_t carry_value = cpu->flag_c ? 1 : 0;
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t result = Bytes::wrappingSub_8(Bytes::wrappingSub_8(register_value, value), carry_value);
 
     cpu->flag_z = result == 0;
     cpu->flag_n = true;
@@ -1374,75 +1374,75 @@ static void sub_carry_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
 }
 
 static void add_cary_r8_r8(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 register_value_2 = cpu->get_8(cpuRegister_2);
+    u_int8_t register_value_2 = cpu->get_8(cpuRegister_2);
     add_carry_r8_n8(cpu, cpuRegister_1, register_value_2);
 }
 
 static void add_carry_r8_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
     add_carry_r8_n8(cpu, cpuRegister_1, value);
 }
 
 static void sub_carry_r8_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister_1, Register cpuRegister_2) {
-    uint16 address = cpu->get_16(cpuRegister_2);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister_2);
+    u_int8_t value = memory->get_8(address);
     sub_carry_r8_n8(cpu, cpuRegister_1, value);
 }
 
 static void add_r8_r8(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 register_value_1 = cpu->get_8(cpuRegister_1);
-    uint8 register_value_2 = cpu->get_8(cpuRegister_2);
-    uint8 result = add(cpu, register_value_1, register_value_2);
+    u_int8_t register_value_1 = cpu->get_8(cpuRegister_1);
+    u_int8_t register_value_2 = cpu->get_8(cpuRegister_2);
+    u_int8_t result = add(cpu, register_value_1, register_value_2);
 
     cpu->set_8(cpuRegister_1, result);
 }
 
-static void add_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 result = add(cpu, register_value, value);
+static void add_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t result = add(cpu, register_value, value);
 
     cpu->set_8(cpuRegister, result);
 }
 
 static void sub_carry_r8_r8(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 register_value_2 = cpu->get_8(cpuRegister_2);
+    u_int8_t register_value_2 = cpu->get_8(cpuRegister_2);
     sub_carry_r8_n8(cpu, cpuRegister_1, register_value_2);
 }
 
 static void sub_r8_r8(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 register_value_1 = cpu->get_8(cpuRegister_1);
-    uint8 register_value_2 = cpu->get_8(cpuRegister_2);
-    uint8 result = sub(cpu, register_value_1, register_value_2);
+    u_int8_t register_value_1 = cpu->get_8(cpuRegister_1);
+    u_int8_t register_value_2 = cpu->get_8(cpuRegister_2);
+    u_int8_t result = sub(cpu, register_value_1, register_value_2);
 
     cpu->set_8(cpuRegister_1, result);
 }
 
-static void sub_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 result = sub(cpu, register_value, value);
+static void sub_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t result = sub(cpu, register_value, value);
 
     cpu->set_8(cpuRegister, result);
 }
 
-static void compare_n8(CPU* cpu, uint8 value) {
-    uint8 register_value = cpu->get_8(A);
+static void compare_n8(CPU* cpu, u_int8_t value) {
+    u_int8_t register_value = cpu->get_8(A);
     sub(cpu, register_value, value);
 }
 
 static void compare_r8(CPU* cpu, Register cpuRegister) {
-    uint8 register_value = cpu->get_8(cpuRegister);
+    u_int8_t register_value = cpu->get_8(cpuRegister);
     compare_n8(cpu, register_value);
 }
 
 static void compare_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     compare_n8(cpu, value);
 }
 
-static void xor_8(CPU* cpu, uint8 value) {
-    uint8 result = value ^ cpu->get_8(A);
+static void xor_8(CPU* cpu, u_int8_t value) {
+    u_int8_t result = value ^ cpu->get_8(A);
     cpu->set_8(A, result);
 
     cpu->flag_z = result == 0;
@@ -1451,17 +1451,17 @@ static void xor_8(CPU* cpu, uint8 value) {
     cpu->flag_c = false;
 }
 
-static void xor_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
+static void xor_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
     xor_8(cpu, value);
 }
 
 static void xor_r8(CPU* cpu, Register cpuRegister) {
-    uint8 register_value = cpu->get_8(cpuRegister);
+    u_int8_t register_value = cpu->get_8(cpuRegister);
     xor_8(cpu, register_value);
 }
 
-static uint8 or_8(CPU* cpu, uint8 value_1, uint8 value_2)  {
-    uint8 result = value_1 | value_2;
+static u_int8_t or_8(CPU* cpu, u_int8_t value_1, u_int8_t value_2)  {
+    u_int8_t result = value_1 | value_2;
 
     cpu->flag_z = result == 0;
     cpu->flag_n = false;
@@ -1472,35 +1472,35 @@ static uint8 or_8(CPU* cpu, uint8 value_1, uint8 value_2)  {
 }
 
 static void or_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint8 register_value = cpu->get_8(A);
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
-    uint8 result = or_8(cpu, register_value, value);
+    u_int8_t register_value = cpu->get_8(A);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
+    u_int8_t result = or_8(cpu, register_value, value);
     cpu->set_8(A, result);
 }
 
 static void xor_r16(CPU* cpu, MemoryHook* memory, Register cpuRegister) {
-    uint16 address = cpu->get_16(cpuRegister);
-    uint8 value = memory->get_8(address);
+    u_int16_t address = cpu->get_16(cpuRegister);
+    u_int8_t value = memory->get_8(address);
     xor_8(cpu, value);
 }
 
 static void and_r8_r8(CPU* cpu, Register cpuRegister_1, Register cpuRegister_2) {
-    uint8 register_value_1 = cpu->get_8(cpuRegister_1);
-    uint8 register_value_2 = cpu->get_8(cpuRegister_2);
-    uint8 result = and_(cpu, register_value_1, register_value_2);
+    u_int8_t register_value_1 = cpu->get_8(cpuRegister_1);
+    u_int8_t register_value_2 = cpu->get_8(cpuRegister_2);
+    u_int8_t result = and_(cpu, register_value_1, register_value_2);
     cpu->set_8(cpuRegister_1, result);
 }
 
-static void and_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 result = and_(cpu, register_value, value);
+static void and_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t result = and_(cpu, register_value, value);
     cpu->set_8(cpuRegister, result);
 }
 
-static void or_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
-    uint8 register_value_1 = cpu->get_8(cpuRegister);
-    uint8 result = register_value_1 | value;
+static void or_r8_n8(CPU* cpu, Register cpuRegister, u_int8_t value) {
+    u_int8_t register_value_1 = cpu->get_8(cpuRegister);
+    u_int8_t result = register_value_1 | value;
     cpu->set_8(cpuRegister, result);
 
     cpu->flag_z = result == 0;
@@ -1510,15 +1510,15 @@ static void or_r8_n8(CPU* cpu, Register cpuRegister, uint8 value) {
 }
 
 static void or_r8(CPU* cpu, Register cpuRegister) {
-    uint8 register_value_1 = cpu->get_8(A);
-    uint8 register_value_2 = cpu->get_8(cpuRegister);
-    uint8 result = or_8(cpu, register_value_1, register_value_2);
+    u_int8_t register_value_1 = cpu->get_8(A);
+    u_int8_t register_value_2 = cpu->get_8(cpuRegister);
+    u_int8_t result = or_8(cpu, register_value_1, register_value_2);
     cpu->set_8(A, result);
 }
 
 static void decrement_r8(CPU* cpu, Register cpuRegister) {
-    uint8 register_value = cpu->get_8(cpuRegister);
-    uint8 value = Bytes::wrappingSub_8(register_value, 1);
+    u_int8_t register_value = cpu->get_8(cpuRegister);
+    u_int8_t value = Bytes::wrappingSub_8(register_value, 1);
     cpu->set_8(cpuRegister, value);
 
     cpu->flag_z = value == 0;
@@ -1528,7 +1528,7 @@ static void decrement_r8(CPU* cpu, Register cpuRegister) {
 
 // Jumps
 
-static bool jump_carry_n16(CPU* cpu, uint16 value) {
+static bool jump_carry_n16(CPU* cpu, u_int16_t value) {
     if (cpu->flag_c) {
         jump_n16(cpu, value);
         return true;
@@ -1537,7 +1537,7 @@ static bool jump_carry_n16(CPU* cpu, uint16 value) {
     return false;
 }
 
-static bool jump_not_carry_n16(CPU* cpu, uint16 value) {
+static bool jump_not_carry_n16(CPU* cpu, u_int16_t value) {
     if (!cpu->flag_c) {
         jump_n16(cpu, value);
         return true;
@@ -1546,7 +1546,7 @@ static bool jump_not_carry_n16(CPU* cpu, uint16 value) {
     return false;
 }
 
-static bool jump_not_zero_n16(CPU* cpu, uint16 value) {
+static bool jump_not_zero_n16(CPU* cpu, u_int16_t value) {
     if (!cpu->flag_z) {
         jump_n16(cpu, value);
         return true;
@@ -1555,7 +1555,7 @@ static bool jump_not_zero_n16(CPU* cpu, uint16 value) {
     return false;
 }
 
-static bool jump_zero_n16(CPU* cpu, uint16 value) {
+static bool jump_zero_n16(CPU* cpu, u_int16_t value) {
     if (cpu->flag_z) {
         jump_n16(cpu, value);
         return true;
@@ -1564,13 +1564,13 @@ static bool jump_zero_n16(CPU* cpu, uint16 value) {
     return false;
 }
 
-static void jump_right_n8(CPU* cpu, uint8 value) {
-    int8 signed_value = Bytes::toSigned_8(value);
-    uint16 new_pc = cpu->pc + signed_value;
+static void jump_right_n8(CPU* cpu, u_int8_t value) {
+    int8_t signed_value = Bytes::toSigned_8(value);
+    u_int16_t new_pc = cpu->pc + signed_value;
     cpu->pc = new_pc;
 }
 
-static bool jump_right_not_zero_n8(CPU* cpu, uint8 value) {
+static bool jump_right_not_zero_n8(CPU* cpu, u_int8_t value) {
     if (cpu->flag_z == false) {
         jump_right_n8(cpu, value);
         return true;
@@ -1579,7 +1579,7 @@ static bool jump_right_not_zero_n8(CPU* cpu, uint8 value) {
     return false;
 }
 
-static bool jump_right_zero_r8(CPU* cpu, uint8 value) {
+static bool jump_right_zero_r8(CPU* cpu, u_int8_t value) {
     if (cpu->flag_z) {
         jump_right_n8(cpu, value);
         return true;
@@ -1588,7 +1588,7 @@ static bool jump_right_zero_r8(CPU* cpu, uint8 value) {
     return false;
 }
 
-static bool jump_right_not_carry_n8(CPU* cpu, uint8 value) {
+static bool jump_right_not_carry_n8(CPU* cpu, u_int8_t value) {
     if (!cpu->flag_c) {
         jump_right_n8(cpu, value);
         return true;
@@ -1597,7 +1597,7 @@ static bool jump_right_not_carry_n8(CPU* cpu, uint8 value) {
     return false;
 }
 
-static bool jump_right_carry_n8(CPU* cpu, uint8 value) {
+static bool jump_right_carry_n8(CPU* cpu, u_int8_t value) {
     if (cpu->flag_c == true) {
         jump_right_n8(cpu, value);
         return true;
@@ -1606,7 +1606,7 @@ static bool jump_right_carry_n8(CPU* cpu, uint8 value) {
     return false;
 }
 
-static bool run_cb(uint8 index, CPU *cpu, MemoryHook *memory) {
+static bool run_cb(u_int8_t index, CPU *cpu, MemoryHook *memory) {
     switch(index) {
 
         case 0x00:
@@ -2638,11 +2638,11 @@ static bool run_cb(uint8 index, CPU *cpu, MemoryHook *memory) {
     }
 }
 
-instructionInfo Instructions::getInfo(uint8 index, uint8 arg) {
+instructionInfo Instructions::getInfo(u_int8_t index, u_int8_t arg) {
     return index == 0xCB ? CB_INSTRUCTION_INFO[arg] : CORE_INSTRUCTION_INFO[index];
 }
 
-bool Instructions::run(uint8 index, CPU *cpu, MemoryHook *memory, uint8 arg_8, uint16 arg_16) {
+bool Instructions::run(u_int8_t index, CPU *cpu, MemoryHook *memory, u_int8_t arg_8, u_int16_t arg_16) {
     switch(index) {
         case 0x00:
             return true;

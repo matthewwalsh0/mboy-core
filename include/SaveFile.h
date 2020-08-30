@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_SAVEFILE_H
 #define MY_APPLICATION_SAVEFILE_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "Ram.h"
 #include <string>
 #include <fstream>
@@ -15,11 +15,11 @@ private:
     std::string name;
     std::string fileName;
     std::ofstream file;
-    uint8 data[128 * 1024] = {0};
+    u_int8_t data[128 * 1024] = {0};
 public:
     SaveFile(std::string name);
-    uint8 get_8(uint32 address);
-    bool set_8(uint32 address, uint8 value);
+    u_int8_t get_8(u_int32_t address);
+    bool set_8(u_int32_t address, u_int8_t value);
 };
 
 #endif //MY_APPLICATION_SAVEFILE_H

@@ -9,16 +9,16 @@
 #include "APU.h"
 
 class NearestNeighbourDownsampler : Downsampler {
-    virtual void addSample(uint16 volume, uint16 count, uint16 totalCount, uint16 maxVolume);
+    virtual void addSample(u_int16_t volume, u_int16_t count, u_int16_t totalCount, u_int16_t maxVolume);
 
-    virtual uint16 getSampleCount();
+    virtual u_int16_t getSampleCount();
 
     virtual float *getSamples();
 
 private:
     float buffer[SAMPLE_PLAY_COUNT];
-    uint16 bufferCount = 0;
-    uint16 cycleCount = 0;
+    u_int16_t bufferCount = 0;
+    u_int16_t cycleCount = 0;
     bool negative = false;
 };
 

@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_GPU_H
 #define MY_APPLICATION_GPU_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "Control.h"
 #include "Pixels.h"
 #include "Display.h"
@@ -14,14 +14,14 @@
 #include "Config.h"
 #include <chrono>
 
-const uint8 SCREEN_HEIGHT = 144;
-const uint8 SCREEN_WIDTH = 160;
+const u_int8_t SCREEN_HEIGHT = 144;
+const u_int8_t SCREEN_WIDTH = 160;
 
 class GPU {
 private:
-    uint8 mode;
-    uint16 cycleCount;
-    uint16 line;
+    u_int8_t mode;
+    u_int16_t cycleCount;
+    u_int16_t line;
     Pixels pixels;
     MemoryHook* memory;
     Control* control;
@@ -29,27 +29,27 @@ private:
     bool oamInterrupt;
     bool vblankInterrupt;
     bool hblankInterrupt;
-    uint16 coincidenceLine;
+    u_int16_t coincidenceLine;
     GUI* gui;
     LogFile logFile;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-    uint16 frameCount = 0;
-    uint16 hdmaTarget = 0;
-    uint16 hdmaSource = 0;
+    u_int16_t frameCount = 0;
+    u_int16_t hdmaTarget = 0;
+    u_int16_t hdmaSource = 0;
     struct config* config;
     
 public:
     Display display;
 
     GPU(MemoryHook* memory, GUI* gui, struct config* config);
-    void step(uint16 lastInstructionDuration, MemoryHook* memory, bool isColour, uint32 count);
-    uint8 getStat();
-    void setStat(uint8 value);
-    void setControl(uint8 value);
-    uint8 getHDMA(uint16 address);
-    void setHDMA(uint16 address, uint8 value);
-    uint8 get_8(uint16 address);
-    bool set_8(uint16 address, uint8 value);
+    void step(u_int16_t lastInstructionDuration, MemoryHook* memory, bool isColour, u_int32_t count);
+    u_int8_t getStat();
+    void setStat(u_int8_t value);
+    void setControl(u_int8_t value);
+    u_int8_t getHDMA(u_int16_t address);
+    void setHDMA(u_int16_t address, u_int8_t value);
+    u_int8_t get_8(u_int16_t address);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

@@ -19,7 +19,7 @@ SaveFile::SaveFile(std::string name) {
 
     if(existingFile)
     {
-        uint32 fileSize = existingFile.tellg();
+        u_int32_t fileSize = existingFile.tellg();
         existingFile.seekg(0, std::ios::beg);
         existingFile.read((char*) data, fileSize);
         existingFile.close();
@@ -32,11 +32,11 @@ SaveFile::SaveFile(std::string name) {
     }
 }
 
-uint8 SaveFile::get_8(uint32 address) {
+u_int8_t SaveFile::get_8(u_int32_t address) {
     return data[address];
 }
 
-bool SaveFile::set_8(uint32 address, uint8 value) {
+bool SaveFile::set_8(u_int32_t address, u_int8_t value) {
     const char data[1] = {(char) value};
     this->data[address] = value;
     this->file.seekp(address, std::ios::beg);

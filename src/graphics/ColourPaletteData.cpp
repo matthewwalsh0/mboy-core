@@ -6,20 +6,20 @@
 #include "Bytes.h"
 #include "ColourPalette.h"
 
-ColourPaletteData::ColourPaletteData(uint16 address) {
+ColourPaletteData::ColourPaletteData(u_int16_t address) {
     this->address = address;
 }
 
-palette ColourPaletteData::getPalette(uint8 index) {
+palette ColourPaletteData::getPalette(u_int8_t index) {
     return palettes[index];
 }
 
-uint8 ColourPaletteData::get_8(uint16 address) {
+u_int8_t ColourPaletteData::get_8(u_int16_t address) {
     return data[index];
 }
 
-bool ColourPaletteData::set_8(uint16 address, uint8 value) {
-    uint16 relativeAddress = address - this->address;
+bool ColourPaletteData::set_8(u_int16_t address, u_int8_t value) {
+    u_int16_t relativeAddress = address - this->address;
 
     switch(relativeAddress) {
         case 0:
@@ -28,7 +28,7 @@ bool ColourPaletteData::set_8(uint16 address, uint8 value) {
             return true;
         case 1:
             data[index] = value;
-            uint8 paletteIndex = index / 8;
+            u_int8_t paletteIndex = index / 8;
             palettes[paletteIndex] = ColourPalette::fromData(data, paletteIndex * 8);
 
             if(autoIncrement) {

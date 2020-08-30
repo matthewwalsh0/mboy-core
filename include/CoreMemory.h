@@ -5,15 +5,15 @@
 #ifndef MY_APPLICATION_COREMEMORY_H
 #define MY_APPLICATION_COREMEMORY_H
 
-#include "Types.h"
+#include <sys/types.h>
 
 class CoreMemory {
 private:
-    uint8 data[64 * 1024] = {0};
+    u_int8_t data[64 * 1024] = {0};
 public:
     CoreMemory();
-    uint8 get_8(uint16 address);
-    void set_8(uint16 address, uint8 value);
+    u_int8_t get_8(u_int16_t address);
+    void set_8(u_int16_t address, u_int8_t value);
 };
 
 

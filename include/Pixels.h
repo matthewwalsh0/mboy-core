@@ -5,28 +5,28 @@
 #ifndef MY_APPLICATION_PIXELS_H
 #define MY_APPLICATION_PIXELS_H
 
-#include "Types.h"
+#include <sys/types.h>
 
-const uint32 WHITE = 0xFFFFFFFF;
+const u_int32_t WHITE = 0xFFFFFFFF;
 
 class Pixels {
 private:
-    uint16 getIndex(uint16 x, uint16 y);
+    u_int16_t getIndex(u_int16_t x, u_int16_t y);
     bool createdData = false;
 public:
-    uint16 width;
-    uint16 height;
-    uint32* data;
+    u_int16_t width;
+    u_int16_t height;
+    u_int32_t* data;
 
-    Pixels(uint16 width, uint16 height);
-    Pixels(uint16 width, uint16 height, uint32* data);
+    Pixels(u_int16_t width, u_int16_t height);
+    Pixels(u_int16_t width, u_int16_t height, u_int32_t* data);
     ~Pixels();
-    uint32 get(uint16 x, uint16 y);
-    void set(uint16 x, uint16 y, uint32 pixel);
-    void setLine(uint16 y, uint32* pixels, uint16 offset, uint16 width);
-    void clearLine(uint16 y, uint16 offset, uint16 width);
-    uint32* getLine(uint16 y, uint16 offset, uint16 width);
-    void paste(uint16 x, uint16 y, Pixels* pixels);
+    u_int32_t get(u_int16_t x, u_int16_t y);
+    void set(u_int16_t x, u_int16_t y, u_int32_t pixel);
+    void setLine(u_int16_t y, u_int32_t* pixels, u_int16_t offset, u_int16_t width);
+    void clearLine(u_int16_t y, u_int16_t offset, u_int16_t width);
+    u_int32_t* getLine(u_int16_t y, u_int16_t offset, u_int16_t width);
+    void paste(u_int16_t x, u_int16_t y, Pixels* pixels);
 };
 
 #endif //MY_APPLICATION_PIXELS_H

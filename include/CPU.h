@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_CPU_H
 #define MY_APPLICATION_CPU_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 #include "LogFile.h"
 
@@ -26,15 +26,15 @@ enum Register {
 class CPU {
 
 public:
-    uint8 a;
-    uint8 b;
-    uint8 c;
-    uint8 d;
-    uint8 e;
-    uint8 h;
-    uint8 l;
-    uint16 sp;
-    uint16 pc;
+    u_int8_t a;
+    u_int8_t b;
+    u_int8_t c;
+    u_int8_t d;
+    u_int8_t e;
+    u_int8_t h;
+    u_int8_t l;
+    u_int16_t sp;
+    u_int16_t pc;
 
     bool flag_z;
     bool flag_n;
@@ -44,7 +44,7 @@ public:
     bool interruptsEnabled;
     bool halt;
     bool swapSpeed;
-    uint8 currentSpeed;
+    u_int8_t currentSpeed;
 
     bool interruptEnableVerticalBlank = false;
     bool interruptEnableLcd = false;
@@ -61,23 +61,23 @@ public:
     LogFile logFile;
 
     CPU();
-    uint8 get_8(Register cpuRegister);
-    uint8 get_f();
-    void set_f(uint8 value);
-    uint16 get_16(Register cpuRegister);
-    void set_8(Register cpuRegister, uint8 value);
-    void set_16(Register cpuRegister, uint16 value);
-    uint16 step(MemoryHook* memory, uint32 count, bool debug);
-    uint8 getInterruptEnable();
-    uint8 getInterruptFlags();
-    void setInterruptEnable(uint8 value);
-    void setInterruptFlags(uint8 value);
-    void flagInterrupt(uint8 bit);
-    uint8 get_8(uint16 address);
-    bool set_8(uint16 address, uint8 value);
+    u_int8_t get_8(Register cpuRegister);
+    u_int8_t get_f();
+    void set_f(u_int8_t value);
+    u_int16_t get_16(Register cpuRegister);
+    void set_8(Register cpuRegister, u_int8_t value);
+    void set_16(Register cpuRegister, u_int16_t value);
+    u_int16_t step(MemoryHook* memory, u_int32_t count, bool debug);
+    u_int8_t getInterruptEnable();
+    u_int8_t getInterruptFlags();
+    void setInterruptEnable(u_int8_t value);
+    void setInterruptFlags(u_int8_t value);
+    void flagInterrupt(u_int8_t bit);
+    u_int8_t get_8(u_int16_t address);
+    bool set_8(u_int16_t address, u_int8_t value);
 
 private:
-    uint16 checkInterrupts(MemoryHook* memory);
+    u_int16_t checkInterrupts(MemoryHook* memory);
 };
 
 

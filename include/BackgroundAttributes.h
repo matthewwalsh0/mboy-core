@@ -6,17 +6,17 @@
 #define MBOY_ANDROID_BACKGROUNDATTRIBUTES_H
 
 
-#include "Types.h"
+#include <sys/types.h>
 
 class BackgroundAttributes {
 public:
-    uint8 paletteNumber;
+    u_int8_t paletteNumber;
     bool alternateBank;
     bool priority;
     bool flipX;
     bool flipY;
 
-    BackgroundAttributes(uint8 data);
+    BackgroundAttributes(u_int8_t data);
 };
 
 

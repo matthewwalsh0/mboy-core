@@ -5,27 +5,27 @@
 #ifndef MBOY_ANDROID_WAVECHANNEL_H
 #define MBOY_ANDROID_WAVECHANNEL_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 
 class WaveChannel {
 private:
     MemoryHook* memory;
-    uint16 waveTableStart = 0;
-    uint16 frequency = 0;
-    int32 frequencyTimer = 0;
-    uint8 position = 0;
-    uint8 volume = 0;
+    u_int16_t waveTableStart = 0;
+    u_int16_t frequency = 0;
+    int32_t frequencyTimer = 0;
+    u_int8_t position = 0;
+    u_int8_t volume = 0;
     bool enabled = false;
     bool trigger = false;
     bool dacEnabled = false;
 public:
-    uint16 sample = 0;
+    u_int16_t sample = 0;
 
-    WaveChannel(MemoryHook* memory, uint16 addressStart);
-    void step(uint16 lastInstructionDuration);
-    uint8 get_8(uint16 address);
-    bool set_8(uint16 address, uint8 value);
+    WaveChannel(MemoryHook* memory, u_int16_t addressStart);
+    void step(u_int16_t lastInstructionDuration);
+    u_int8_t get_8(u_int16_t address);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

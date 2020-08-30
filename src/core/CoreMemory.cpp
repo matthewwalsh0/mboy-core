@@ -28,10 +28,10 @@ CoreMemory::CoreMemory() {
     set_8(0xFF48, 0xFF);
 }
 
-uint8 CoreMemory::get_8(uint16 address) {
+u_int8_t CoreMemory::get_8(u_int16_t address) {
     return data[address];
 }
 
-void CoreMemory::set_8(uint16 address, uint8 value) {
+void CoreMemory::set_8(u_int16_t address, u_int8_t value) {
     data[address] = value;
 }

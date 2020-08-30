@@ -5,18 +5,18 @@
 #include "Pixels.h"
 #include <cstring>
 
-Pixels::Pixels(uint16 width, uint16 height) {
+Pixels::Pixels(u_int16_t width, u_int16_t height) {
     this->width = width;
     this->height = height;
-    data = new uint32[width * height];
+    data = new u_int32_t[width * height];
     createdData = true;
 
-    for(uint32 i = 0; i < (width * height); i++) {
+    for(u_int32_t i = 0; i < (width * height); i++) {
         data[i] = WHITE;
     }
 }
 
-Pixels::Pixels(uint16 width, uint16 height, uint32* data) {
+Pixels::Pixels(u_int16_t width, u_int16_t height, u_int32_t* data) {
     this->width = width;
     this->height = height;
     this->data = data;
@@ -28,52 +28,52 @@ Pixels::~Pixels()
         delete data;
 }
 
-uint32 Pixels::get(uint16 x, uint16 y) {
+u_int32_t Pixels::get(u_int16_t x, u_int16_t y) {
     return data[getIndex(x, y)];
 }
 
-void Pixels::set(uint16 x, uint16 y, uint32 pixel) {
+void Pixels::set(u_int16_t x, u_int16_t y, u_int32_t pixel) {
     data[getIndex(x, y)] = pixel;
 }
 
-void Pixels::setLine(uint16 y, uint32 *pixels, uint16 offset, uint16 width) {
-    uint32 startIndex = y * this->width + offset;
-    memcpy(data + startIndex, pixels, width * sizeof(uint32));
+void Pixels::setLine(u_int16_t y, u_int32_t *pixels, u_int16_t offset, u_int16_t width) {
+    u_int32_t startIndex = y * this->width + offset;
+    memcpy(data + startIndex, pixels, width * sizeof(u_int32_t));
 }
 
-void Pixels::clearLine(uint16 y, uint16 offset, uint16 width) {
-    uint32 startIndex = y * width + offset;
+void Pixels::clearLine(u_int16_t y, u_int16_t offset, u_int16_t width) {
+    u_int32_t startIndex = y * width + offset;
 
-    for(uint16 x = 0; x < width; x++) {
+    for(u_int16_t x = 0; x < width; x++) {
         data[startIndex++] = WHITE;
     }
 }
 
-uint32* Pixels::getLine(uint16 y, uint16 offset, uint16 width) {
-    uint32* lineData = new uint32[width];
-    uint32 lineStart = y * this->width;
-    uint32 sourceIndex = lineStart + offset;
-    uint32 lastIndex = offset + width;
+u_int32_t* Pixels::getLine(u_int16_t y, u_int16_t offset, u_int16_t width) {
+    u_int32_t* lineData = new u_int32_t[width];
+    u_int32_t lineStart = y * this->width;
+    u_int32_t sourceIndex = lineStart + offset;
+    u_int32_t lastIndex = offset + width;
 
     if(this->width > lastIndex) {
-        memcpy(lineData, data + sourceIndex, width * sizeof(uint32));
+        memcpy(lineData, data + sourceIndex, width * sizeof(u_int32_t));
     } else {
-        uint16 firstWidth = this->width - offset;
-        uint16 overflowWidth = lastIndex - this->width;
-        memcpy(lineData, data + sourceIndex, firstWidth * sizeof(uint32));
-        memcpy(lineData + firstWidth, data + lineStart, overflowWidth * sizeof(uint32));
+        u_int16_t firstWidth = this->width - offset;
+        u_int16_t overflowWidth = lastIndex - this->width;
+        memcpy(lineData, data + sourceIndex, firstWidth * sizeof(u_int32_t));
+        memcpy(lineData + firstWidth, data + lineStart, overflowWidth * sizeof(u_int32_t));
     }
 
     return lineData;
 }
 
-uint16 Pixels::getIndex(uint16 x, uint16 y) {
+u_int16_t Pixels::getIndex(u_int16_t x, u_int16_t y) {
     return y * width + x;
 }
 
-void Pixels::paste(uint16 x, uint16 y, Pixels* pixels) {
-    for(uint16 y2 = 0; y2 < pixels->height; y2++) {
-        uint32* lineData = pixels->getLine(y2, 0, pixels->width);
+void Pixels::paste(u_int16_t x, u_int16_t y, Pixels* pixels) {
+    for(u_int16_t y2 = 0; y2 < pixels->height; y2++) {
+        u_int32_t* lineData = pixels->getLine(y2, 0, pixels->width);
         setLine(y + y2, lineData, x, pixels->width);
         delete lineData;
     }

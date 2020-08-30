@@ -6,12 +6,12 @@
 #define MBOY_ANDROID_COLOURPALETTE_H
 
 
-#include "Types.h"
+#include <sys/types.h>
 #include "Tile.h"
 
 class ColourPalette {
 public:
-    static palette fromData(uint8* data, uint8 index);
+    static palette fromData(u_int8_t* data, u_int8_t index);
 };
 
 #endif //MBOY_ANDROID_COLOURPALETTE_H

@@ -7,8 +7,8 @@
 
 class Ram {
 public:
-    virtual uint8 get_8(uint32 address) { return 0; };
-    virtual bool set_8(uint32 address, uint8 value) { return false; };
+    virtual u_int8_t get_8(u_int32_t address) { return 0; };
+    virtual bool set_8(u_int32_t address, u_int8_t value) { return false; };
 };
 
 #endif //MY_APPLICATION_RAM_H

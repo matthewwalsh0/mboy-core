@@ -6,27 +6,27 @@
 #define MBOY_SPRITE_H
 
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 #include "Tile.h"
 
 class Sprite {
 public:
-    uint8 x;
-    uint8 y;
+    u_int8_t x;
+    u_int8_t y;
 
-    Sprite(MemoryHook* memory, uint16 start, bool largeSprites);
-    void drawLine(Pixels* pixels, TileSet* tileSet, uint16 scrollX, uint16 scrollY,
-                  uint16 localY, palette backgroundPalette, palette palette_0, palette palette_1,
+    Sprite(MemoryHook* memory, u_int16_t start, bool largeSprites);
+    void drawLine(Pixels* pixels, TileSet* tileSet, u_int16_t scrollX, u_int16_t scrollY,
+                  u_int16_t localY, palette backgroundPalette, palette palette_0, palette palette_1,
                   bool isColour, ColourPaletteData* backgroundColourPaletteData, ColourPaletteData* spriteColourPaletteData, TileMap* tileMap);
 private:
-    uint8 tileIndex;
+    u_int8_t tileIndex;
     bool priority;
     bool yFlip;
     bool xFlip;
     bool alternatePalette;
     bool alternateBank;
-    uint8 colourPaletteIndex;
+    u_int8_t colourPaletteIndex;
     bool large;
     MemoryHook* memory;
 };

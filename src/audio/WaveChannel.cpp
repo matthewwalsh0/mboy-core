@@ -8,15 +8,15 @@
 #include "MemoryMap.h"
 #include <WaveChannel.h>
 
-const uint8 WAVE_VOLUME_SHIFT[] = {4, 0, 1, 2};
+const u_int8_t WAVE_VOLUME_SHIFT[] = {4, 0, 1, 2};
 
-WaveChannel::WaveChannel(MemoryHook* memory, uint16 addressStart) {
+WaveChannel::WaveChannel(MemoryHook* memory, u_int16_t addressStart) {
     this->memory = memory;
     this->waveTableStart = addressStart;
 }
 
-void WaveChannel::step(uint16 lastInstructionDuration) {
-    uint16 extraCycles = 0;
+void WaveChannel::step(u_int16_t lastInstructionDuration) {
+    u_int16_t extraCycles = 0;
 
     sample = 0;
 
@@ -45,25 +45,25 @@ void WaveChannel::step(uint16 lastInstructionDuration) {
     }
 
     if(enabled && dacEnabled) {
-        uint16 byteIndex = position / 2;
+        u_int16_t byteIndex = position / 2;
         bool useUpper = position % 2 == 0;
-        uint8 currentByte = memory->get_8(waveTableStart + byteIndex);
-        uint8 upper = Bytes::split_8_upper(currentByte);
-        uint8 lower = Bytes::split_8_lower(currentByte);
-        uint8 originalSample = useUpper ? upper : lower;
-        uint8 shift = WAVE_VOLUME_SHIFT[volume];
-        uint8 finalSample = originalSample >> shift;
+        u_int8_t currentByte = memory->get_8(waveTableStart + byteIndex);
+        u_int8_t upper = Bytes::split_8_upper(currentByte);
+        u_int8_t lower = Bytes::split_8_lower(currentByte);
+        u_int8_t originalSample = useUpper ? upper : lower;
+        u_int8_t shift = WAVE_VOLUME_SHIFT[volume];
+        u_int8_t finalSample = originalSample >> shift;
 
         sample = finalSample;
     }
 }
 
-uint8 WaveChannel::get_8(uint16 address) {
+u_int8_t WaveChannel::get_8(u_int16_t address) {
     throw std::invalid_argument("Bad read from wave channel.");
 }
 
-bool WaveChannel::set_8(uint16 address, uint8 value) {
-    uint8 relativeAddress = address - WAVE_START;
+bool WaveChannel::set_8(u_int16_t address, u_int8_t value) {
+    u_int8_t relativeAddress = address - WAVE_START;
 
     switch(relativeAddress) {
         case 0:

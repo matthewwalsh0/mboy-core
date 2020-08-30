@@ -3,19 +3,19 @@
 //
 
 #include <stdexcept>
-#include "Types.h"
+#include <sys/types.h>
 #include "Bytes.h"
 #include "CPU.h"
 #include "Instructions.h"
 #include "MemoryMap.h"
 
-const uint16 STACK_POINTER_START = 0xFFFE;
-const uint16 EXECUTION_START = 0x100;
-const uint16 INTERRUPT_ROUTINE_VERTICAL_BLANK = 0x0040;
-const uint16 INTERRUPT_ROUTINE_LCD = 0x0048;
-const uint16 INTERRUPT_ROUTINE_TIMER = 0x0050;
-const uint16 INTERRUPT_ROUTINE_SERIAL = 0x0058;
-const uint16 INTERRUPT_ROUTINE_JOYPAD = 0x0060;
+const u_int16_t STACK_POINTER_START = 0xFFFE;
+const u_int16_t EXECUTION_START = 0x100;
+const u_int16_t INTERRUPT_ROUTINE_VERTICAL_BLANK = 0x0040;
+const u_int16_t INTERRUPT_ROUTINE_LCD = 0x0048;
+const u_int16_t INTERRUPT_ROUTINE_TIMER = 0x0050;
+const u_int16_t INTERRUPT_ROUTINE_SERIAL = 0x0058;
+const u_int16_t INTERRUPT_ROUTINE_JOYPAD = 0x0060;
 const std::string LOG_PATH = "/sdcard/Download/matterboy_log_cpu.txt";
 
 CPU::CPU() : logFile(LOG_PATH) {
@@ -38,7 +38,7 @@ CPU::CPU() : logFile(LOG_PATH) {
     currentSpeed = 1;
 }
 
-uint8 CPU::get_8(Register cpuRegister) {
+u_int8_t CPU::get_8(Register cpuRegister) {
     switch(cpuRegister) {
         case A:
             return a;
@@ -59,8 +59,8 @@ uint8 CPU::get_8(Register cpuRegister) {
     }
 }
 
-uint8 CPU::get_f() {
-    uint8 value = 0x0;
+u_int8_t CPU::get_f() {
+    u_int8_t value = 0x0;
     if(flag_z) { value = Bytes::setBit_8(value, 7); }
     if(flag_n) { value = Bytes::setBit_8(value, 6); }
     if(flag_h) { value = Bytes::setBit_8(value, 5); }
@@ -68,14 +68,14 @@ uint8 CPU::get_f() {
     return value;
 }
 
-void CPU::set_f(uint8 value) {
+void CPU::set_f(u_int8_t value) {
     flag_z = Bytes::getBit_8(value, 7);
     flag_n = Bytes::getBit_8(value, 6);
     flag_h = Bytes::getBit_8(value, 5);
     flag_c = Bytes::getBit_8(value, 4);
 }
 
-uint16 CPU::get_16(Register cpuRegister) {
+u_int16_t CPU::get_16(Register cpuRegister) {
     switch(cpuRegister) {
         case BC:
             return Bytes::join_8(b, c);
@@ -90,7 +90,7 @@ uint16 CPU::get_16(Register cpuRegister) {
     }
 }
 
-void CPU::set_8(Register cpuRegister, uint8 value) {
+void CPU::set_8(Register cpuRegister, u_int8_t value) {
     switch(cpuRegister) {
         case A:
             a = value;
@@ -118,9 +118,9 @@ void CPU::set_8(Register cpuRegister, uint8 value) {
     }
 }
 
-void CPU::set_16(Register cpuRegister, uint16 value) {
-    uint8 upper = Bytes::split_16_upper(value);
-    uint8 lower = Bytes::split_16_lower(value);
+void CPU::set_16(Register cpuRegister, u_int16_t value) {
+    u_int8_t upper = Bytes::split_16_upper(value);
+    u_int8_t lower = Bytes::split_16_lower(value);
 
     switch(cpuRegister) {
         case BC:
@@ -144,12 +144,12 @@ void CPU::set_16(Register cpuRegister, uint16 value) {
     }
 }
 
-uint16 CPU::step(MemoryHook* memory, uint32 count, bool debug) {
-    uint8 instructionCode = memory->get_8(pc);
-    uint8 arg_1 = 0;
-    uint8 arg_2 = 0;
-    uint8 arg_8 = 0;
-    uint16 arg_16 = 0;
+u_int16_t CPU::step(MemoryHook* memory, u_int32_t count, bool debug) {
+    u_int8_t instructionCode = memory->get_8(pc);
+    u_int8_t arg_1 = 0;
+    u_int8_t arg_2 = 0;
+    u_int8_t arg_8 = 0;
+    u_int16_t arg_16 = 0;
 
     if(instructionCode == 0xCB) {
         arg_1 = memory->get_8(pc + 1);
@@ -157,7 +157,7 @@ uint16 CPU::step(MemoryHook* memory, uint32 count, bool debug) {
     }
 
     instructionInfo instruction = Instructions::getInfo(instructionCode, arg_8);
-    uint8 instructionLength = instruction.length;
+    u_int8_t instructionLength = instruction.length;
 
     if(instructionLength > 1) {
         arg_1 = memory->get_8(pc + 1);
@@ -169,11 +169,11 @@ uint16 CPU::step(MemoryHook* memory, uint32 count, bool debug) {
         arg_16 = Bytes::join_8(arg_2, arg_1);
     }
 
-    uint16 instructionDurationAction = instruction.cyclesAction;
-    uint16 instructionDurationNoAction = instruction.cyclesNoAction;
-    uint16 totalCycles = 0;
+    u_int16_t instructionDurationAction = instruction.cyclesAction;
+    u_int16_t instructionDurationNoAction = instruction.cyclesNoAction;
+    u_int16_t totalCycles = 0;
 
-    //uint8 argLength = instruction.length - 1;
+    //u_int8_t argLength = instruction.length - 1;
 
 //    logFile.write("%d - 0x%04X - 0x%04X - %10s - %02X - %04X - AF=%04X BC=%04X DE=%04X HL=%04X SP=%04X - Z=%d N=%d H=%d C=%d",
 //                  count, pc, instructionCode, instruction.debug, arg_8, arg_16,
@@ -183,8 +183,8 @@ uint16 CPU::step(MemoryHook* memory, uint32 count, bool debug) {
     if(!halt) {
         pc += instructionLength;
         bool action = Instructions::run(instructionCode, this, memory, arg_8, arg_16);
-        uint16 interruptCycles = checkInterrupts(memory);
-        uint16 instructionCycles = action ? instructionDurationAction : instructionDurationNoAction;
+        u_int16_t interruptCycles = checkInterrupts(memory);
+        u_int16_t instructionCycles = action ? instructionDurationAction : instructionDurationNoAction;
         totalCycles = instructionCycles + interruptCycles;
     } else {
         totalCycles = 12 + checkInterrupts(memory);
@@ -193,8 +193,8 @@ uint16 CPU::step(MemoryHook* memory, uint32 count, bool debug) {
     return totalCycles / currentSpeed;
 }
 
-uint8 CPU::getInterruptEnable() {
-    uint8 value = 0;
+u_int8_t CPU::getInterruptEnable() {
+    u_int8_t value = 0;
 
     if(interruptEnableVerticalBlank) value = Bytes::setBit_8(value, 0);
     if(interruptEnableLcd) value = Bytes::setBit_8(value, 1);
@@ -205,8 +205,8 @@ uint8 CPU::getInterruptEnable() {
     return value;
 }
 
-uint8 CPU::getInterruptFlags() {
-    uint8 value = 0;
+u_int8_t CPU::getInterruptFlags() {
+    u_int8_t value = 0;
 
     if(interruptFlagsVerticalBlank) value = Bytes::setBit_8(value, 0);
     if(interruptFlagsLcd) value = Bytes::setBit_8(value, 1);
@@ -217,7 +217,7 @@ uint8 CPU::getInterruptFlags() {
     return value;
 }
 
-void CPU::setInterruptEnable(uint8 value) {
+void CPU::setInterruptEnable(u_int8_t value) {
     interruptEnableVerticalBlank = Bytes::getBit_8(value, 0);
     interruptEnableLcd = Bytes::getBit_8(value, 1);
     interruptEnableTimer = Bytes::getBit_8(value, 2);
@@ -225,7 +225,7 @@ void CPU::setInterruptEnable(uint8 value) {
     interruptEnableJoypad = Bytes::getBit_8(value, 4);
 }
 
-void CPU::setInterruptFlags(uint8 value) {
+void CPU::setInterruptFlags(u_int8_t value) {
     interruptFlagsVerticalBlank = Bytes::getBit_8(value, 0);
     interruptFlagsLcd = Bytes::getBit_8(value, 1);
     interruptFlagsTimer = Bytes::getBit_8(value, 2);
@@ -233,7 +233,7 @@ void CPU::setInterruptFlags(uint8 value) {
     interruptFlagsJoypad = Bytes::getBit_8(value, 4);
 }
 
-void CPU::flagInterrupt(uint8 bit) {
+void CPU::flagInterrupt(u_int8_t bit) {
     switch(bit) {
         case 0:
             interruptFlagsVerticalBlank = true;
@@ -255,12 +255,12 @@ void CPU::flagInterrupt(uint8 bit) {
     }
 }
 
-uint16 CPU::checkInterrupts(MemoryHook* memory) {
+u_int16_t CPU::checkInterrupts(MemoryHook* memory) {
     if (!halt && !interruptsEnabled) {
         return 0;
     }
 
-    uint16 target = 0;
+    u_int16_t target = 0;
 
     if (interruptEnableVerticalBlank && interruptFlagsVerticalBlank) {
         target = INTERRUPT_ROUTINE_VERTICAL_BLANK;
@@ -290,8 +290,8 @@ uint16 CPU::checkInterrupts(MemoryHook* memory) {
     return 0;
 }
 
-uint8 CPU::get_8(uint16 address) {
-    uint8 value = 0;
+u_int8_t CPU::get_8(u_int16_t address) {
+    u_int8_t value = 0;
     
     switch(address) {
         case ADDRESS_INTERRUPT_ENABLE:
@@ -311,7 +311,7 @@ uint8 CPU::get_8(uint16 address) {
     }
 }
 
-bool CPU::set_8(uint16 address, uint8 value) {
+bool CPU::set_8(u_int16_t address, u_int8_t value) {
     bool swap = false;
 
     switch(address) {

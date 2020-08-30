@@ -4,20 +4,20 @@
 
 #include "GPU.h"
 #include "MemoryMap.h"
-#include "Types.h"
+#include <sys/types.h>
 #include "Bytes.h"
 
-const uint8 MODE_HORIZONTAL_BLANK = 0;
-const uint8 MODE_VERTICAL_BLANK = 1;
-const uint8 MODE_SCANLINE_SPRITE = 2;
-const uint8 MODE_SCANLINE_BACKGROUND = 3;
-const uint16 DURATION_SCANLINE_SPRITE = 80;
-const uint16 DURATION_SCANLINE_BACKGROUND = 172;
-const uint16 DURATION_HORIZONTAL_BLANK = 204;
-const uint16 DURATION_VERTICAL_BLANK = 456;
+const u_int8_t MODE_HORIZONTAL_BLANK = 0;
+const u_int8_t MODE_VERTICAL_BLANK = 1;
+const u_int8_t MODE_SCANLINE_SPRITE = 2;
+const u_int8_t MODE_SCANLINE_BACKGROUND = 3;
+const u_int16_t DURATION_SCANLINE_SPRITE = 80;
+const u_int16_t DURATION_SCANLINE_BACKGROUND = 172;
+const u_int16_t DURATION_HORIZONTAL_BLANK = 204;
+const u_int16_t DURATION_VERTICAL_BLANK = 456;
 const std::string LOG_PATH = "/sdcard/Download/matterboy_log_gpu.txt";
 
-const uint16 MODE_DURATIONS[] = {
+const u_int16_t MODE_DURATIONS[] = {
         DURATION_HORIZONTAL_BLANK,
         DURATION_VERTICAL_BLANK,
         DURATION_SCANLINE_SPRITE,
@@ -28,7 +28,7 @@ pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
 logFile(LOG_PATH),
 display(memory, config) {
     this->memory = memory;
-    this->control = new Control((uint8) 0);
+    this->control = new Control((u_int8_t) 0);
     this->gui = gui;
     this->config = config;
 
@@ -42,11 +42,11 @@ display(memory, config) {
     coincidenceLine = 0;
 }
 
-void GPU::step(uint16 lastInstructionDuration, MemoryHook *memory, bool isColour, uint32 count) {
+void GPU::step(u_int16_t lastInstructionDuration, MemoryHook *memory, bool isColour, u_int32_t count) {
     if(!control->display) { return; }
 
-    uint16 newCycleCount = cycleCount += lastInstructionDuration;
-    uint16 targetCycleCount = MODE_DURATIONS[mode];
+    u_int16_t newCycleCount = cycleCount += lastInstructionDuration;
+    u_int16_t targetCycleCount = MODE_DURATIONS[mode];
 
     if(newCycleCount >= targetCycleCount) {
         switch (mode) {
@@ -64,7 +64,7 @@ void GPU::step(uint16 lastInstructionDuration, MemoryHook *memory, bool isColour
                     frameCount += 1;
 
                     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-                    uint32 duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+                    u_int32_t duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
 
                     if(duration > 1000) {
                         gui->displayFPS(frameCount);
@@ -113,8 +113,8 @@ void GPU::step(uint16 lastInstructionDuration, MemoryHook *memory, bool isColour
     cycleCount = newCycleCount;
 }
 
-uint8 GPU::getStat() {
-    uint8 lcdStat = 0;
+u_int8_t GPU::getStat() {
+    u_int8_t lcdStat = 0;
 
     if (mode == MODE_VERTICAL_BLANK) {
         lcdStat = Bytes::setBit_8(lcdStat, 0);
@@ -148,14 +148,14 @@ uint8 GPU::getStat() {
     return lcdStat;
 }
 
-void GPU::setStat(uint8 value) {
+void GPU::setStat(u_int8_t value) {
     hblankInterrupt = Bytes::getBit_8(value, 3);
     vblankInterrupt = Bytes::getBit_8(value, 4);
     oamInterrupt = Bytes::getBit_8(value, 5);
     coincidenceInterrupt = Bytes::getBit_8(value, 6);
 }
 
-void GPU::setControl(uint8 value) {
+void GPU::setControl(u_int8_t value) {
     Control* current = this->control;
     delete current;
 
@@ -167,7 +167,7 @@ void GPU::setControl(uint8 value) {
     }
 }
 
-uint8 GPU::get_8(uint16 address) {
+u_int8_t GPU::get_8(u_int16_t address) {
     switch(address) {
         case 0xFF69:
             return display.get_8(address);
@@ -184,7 +184,7 @@ uint8 GPU::get_8(uint16 address) {
     }
 }
 
-bool GPU::set_8(uint16 address, uint8 value) {
+bool GPU::set_8(u_int16_t address, u_int8_t value) {
     if(address >= TILE_SET_1_START && address < TILE_MAP_1_END) {
         display.set_8(address, value);
         return true;
@@ -220,9 +220,9 @@ bool GPU::set_8(uint16 address, uint8 value) {
     }
 }
 
-uint8 GPU::getHDMA(uint16 address) {
-    uint16 relative = address - 0xFF51;
-    uint8 value = 0;
+u_int8_t GPU::getHDMA(u_int16_t address) {
+    u_int16_t relative = address - 0xFF51;
+    u_int8_t value = 0;
 
     switch(relative) {
         case 0:
@@ -241,8 +241,8 @@ uint8 GPU::getHDMA(uint16 address) {
     }
 }
 
-void GPU::setHDMA(uint16 address, uint8 value) {
-    uint16 relative = address - 0xFF51;
+void GPU::setHDMA(u_int16_t address, u_int8_t value) {
+    u_int16_t relative = address - 0xFF51;
 
     switch(relative) {
         case 0:
@@ -258,15 +258,15 @@ void GPU::setHDMA(uint16 address, uint8 value) {
             hdmaTarget = (hdmaTarget & 0xFF00) | (value & 0xF0);
             return;
         case 4:
-            uint8 length = value & 0b1111111;
-            uint16 size = (length + 1) * 0x10;
+            u_int8_t length = value & 0b1111111;
+            u_int16_t size = (length + 1) * 0x10;
             bool hblank = Bytes::getBit_8(value, 7);
 
             if(!hblank) {
                 for(int i = 0; i < size; i++) {
-                    uint16 target = hdmaTarget + i + 0x8000;
-                    uint16 source = hdmaSource + i;
-                    uint16 current = memory->get_8(source);
+                    u_int16_t target = hdmaTarget + i + 0x8000;
+                    u_int16_t source = hdmaSource + i;
+                    u_int16_t current = memory->get_8(source);
                     memory->set_8(target, current);
                 }
             }

@@ -7,10 +7,10 @@
 #include "Bytes.h"
 #include "MemoryMap.h"
 
-const uint16 SPEEDS[] = {1024, 16, 64, 256};
+const u_int16_t SPEEDS[] = {1024, 16, 64, 256};
 
-void Timer::step(uint16 cycleCount, MemoryHook *memory) {
-    for(uint16 i = 0; i < cycleCount; i++) {
+void Timer::step(u_int16_t cycleCount, MemoryHook *memory) {
+    for(u_int16_t i = 0; i < cycleCount; i++) {
         dividerCycleCount += 1;
 
         if(dividerCycleCount == 256) {
@@ -34,9 +34,9 @@ void Timer::step(uint16 cycleCount, MemoryHook *memory) {
     }
 }
 
-uint8 Timer::get_8(uint16 address) {
-    uint16 relativeAddress = address - ADDRESS_DIVIDER;
-    uint8 control = 0;
+u_int8_t Timer::get_8(u_int16_t address) {
+    u_int16_t relativeAddress = address - ADDRESS_DIVIDER;
+    u_int8_t control = 0;
 
     switch(relativeAddress) {
         case 0:
@@ -62,8 +62,8 @@ uint8 Timer::get_8(uint16 address) {
     }
 }
 
-bool Timer::set_8(uint16 address, uint8 value) {
-    uint16 relativeAddress = address - ADDRESS_DIVIDER;
+bool Timer::set_8(u_int16_t address, u_int8_t value) {
+    u_int16_t relativeAddress = address - ADDRESS_DIVIDER;
 
     switch(relativeAddress) {
         case 0:

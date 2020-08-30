@@ -10,7 +10,7 @@
 
 class MonochromePalette {
 public:
-    static palette get(uint8 value);
+    static palette get(u_int8_t value);
 };
 
 

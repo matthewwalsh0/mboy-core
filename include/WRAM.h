@@ -6,17 +6,17 @@
 #define MBOY_ANDROID_WRAM_H
 
 
-#include "Types.h"
+#include <sys/types.h>
 
 class WRAM {
 private:
-    uint8 data[8][4 * 1024];
-    uint8 bank = 1;
+    u_int8_t data[8][4 * 1024];
+    u_int8_t bank = 1;
 public:
-    uint8 getBank();
-    void setBank(uint8 value);
-    uint8 get_8(uint16 address);
-    void set_8(uint16 address, uint8 value);
+    u_int8_t getBank();
+    void setBank(u_int8_t value);
+    u_int8_t get_8(u_int16_t address);
+    void set_8(u_int16_t address, u_int8_t value);
 };
 
 

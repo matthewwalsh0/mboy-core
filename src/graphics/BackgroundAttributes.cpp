@@ -5,7 +5,7 @@
 #include "BackgroundAttributes.h"
 #include "Bytes.h"
 
-BackgroundAttributes::BackgroundAttributes(uint8 data) {
+BackgroundAttributes::BackgroundAttributes(u_int8_t data) {
     paletteNumber = data & 0x7;
     alternateBank = Bytes::getBit_8(data, 3);
     priority = Bytes::getBit_8(data, 7);

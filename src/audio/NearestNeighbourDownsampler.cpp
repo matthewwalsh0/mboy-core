@@ -4,14 +4,14 @@
 
 #include "NearestNeighbourDownsampler.h"
 
-const uint16 SAMPLE_COUNT = 4194304 / SAMPLE_RATE;
+const u_int16_t SAMPLE_COUNT = 4194304 / SAMPLE_RATE;
 
-void NearestNeighbourDownsampler::addSample(uint16 volume, uint16 count, uint16 totalCount,
-                                            uint16 maxVolume) {
+void NearestNeighbourDownsampler::addSample(u_int16_t volume, u_int16_t count, u_int16_t totalCount,
+                                            u_int16_t maxVolume) {
     cycleCount += count;
 
     if(cycleCount >= SAMPLE_COUNT) {
-        uint16 test = volume;
+        u_int16_t test = volume;
         float floatSample = (float) test / maxVolume;
         buffer[bufferCount] = floatSample;
         bufferCount += 1;
@@ -20,7 +20,7 @@ void NearestNeighbourDownsampler::addSample(uint16 volume, uint16 count, uint16 
     }
 }
 
-uint16 NearestNeighbourDownsampler::getSampleCount() {
+u_int16_t NearestNeighbourDownsampler::getSampleCount() {
     return bufferCount;
 }
 

@@ -5,12 +5,12 @@
 #include <stdexcept>
 #include "APU.h"
 #include "NearestNeighbourDownsampler.h"
-#include "Types.h"
+#include <sys/types.h>
 #include "GUI.h"
 #include "WaveChannel.h"
 #include "Bytes.h"
 
-const uint16 CHANNEL_VOLUME = 15;
+const u_int16_t CHANNEL_VOLUME = 15;
 
 APU::APU(GUI* gui, MemoryHook* memory, struct config* config) :
     square_1(SQUARE_1_ADDRESS_START),
@@ -21,7 +21,7 @@ APU::APU(GUI* gui, MemoryHook* memory, struct config* config) :
     this->config = config;
 }
 
-void APU::step(uint16 lastInstructionDuration, uint32 count) {
+void APU::step(u_int16_t lastInstructionDuration, u_int32_t count) {
     if(!power) return;
 
     square_1.step(lastInstructionDuration);
@@ -32,8 +32,8 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     frameSequencerCycleCount += lastInstructionDuration;
     volumeEnvelopeCounter += lastInstructionDuration;
 
-    uint16 finalVolume = 0;
-    uint16 maxVolume = 0;
+    u_int16_t finalVolume = 0;
+    u_int16_t maxVolume = 0;
 
     if(config->square1) {
         finalVolume += square_1.sample;
@@ -87,11 +87,11 @@ void APU::step(uint16 lastInstructionDuration, uint32 count) {
     }
 }
 
-uint8 APU::get_8(uint16 address) {
+u_int8_t APU::get_8(u_int16_t address) {
     throw std::invalid_argument("Invalid read from APU.");
 }
 
-bool APU::set_8(uint16 address, uint8 value) {
+bool APU::set_8(u_int16_t address, u_int8_t value) {
     if(address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4)
         return square_1.set_8(address, value);
 

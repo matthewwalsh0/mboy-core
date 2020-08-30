@@ -6,7 +6,7 @@
 #include "Bytes.h"
 #include "MemoryMap.h"
 
-Control::Control(uint8 value) {
+Control::Control(u_int8_t value) {
     background = Bytes::getBit_8(value, 0);
     sprites = Bytes::getBit_8(value, 1);
     largeSprites = Bytes::getBit_8(value, 2);

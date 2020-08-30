@@ -5,33 +5,33 @@
 #ifndef MBOY_ANDROID_NOISECHANNEL_H
 #define MBOY_ANDROID_NOISECHANNEL_H
 
-#include "Types.h"
+#include <sys/types.h>
 
 class NoiseChannel {
 private:
     bool enabled;
-    uint16 lsfr = 0xFF;
-    uint8 divisor = 0;
-    uint8 widthMode = 0;
-    uint8 shift = 0;
-    int32 frequencyTimer = 0;
+    u_int16_t lsfr = 0xFF;
+    u_int8_t divisor = 0;
+    u_int8_t widthMode = 0;
+    u_int8_t shift = 0;
+    int32_t frequencyTimer = 0;
     bool trigger = false;
-    uint8 volume = 0;
-    uint8 lengthLoad = 0;
+    u_int8_t volume = 0;
+    u_int8_t lengthLoad = 0;
     bool lengthEnabled = false;
-    uint8 lengthCounter = 0;
+    u_int8_t lengthCounter = 0;
     bool envelopeEnabled = false;
-    uint8 envelopePeriod = 0;
+    u_int8_t envelopePeriod = 0;
     bool envelopeAddMode = true;
-    uint8 envelopeTimer = 0;
+    u_int8_t envelopeTimer = 0;
 public:
-    uint16 sample = 0;
+    u_int16_t sample = 0;
 
-    void step(uint16 lastInstructionDuration);
+    void step(u_int16_t lastInstructionDuration);
     void lengthStep();
     void volumeStep();
-    uint8 get_8(uint16 address);
-    bool set_8(uint16 address, uint8 value);
+    u_int8_t get_8(u_int16_t address);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

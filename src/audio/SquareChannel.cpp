@@ -12,12 +12,12 @@ const bool DUTY_CYCLE_2[] = {true, false, false, false, false, true, true, true}
 const bool DUTY_CYCLE_3[] = {false, true, true, true, true, true, true, false};
 const bool* DUTY_CYCLES[] = {DUTY_CYCLE_0, DUTY_CYCLE_1, DUTY_CYCLE_2, DUTY_CYCLE_3};
 
-SquareChannel::SquareChannel(uint16 addressStart) {
+SquareChannel::SquareChannel(u_int16_t addressStart) {
     this->addressStart = addressStart;
 }
 
-void SquareChannel::step(uint16 lastInstructionDuration) {
-    uint8 extraCycles = 0;
+void SquareChannel::step(u_int16_t lastInstructionDuration) {
+    u_int8_t extraCycles = 0;
 
     sample = 0;
 
@@ -67,11 +67,11 @@ void SquareChannel::lengthStep() {
     }
 }
 
-uint8 SquareChannel::get_8(uint16 address) {
+u_int8_t SquareChannel::get_8(u_int16_t address) {
     throw std::invalid_argument("Bad read from square channel.");
 }
 
-bool SquareChannel::set_8(uint16 address, uint8 value) {
+bool SquareChannel::set_8(u_int16_t address, u_int8_t value) {
     int relativeAddress = address - addressStart;
 
     switch(relativeAddress) {

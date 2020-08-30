@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_CONTROL_H
 #define MY_APPLICATION_CONTROL_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 
 class Control {
@@ -19,7 +19,7 @@ public:
     bool alternateWindowTileMap;
     bool display;
 
-    Control(uint8 value);
+    Control(u_int8_t value);
     Control(MemoryHook* memory);
 };
 

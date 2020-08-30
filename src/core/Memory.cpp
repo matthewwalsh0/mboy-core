@@ -6,8 +6,8 @@
 #include "Bytes.h"
 #include "MemoryMap.h"
 
-const uint16 ADDRESS_DMA_TRANSFER = 0xFF46;
-const uint16 ADDRESS_SPRITE_INFO_START = 0xFE00;
+const u_int16_t ADDRESS_DMA_TRANSFER = 0xFF46;
+const u_int16_t ADDRESS_SPRITE_INFO_START = 0xFE00;
 
 void Memory::init(CoreMemory *coreMemory, Rom *rom, CPU *cpu, GPU *gpu,
         Timer* timer, APU* apu, Joypad* joypad) {
@@ -23,8 +23,8 @@ void Memory::init(CoreMemory *coreMemory, Rom *rom, CPU *cpu, GPU *gpu,
     set_8(ADDRESS_JOYPAD, 0x0F);
 }
 
-uint8 Memory::get_8(uint16 address) {
-    uint8 nibble_1 = (address & 0xF000) >> 12;
+u_int8_t Memory::get_8(u_int16_t address) {
+    u_int8_t nibble_1 = (address & 0xF000) >> 12;
 
     switch(nibble_1) {
         case 0:
@@ -68,8 +68,8 @@ uint8 Memory::get_8(uint16 address) {
     }
 }
 
-uint8 Memory::get_8(uint16 address, uint8 bank) {
-    uint8 nibble_1 = (address & 0xF000) >> 12;
+u_int8_t Memory::get_8(u_int16_t address, u_int8_t bank) {
+    u_int8_t nibble_1 = (address & 0xF000) >> 12;
 
     switch(nibble_1) {
         case 8:
@@ -80,11 +80,11 @@ uint8 Memory::get_8(uint16 address, uint8 bank) {
     }
 }
 
-uint8 Memory::get_core_8(uint16 address) {
+u_int8_t Memory::get_core_8(u_int16_t address) {
     return coreMemory->get_8(address);
 }
 
-bool Memory::set_8(uint16 address, uint8 value) {
+bool Memory::set_8(u_int16_t address, u_int8_t value) {
     if((address >= 0x0000 && address <= 0x7FFF)  || (address >= 0xA000 && address <= 0xBFFF)) {
         rom->set_8(address, value);
         return true;
@@ -144,24 +144,24 @@ bool Memory::set_8(uint16 address, uint8 value) {
     return true;
 }
 
-bool Memory::set_16(uint16 address, uint16 value) {
+bool Memory::set_16(u_int16_t address, u_int16_t value) {
     set_8(address,  Bytes::split_16_lower(value));
     set_8(address + 1, Bytes::split_16_upper(value));
     return true;
 }
 
-void Memory::flagInterrupt(uint8 bit) {
+void Memory::flagInterrupt(u_int8_t bit) {
     cpu->flagInterrupt(bit);
 }
 
-void Memory::dma(uint8 value) {
-    uint16 start = Bytes::join_8(value, 0x00);
-    uint16 end = Bytes::join_8(value, 0x9F) + 1;
+void Memory::dma(u_int8_t value) {
+    u_int16_t start = Bytes::join_8(value, 0x00);
+    u_int16_t end = Bytes::join_8(value, 0x9F) + 1;
 
-    for(uint16 sourceAddress = start; sourceAddress < end; sourceAddress++) {
-        uint16 relative = sourceAddress - start;
-        uint16 targetAddress = ADDRESS_SPRITE_INFO_START + relative;
-        uint8 sourceValue = get_8(sourceAddress);
+    for(u_int16_t sourceAddress = start; sourceAddress < end; sourceAddress++) {
+        u_int16_t relative = sourceAddress - start;
+        u_int16_t targetAddress = ADDRESS_SPRITE_INFO_START + relative;
+        u_int8_t sourceValue = get_8(sourceAddress);
         set_8(targetAddress, sourceValue);
     }
 }

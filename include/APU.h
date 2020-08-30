@@ -10,17 +10,17 @@
 #include "WaveChannel.h"
 #include "NoiseChannel.h"
 #include "MemoryMap.h"
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 #include "Config.h"
 
-const uint16 SAMPLE_PLAY_COUNT = 1024;
-const uint32 SAMPLE_RATE = 65536;
+const u_int16_t SAMPLE_PLAY_COUNT = 1024;
+const u_int32_t SAMPLE_RATE = 65536;
 
 class Downsampler {
 public:
-    virtual void addSample(uint16 volume, uint16 count, uint16 totalCount, uint16 maxVolume) {};
-    virtual uint16 getSampleCount() { return 0; }
+    virtual void addSample(u_int16_t volume, u_int16_t count, u_int16_t totalCount, u_int16_t maxVolume) {};
+    virtual u_int16_t getSampleCount() { return 0; }
     virtual float* getSamples() { return nullptr; }
 };
 
@@ -32,16 +32,16 @@ private:
     SquareChannel square_2;
     WaveChannel wave;
     NoiseChannel noise;
-    uint16 frameSequencerCycleCount = 0;
-    uint32 volumeEnvelopeCounter = 0;
+    u_int16_t frameSequencerCycleCount = 0;
+    u_int32_t volumeEnvelopeCounter = 0;
     bool ready = false;
     bool power = false;
     struct config* config;
 public:
     APU(GUI* gui, MemoryHook* memory, struct config* config);
-    void step(uint16 lastInstructionDuration, uint32 count);
-    uint8 get_8(uint16 address);
-    bool set_8(uint16 address, uint8 value);
+    void step(u_int16_t lastInstructionDuration, u_int32_t count);
+    u_int8_t get_8(u_int16_t address);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

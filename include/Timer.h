@@ -5,22 +5,22 @@
 #ifndef MY_APPLICATION_TIMER_H
 #define MY_APPLICATION_TIMER_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 
 class Timer {
 private:
-    uint16 divider = 0;
-    uint16 counter = 0;
-    uint16 modulo = 0;
-    uint16 speed = 256;
+    u_int16_t divider = 0;
+    u_int16_t counter = 0;
+    u_int16_t modulo = 0;
+    u_int16_t speed = 256;
     bool running = false;
-    uint16 dividerCycleCount = 0;
-    uint16 counterCycleCount = 0;
+    u_int16_t dividerCycleCount = 0;
+    u_int16_t counterCycleCount = 0;
 public:
-    void step(uint16 cycleCount, MemoryHook* memory);
-    uint8 get_8(uint16 address);
-    bool set_8(uint16 address, uint8 value);
+    void step(u_int16_t cycleCount, MemoryHook* memory);
+    u_int8_t get_8(u_int16_t address);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

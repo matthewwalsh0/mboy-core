@@ -3,22 +3,22 @@
 //
 
 #include "MonochromePalette.h"
-#include "Types.h"
+#include <sys/types.h>
 #include "Bytes.h"
 
-const uint32 PALETTE_WHITE = 0xFFD0F8E0;
-const uint32 LIGHT_GREY = 0xFF70C088;
-const uint32 DARK_GREY = 0xFF566834;
-const uint32 BLACK = 0xFF201808;
+const u_int32_t PALETTE_WHITE = 0xFFD0F8E0;
+const u_int32_t LIGHT_GREY = 0xFF70C088;
+const u_int32_t DARK_GREY = 0xFF566834;
+const u_int32_t BLACK = 0xFF201808;
 
-static uint32 getColour(bool first, bool second) {
+static u_int32_t getColour(bool first, bool second) {
     if(!first && !second) return PALETTE_WHITE;
     if(first && !second) return LIGHT_GREY;
     if(!first && second) return DARK_GREY;
     return BLACK;
 }
 
-palette MonochromePalette::get(uint8 value) {
+palette MonochromePalette::get(u_int8_t value) {
     palette palette;
 
     palette.checksum = value;

@@ -10,8 +10,8 @@ Joypad::Joypad(GUI *gui) {
     this->gui = gui;
 }
 
-uint8 Joypad::get_8(uint16 address) {
-    uint8 value = column | 0x0F;
+u_int8_t Joypad::get_8(u_int16_t address) {
+    u_int8_t value = column | 0x0F;
     bool buttonStart = false;
     bool buttonSelect = false;
     bool buttonA = false;
@@ -49,8 +49,8 @@ uint8 Joypad::get_8(uint16 address) {
     return value;
 }
 
-bool Joypad::set_8(uint16 address, uint8 value) {
-    uint8 columnValue = value & 0x30;
+bool Joypad::set_8(u_int16_t address, u_int8_t value) {
+    u_int8_t columnValue = value & 0x30;
     bool column_1 = Bytes::getBit_8(columnValue, 4);
     bool column_2 = Bytes::getBit_8(columnValue, 5);
 

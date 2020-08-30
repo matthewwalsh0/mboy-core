@@ -9,12 +9,12 @@
 #include "MBC3.h"
 #include "MBC5.h"
 
-const uint16 ADDRESS_TITLE_START = 0x0134;
-const uint16 ROM_SIZE = 0x8000;
-const uint32 MAX_ROM_SIZE = 1024 * 1024 * 8;
+const u_int16_t ADDRESS_TITLE_START = 0x0134;
+const u_int16_t ROM_SIZE = 0x8000;
+const u_int32_t MAX_ROM_SIZE = 1024 * 1024 * 8;
 
-static Controller* getController(uint8* rom) {
-    uint8 value = rom[ADDRESS_TYPE];
+static Controller* getController(u_int8_t* rom) {
+    u_int8_t value = rom[ADDRESS_TYPE];
 
     if(value == 0x0) return nullptr;
     if(value == 0x1 || value == 0x3) {
@@ -42,12 +42,12 @@ Rom::Rom(std::string filename) {
                 "Cannot read file.\nFile: " + filename + "\nReason: " + strerror(errno));
     }
 
-    rom = new uint8[MAX_ROM_SIZE];
-    for(uint32 i = 0; i < MAX_ROM_SIZE; i++) {
+    rom = new u_int8_t[MAX_ROM_SIZE];
+    for(u_int32_t i = 0; i < MAX_ROM_SIZE; i++) {
         rom[i] = 0;
     }
 
-    uint32 fileSize = file.tellg();
+    u_int32_t fileSize = file.tellg();
     file.seekg(0, std::ios::beg);
     file.read((char*) rom, fileSize);
 
@@ -58,9 +58,9 @@ Rom::Rom(std::string filename) {
     ram = (Ram*) new SaveFile(filename);
 }
 
-uint8 Rom::get_8(uint16 address) {
+u_int8_t Rom::get_8(u_int16_t address) {
     if(controller != nullptr) {
-        int16 controllerValue = this->controller->get_8(address, rom, ram);
+        int16_t controllerValue = this->controller->get_8(address, rom, ram);
         if(controllerValue != -1) return controllerValue;
     }
 
@@ -71,7 +71,7 @@ uint8 Rom::get_8(uint16 address) {
     return 0;
 }
 
-bool Rom::set_8(uint16 address, uint8 value) {
+bool Rom::set_8(u_int16_t address, u_int8_t value) {
     if(controller != nullptr) {
         bool set = this->controller->set_8(address, value, rom, ram);
         if(set) return true;
@@ -80,7 +80,7 @@ bool Rom::set_8(uint16 address, uint8 value) {
     return false;
 }
 
-std::string Rom::readName(uint8* rom) {
+std::string Rom::readName(u_int8_t* rom) {
     char name[30];
     strcpy(name, (const char*) rom + ADDRESS_TITLE_START);
     return std::string(name);

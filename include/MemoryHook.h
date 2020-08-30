@@ -5,31 +5,31 @@
 #ifndef MY_APPLICATION_MEMORYHOOK_H
 #define MY_APPLICATION_MEMORYHOOK_H
 
-#include "Types.h"
+#include <sys/types.h>
 
 class MemoryHook {
 public:
-    virtual uint8 get_8(uint16 address) {
+    virtual u_int8_t get_8(u_int16_t address) {
         return 0;
     }
 
-    virtual uint8 get_8(uint16 address, uint8 bank) {
+    virtual u_int8_t get_8(u_int16_t address, u_int8_t bank) {
         return 0;
     }
 
-    virtual uint8 get_core_8(uint16 address) {
+    virtual u_int8_t get_core_8(u_int16_t address) {
         return 0;
     }
 
-    virtual bool set_8(uint16 address, uint8 value) {
+    virtual bool set_8(u_int16_t address, u_int8_t value) {
         return false;
     }
 
-    virtual bool set_16(uint16 address, uint16 value) {
+    virtual bool set_16(u_int16_t address, u_int16_t value) {
         return false;
     };
 
-    virtual void flagInterrupt(uint8 bit) {};
+    virtual void flagInterrupt(u_int8_t bit) {};
 };
 
 #endif //MY_APPLICATION_MEMORYHOOK_H

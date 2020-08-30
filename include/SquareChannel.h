@@ -5,32 +5,32 @@
 #ifndef MBOY_ANDROID_SQUARECHANNEL_H
 #define MBOY_ANDROID_SQUARECHANNEL_H
 
-#include "Types.h"
+#include <sys/types.h>
 #include "MemoryHook.h"
 
 class SquareChannel : MemoryHook {
 private:
-    uint16 addressStart = 0;
+    u_int16_t addressStart = 0;
     bool firstEnabled = false;
     bool enabled = false;
-    uint16 frequency = 0;
-    int32 frequencyTimer = 0;
-    uint16 duty = 0;
-    uint16 dutyIndex = 0;
+    u_int16_t frequency = 0;
+    int32_t frequencyTimer = 0;
+    u_int16_t duty = 0;
+    u_int16_t dutyIndex = 0;
     bool trigger = false;
     bool dacEnabled = false;
-    uint16 lengthLoad = 0;
+    u_int16_t lengthLoad = 0;
     bool lengthEnabled = false;
-    uint16 lengthCounter = 0;
-    uint16 volume = 0;
+    u_int16_t lengthCounter = 0;
+    u_int16_t volume = 0;
 public:
-    uint16 sample = 0;
+    u_int16_t sample = 0;
 
-    SquareChannel(uint16 addressStart);
-    void step(uint16 lastInstructionDuration);
+    SquareChannel(u_int16_t addressStart);
+    void step(u_int16_t lastInstructionDuration);
     void lengthStep();
-    uint8 get_8(uint16 address) override;
-    bool set_8(uint16 address, uint8 value) override;
+    u_int8_t get_8(u_int16_t address) override;
+    bool set_8(u_int16_t address, u_int8_t value) override;
 };
 
 
