@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include "MemoryHook.h"
 #include "LogFile.h"
+#include "Memory.h"
 
 enum Register {
     A,
@@ -60,7 +61,7 @@ public:
 
     LogFile logFile;
 
-    CPU();
+    CPU(Memory* memory);
     u_int8_t get_8(Register cpuRegister);
     u_int8_t get_f();
     void set_f(u_int8_t value);
@@ -73,8 +74,6 @@ public:
     void setInterruptEnable(u_int8_t value);
     void setInterruptFlags(u_int8_t value);
     void flagInterrupt(u_int8_t bit);
-    u_int8_t get_8(u_int16_t address);
-    bool set_8(u_int16_t address, u_int8_t value);
 
 private:
     u_int16_t checkInterrupts(MemoryHook* memory);

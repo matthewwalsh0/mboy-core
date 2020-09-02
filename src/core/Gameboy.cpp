@@ -5,15 +5,19 @@
 #include "Gameboy.h"
 
 Gameboy::Gameboy(std::string path, GUI* gui, struct config* config) :
-    rom(path),
-    gpu((MemoryHook*) &memory, gui, config),
-    apu(gui, (MemoryHook*) &memory, config),
-    joypad(gui) {
+    memory(),
+    rom(path, &memory),
+    cpu(&memory),
+    gpu(&memory, gui, config),
+    apu(gui, &memory, config),
+    timer(&memory),
+    joypad(gui, &memory) {
 
     this->gui = gui;
     this->config = config;
 
-    memory.init(&coreMemory, &rom, &cpu, &gpu, &timer, &apu, &joypad);
+    memory.set_8(LCD_CONTROL, 0x91);
+    memory.set_8(ADDRESS_JOYPAD, 0x0F);
 }
 
 void Gameboy::run() {

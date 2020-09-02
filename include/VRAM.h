@@ -6,17 +6,18 @@
 #define MY_APPLICATION_VRAM_H
 
 #include <sys/types.h>
+#include "MemoryRegister.h"
+
+const u_int8_t VRAM_BANK_COUNT = 2;
+const u_int16_t VRAM_BANK_SIZE = 8 * 1024;
 
 class VRAM {
 private:
-    u_int8_t data[2][8 * 1024];
+    u_int8_t data[VRAM_BANK_COUNT * VRAM_BANK_SIZE];
 public:
     u_int8_t bank;
 
-    void setBank(u_int8_t value);
-    u_int8_t get_8(u_int16_t address);
-    u_int8_t get_8(u_int16_t address, u_int8_t bank);
-    void set_8(u_int16_t address, u_int8_t value);
+    VRAM(MemoryRegister* memory);
 };
 
 

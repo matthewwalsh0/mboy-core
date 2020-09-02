@@ -1,7 +1,3 @@
-//
-// Created by matthew on 12/07/2020.
-//
-
 #include <stdexcept>
 #include "APU.h"
 #include "NearestNeighbourDownsampler.h"
@@ -12,13 +8,19 @@
 
 const u_int16_t CHANNEL_VOLUME = 15;
 
-APU::APU(GUI* gui, MemoryHook* memory, struct config* config) :
+APU::APU(GUI* gui, Memory* memory, struct config* config) :
     square_1(SQUARE_1_ADDRESS_START),
     square_2(SQUARE_2_ADDRESS_START),
-    wave(memory, WAVE_TABLE_START) {
+    wave((MemoryHook*) memory, WAVE_TABLE_START) {
     this->gui = gui;
     this->downsampler = (Downsampler*) new NearestNeighbourDownsampler();
     this->config = config;
+
+    memory->registerSetter(SQUARE_1_ADDRESS_START, SQUARE_1_ADDRESS_START + 3, (MemoryHook*) this);
+    memory->registerSetter(SQUARE_2_ADDRESS_START, SQUARE_2_ADDRESS_START + 3, (MemoryHook*) this);
+    memory->registerSetter(WAVE_START, WAVE_START + 4, (MemoryHook*) this);
+    memory->registerSetter(0xFF20, 0xFF23, (MemoryHook*) this);
+    memory->registerSetter(0xFF26, (MemoryHook*) this);
 }
 
 void APU::step(u_int16_t lastInstructionDuration, u_int32_t count) {
@@ -92,17 +94,25 @@ u_int8_t APU::get_8(u_int16_t address) {
 }
 
 bool APU::set_8(u_int16_t address, u_int8_t value) {
-    if(address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4)
-        return square_1.set_8(address, value);
+    if(address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4) {
+        square_1.set_8(address, value);
+        return false;
+    }
 
-    if(address >= SQUARE_2_ADDRESS_START && address < SQUARE_2_ADDRESS_START + 4)
-        return square_2.set_8(address, value);
+    if(address >= SQUARE_2_ADDRESS_START && address < SQUARE_2_ADDRESS_START + 4) {
+        square_2.set_8(address, value);
+        return false;
+    }
 
-    if(address >= WAVE_START && address < WAVE_START + 5)
-        return wave.set_8(address, value);
+    if(address >= WAVE_START && address < WAVE_START + 5) {
+        wave.set_8(address, value);
+        return false;
+    }
 
-    if(address >= 0xFF20 && address <= 0xFF23)
-        return noise.set_8(address, value);
+    if(address >= 0xFF20 && address <= 0xFF23) {
+        noise.set_8(address, value);
+        return false;
+    }
 
     if(address == 0xFF26) {
         power = Bytes::getBit_8(value, 7);

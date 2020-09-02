@@ -10,6 +10,7 @@
 #include "SaveFile.h"
 #include <string>
 #include "Ram.h"
+#include "Memory.h"
 
 class Controller {
 public:
@@ -17,7 +18,7 @@ public:
     virtual bool set_8(u_int16_t address, u_int8_t value, u_int8_t* rom, Ram* ram) { return false; };
 };
 
-class Rom {
+class Rom : MemoryHook {
 
 private:
     u_int8_t* rom;
@@ -25,14 +26,13 @@ private:
     Controller* controller;
 
     std::string readName(u_int8_t* rom);
-
+    u_int8_t get_8(u_int16_t address) override;
+    bool set_8(u_int16_t address, u_int8_t value) override;
 public:
     bool isColour = false;
     std::string name;
 
-    Rom(std::string filename);
-    u_int8_t get_8(u_int16_t address);
-    bool set_8(u_int16_t address, u_int8_t value);
+    Rom(std::string filename, Memory* memory);
 };
 
 #endif //MY_APPLICATION_ROM_H

@@ -1,7 +1,3 @@
-//
-// Created by matthew on 06/07/2020.
-//
-
 #include "Display.h"
 #include "MemoryMap.h"
 #include "MonochromePalette.h"
@@ -124,59 +120,9 @@ void Display::drawLine(Pixels *pixels, u_int8_t line, bool isColour, Control *co
     drawSpriteLine(pixels, memory, control, line, &tileSet_1, scrollX, scrollY, backgroundMonochromePalette, isColour, &backgroundColourPaletteData, &spriteColourPaletteData, tileMap, config->sprites, spriteCache);
 }
 
-u_int8_t Display::get_8(u_int16_t address) {
-    if(address == 0xFF69)
-        return backgroundColourPaletteData.get_8(address);
-
-    if(address == 0xFF6A)
-        return spriteColourPaletteData.get_8(address);
-
-    return 0;
-}
-
-static void invalidateTile(TileMap* tileMap, u_int16_t address) {
+void Display::invalidateTile(TileMap* tileMap, u_int16_t address) {
     u_int16_t index = address - tileMap->start;
     int tileIndexY = index / TILE_COUNT;
     int tileIndexX = index % TILE_COUNT;
     tileMap->invalidateTile(tileIndexX, tileIndexY);
-}
-
-bool Display::set_8(u_int16_t address, u_int8_t value) {
-    if(address >= TILE_SET_0_START && address < TILE_SET_0_END) {
-        tileSet_0.clearCache();
-        tileMap_0.invalidateAllTiles();
-        tileMap_1.invalidateAllTiles();
-        return true;
-    }
-    
-    if(address >= TILE_SET_1_START && address < TILE_SET_1_END) {
-        tileSet_1.clearCache();
-        tileMap_0.invalidateAllTiles();
-        tileMap_1.invalidateAllTiles();
-        return true;
-    }
-
-    if(address >= TILE_MAP_0_START && address < TILE_MAP_0_END) {
-        invalidateTile(&tileMap_0, address);
-        return true;
-    } else if(address >= TILE_MAP_1_START && address < TILE_MAP_1_END) {
-        invalidateTile(&tileMap_1, address);
-        return true;
-    }
-
-    if(address == 0xFF68 || address == 0xFF69) {
-        backgroundColourPaletteData.set_8(address, value);
-        tileMap_0.invalidateAllTiles();
-        tileMap_1.invalidateAllTiles();
-        return true;
-    }
-
-    if(address == 0xFF6A || address == 0xFF6B) {
-        spriteColourPaletteData.set_8(address, value);
-        tileMap_0.invalidateAllTiles();
-        tileMap_1.invalidateAllTiles();
-        return true;
-    }
-
-    return true;
 }

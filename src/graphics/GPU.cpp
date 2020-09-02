@@ -1,7 +1,3 @@
-//
-// Created by matthew on 05/07/2020.
-//
-
 #include "GPU.h"
 #include "MemoryMap.h"
 #include <sys/types.h>
@@ -18,16 +14,70 @@ const u_int16_t DURATION_VERTICAL_BLANK = 456;
 const std::string LOG_PATH = "/sdcard/Download/matterboy_log_gpu.txt";
 
 const u_int16_t MODE_DURATIONS[] = {
-        DURATION_HORIZONTAL_BLANK,
-        DURATION_VERTICAL_BLANK,
-        DURATION_SCANLINE_SPRITE,
-        DURATION_SCANLINE_BACKGROUND};
+    DURATION_HORIZONTAL_BLANK,
+    DURATION_VERTICAL_BLANK,
+    DURATION_SCANLINE_SPRITE,
+    DURATION_SCANLINE_BACKGROUND};
 
-GPU::GPU(MemoryHook *memory, GUI* gui, struct config* config) :
+#define GPU_HOOK(name, get, set)\
+class name : public MemoryHook {\
+    private:\
+        GPU* gpu;\
+    public:\
+        name(GPU* gpu) {\
+            this->gpu = gpu;\
+        }\
+        u_int8_t get_8(u_int16_t address)\
+            get\
+        bool set_8(u_int16_t address, u_int8_t value)\
+            set\
+    };
+
+GPU_HOOK(StatHook, { return gpu->getStat(); }, { gpu->setStat(value); return false; });
+GPU_HOOK(LineHook, { return gpu->line; }, { gpu->line = 0; return false; });
+GPU_HOOK(TargetLineHook, { return gpu->coincidenceLine; }, { gpu->coincidenceLine = value; return false; });
+GPU_HOOK(ControlHook, { return 0; }, { gpu->setControl(value); return false; });
+GPU_HOOK(TileMap0CacheHook, { return 0; }, { gpu->display.invalidateTile(&gpu->display.tileMap_0, address); return false; });
+GPU_HOOK(TileMap1CacheHook, { return 0; }, { gpu->display.invalidateTile(&gpu->display.tileMap_1, address); return false; });
+GPU_HOOK(HDMAHook, { return gpu->getHDMA(address); }, { gpu->setHDMA(address, value); return true; });
+GPU_HOOK(BackgroundColourPaletteHook, {
+    return gpu->display.backgroundColourPaletteData.get_8(address);
+}, {
+    gpu->display.backgroundColourPaletteData.set_8(address, value);
+    gpu->display.tileMap_0.invalidateAllTiles();
+    gpu->display.tileMap_1.invalidateAllTiles();
+    return false;
+});
+GPU_HOOK(SpriteColourPaletteHook, {
+    return gpu->display.spriteColourPaletteData.get_8(address);
+}, {
+    gpu->display.spriteColourPaletteData.set_8(address, value);
+    gpu->display.tileMap_0.invalidateAllTiles();
+    gpu->display.tileMap_1.invalidateAllTiles();
+    return false;
+});
+GPU_HOOK(TileSet0CacheHook, { return 0; }, {
+    gpu->display.tileSet_0.clearCache();
+    gpu->display.tileMap_0.invalidateAllTiles();
+    gpu->display.tileMap_1.invalidateAllTiles();
+    return false;
+});
+GPU_HOOK(TileSet1CacheHook, { return 0; }, {
+    gpu->display.tileSet_1.clearCache();
+    gpu->display.tileMap_0.invalidateAllTiles();
+    gpu->display.tileMap_1.invalidateAllTiles();
+    return false;
+});
+GPU_HOOK(SpriteCacheHook, { return 0; }, {
+    gpu->display.clearSprite(address);
+    return false;
+});
+
+GPU::GPU(Memory *memory, GUI* gui, struct config* config) :
 pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
 logFile(LOG_PATH),
-display(memory, config) {
-    this->memory = memory;
+display((MemoryHook*) memory, config) {
+    this->memory = (MemoryHook*) memory;
     this->control = new Control((u_int8_t) 0);
     this->gui = gui;
     this->config = config;
@@ -40,6 +90,33 @@ display(memory, config) {
     vblankInterrupt = false;
     hblankInterrupt = false;
     coincidenceLine = 0;
+
+    MemoryHook* statHook = (MemoryHook*) new StatHook(this);
+    MemoryHook* targetLineHook = (MemoryHook*) new TargetLineHook(this);
+    MemoryHook* lineHook = (MemoryHook*) new LineHook(this);
+    MemoryHook* backgroundColourPaletteHook = (MemoryHook*) new BackgroundColourPaletteHook(this);
+    MemoryHook* spriteColourPaletteHook = (MemoryHook*) new SpriteColourPaletteHook(this);
+    MemoryHook* hdmaHook = (MemoryHook*) new HDMAHook(this);
+
+    memory->registerGetter(ADDRESS_STAT, statHook);
+    memory->registerGetter(ADDRESS_TARGET_LINE, targetLineHook);
+    memory->registerGetter(ADDRESS_LINE, lineHook);
+    memory->registerGetter(0xFF69, backgroundColourPaletteHook);
+    memory->registerGetter(0xFF6A, spriteColourPaletteHook);
+    memory->registerGetter(0xFF51, 0xFF55, hdmaHook);
+
+    memory->registerSetter(LCD_CONTROL, (MemoryHook*) new ControlHook(this));
+    memory->registerSetter(ADDRESS_STAT, statHook);
+    memory->registerSetter(ADDRESS_TARGET_LINE, targetLineHook);
+    memory->registerSetter(ADDRESS_LINE, lineHook);
+    memory->registerSetter(TILE_MAP_0_START, TILE_MAP_0_END - 1, (MemoryHook*) new TileMap0CacheHook(this), false);
+    memory->registerSetter(TILE_MAP_1_START, TILE_MAP_1_END - 1, (MemoryHook*) new TileMap1CacheHook(this), false);
+    memory->registerSetter(TILE_SET_0_START, TILE_SET_0_END - 1, (MemoryHook*) new TileSet0CacheHook(this), false);
+    memory->registerSetter(TILE_SET_1_START, TILE_SET_1_END - 1, (MemoryHook*) new TileSet1CacheHook(this), false);
+    memory->registerSetter(0xFF68, 0xFF69, backgroundColourPaletteHook);
+    memory->registerSetter(0xFF6A, 0xFF6B, spriteColourPaletteHook);
+    memory->registerSetter(SPRITE_INFO_START, SPRITE_INFO_END - 1, (MemoryHook*) new SpriteCacheHook(this), false);
+    memory->registerSetter(0xFF51, 0xFF55, hdmaHook);
 }
 
 void GPU::step(u_int16_t lastInstructionDuration, MemoryHook *memory, bool isColour, u_int32_t count) {
@@ -164,59 +241,6 @@ void GPU::setControl(u_int8_t value) {
     if(!control->display) {
         line = 0;
         mode = 0;
-    }
-}
-
-u_int8_t GPU::get_8(u_int16_t address) {
-    switch(address) {
-        case 0xFF69:
-            return display.get_8(address);
-        case 0xFF6A:
-            return display.get_8(address);
-        case ADDRESS_STAT:
-            return getStat();
-        case ADDRESS_TARGET_LINE:
-            return coincidenceLine;
-        case ADDRESS_LINE:
-            return line;
-        default:
-            throw std::invalid_argument("Invalid read from GPU.");
-    }
-}
-
-bool GPU::set_8(u_int16_t address, u_int8_t value) {
-    if(address >= TILE_SET_1_START && address < TILE_MAP_1_END) {
-        display.set_8(address, value);
-        return true;
-    } else {
-        switch (address) {
-            case 0xFF68:
-                display.set_8(address, value);
-                return true;
-            case 0xFF69:
-                display.set_8(address, value);
-                return true;
-            case 0xFF6A:
-                display.set_8(address, value);
-                return true;
-            case 0xFF6B:
-                display.set_8(address, value);
-                return true;
-            case LCD_CONTROL:
-                setControl(value);
-                return true;
-            case ADDRESS_STAT:
-                setStat(value);
-                return true;
-            case ADDRESS_TARGET_LINE:
-                coincidenceLine = value;
-                return true;
-            case ADDRESS_LINE:
-                line = 0;
-                return true;
-            default:
-                return false;
-        }
     }
 }
 

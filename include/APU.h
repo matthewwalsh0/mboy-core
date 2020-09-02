@@ -1,17 +1,14 @@
-//
-// Created by matthew on 12/07/2020.
-//
-
 #ifndef MBOY_ANDROID_APU_H
 #define MBOY_ANDROID_APU_H
 
+#include <sys/types.h>
 #include "GUI.h"
 #include "SquareChannel.h"
 #include "WaveChannel.h"
 #include "NoiseChannel.h"
 #include "MemoryMap.h"
-#include <sys/types.h>
 #include "MemoryHook.h"
+#include "Memory.h"
 #include "Config.h"
 
 const u_int16_t SAMPLE_PLAY_COUNT = 1024;
@@ -24,7 +21,7 @@ public:
     virtual float* getSamples() { return nullptr; }
 };
 
-class APU {
+class APU : MemoryHook {
 private:
     GUI *gui;
     Downsampler *downsampler;
@@ -38,11 +35,10 @@ private:
     bool power = false;
     struct config* config;
 public:
-    APU(GUI* gui, MemoryHook* memory, struct config* config);
+    APU(GUI* gui, Memory* memory, struct config* config);
     void step(u_int16_t lastInstructionDuration, u_int32_t count);
     u_int8_t get_8(u_int16_t address);
     bool set_8(u_int16_t address, u_int8_t value);
 };
 
-
-#endif //MBOY_ANDROID_APU_H
+#endif

@@ -1,10 +1,5 @@
-//
-// Created by matthew on 05/07/2020.
-//
-
 #ifndef MY_APPLICATION_GAMEBOY_H
 #define MY_APPLICATION_GAMEBOY_H
-
 
 #include "Memory.h"
 #include "CPU.h"
@@ -14,15 +9,16 @@
 #include "APU.h"
 #include "Joypad.h"
 #include "Config.h"
+#include "Rom.h"
+#include "CoreMemory.h"
 
 class Gameboy {
 private:
-    Rom rom;
     Memory memory;
+    Rom rom;
     CPU cpu;
     GPU gpu;
     APU apu;
-    CoreMemory coreMemory;
     Timer timer;
     Joypad joypad;
     GUI* gui;
@@ -32,5 +28,4 @@ public:
     void run();
 };
 
-
-#endif //MY_APPLICATION_GAMEBOY_H
+#endif

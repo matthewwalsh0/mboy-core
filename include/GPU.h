@@ -12,6 +12,7 @@
 #include "GUI.h"
 #include "LogFile.h"
 #include "Config.h"
+#include "Memory.h"
 #include <chrono>
 
 const u_int8_t SCREEN_HEIGHT = 144;
@@ -21,7 +22,7 @@ class GPU {
 private:
     u_int8_t mode;
     u_int16_t cycleCount;
-    u_int16_t line;
+    
     Pixels pixels;
     MemoryHook* memory;
     Control* control;
@@ -29,7 +30,7 @@ private:
     bool oamInterrupt;
     bool vblankInterrupt;
     bool hblankInterrupt;
-    u_int16_t coincidenceLine;
+    
     GUI* gui;
     LogFile logFile;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -39,17 +40,18 @@ private:
     struct config* config;
     
 public:
+u_int16_t line;
+u_int16_t coincidenceLine;
+
     Display display;
 
-    GPU(MemoryHook* memory, GUI* gui, struct config* config);
+    GPU(Memory* memory, GUI* gui, struct config* config);
     void step(u_int16_t lastInstructionDuration, MemoryHook* memory, bool isColour, u_int32_t count);
     u_int8_t getStat();
     void setStat(u_int8_t value);
     void setControl(u_int8_t value);
     u_int8_t getHDMA(u_int16_t address);
     void setHDMA(u_int16_t address, u_int8_t value);
-    u_int8_t get_8(u_int16_t address);
-    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

@@ -33,7 +33,7 @@ static Controller* getController(u_int8_t* rom) {
     throw std::invalid_argument("Unsupported controller type.");
 }
 
-Rom::Rom(std::string filename) {
+Rom::Rom(std::string filename, Memory* memory) {
     std::ifstream file (filename, std::ios::binary | std::ios::ate);
 
     if(!file)
@@ -56,6 +56,13 @@ Rom::Rom(std::string filename) {
     isColour = rom[ADDRESS_COLOUR_FLAG] == 0x80 || rom[ADDRESS_COLOUR_FLAG] == 0xC0;
 
     ram = (Ram*) new SaveFile(filename);
+
+    MemoryHook* memoryHook = (MemoryHook*) this;
+
+    memory->registerGetter(0, 0x7FFF, memoryHook);
+    memory->registerGetter(0xA000, 0xBFFF, memoryHook);
+    memory->registerSetter(0, 0x7FFF, memoryHook);
+    memory->registerSetter(0xA000, 0xBFFF, memoryHook);
 }
 
 u_int8_t Rom::get_8(u_int16_t address) {
@@ -77,7 +84,7 @@ bool Rom::set_8(u_int16_t address, u_int8_t value) {
         if(set) return true;
     }
 
-    return false;
+    return true;
 }
 
 std::string Rom::readName(u_int8_t* rom) {

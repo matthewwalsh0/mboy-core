@@ -5,9 +5,12 @@
 #include "Joypad.h"
 #include "Bytes.h"
 #include "GUI.h"
+#include "MemoryMap.h"
 
-Joypad::Joypad(GUI *gui) {
+Joypad::Joypad(GUI *gui, Memory* memory) {
     this->gui = gui;
+    memory->registerGetter(ADDRESS_JOYPAD, (MemoryHook*) this);
+    memory->registerSetter(ADDRESS_JOYPAD, (MemoryHook*) this);
 }
 
 u_int8_t Joypad::get_8(u_int16_t address) {

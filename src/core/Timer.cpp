@@ -1,13 +1,15 @@
-//
-// Created by matthew on 05/07/2020.
-//
-
 #include <stdexcept>
 #include "Timer.h"
 #include "Bytes.h"
 #include "MemoryMap.h"
+#include "Memory.h"
 
 const u_int16_t SPEEDS[] = {1024, 16, 64, 256};
+
+Timer::Timer(Memory* memory) {
+    memory->registerGetter(ADDRESS_DIVIDER, ADDRESS_DIVIDER + 3, (MemoryHook*) this);
+    memory->registerSetter(ADDRESS_DIVIDER, ADDRESS_DIVIDER + 3, (MemoryHook*) this);
+}
 
 void Timer::step(u_int16_t cycleCount, MemoryHook *memory) {
     for(u_int16_t i = 0; i < cycleCount; i++) {

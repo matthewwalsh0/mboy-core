@@ -6,14 +6,14 @@
 #define MY_APPLICATION_COREMEMORY_H
 
 #include <sys/types.h>
+#include "MemoryHook.h"
 
-class CoreMemory {
+class CoreMemory : public MemoryHook {
 private:
     u_int8_t data[64 * 1024] = {0};
 public:
-    CoreMemory();
     u_int8_t get_8(u_int16_t address);
-    void set_8(u_int16_t address, u_int8_t value);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 

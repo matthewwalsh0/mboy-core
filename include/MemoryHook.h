@@ -17,10 +17,6 @@ public:
         return 0;
     }
 
-    virtual u_int8_t get_core_8(u_int16_t address) {
-        return 0;
-    }
-
     virtual bool set_8(u_int16_t address, u_int8_t value) {
         return false;
     }
