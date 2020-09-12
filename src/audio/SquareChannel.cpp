@@ -3,7 +3,7 @@
 //
 
 #include <stdexcept>
-#include <Bytes.h>
+#include "Bytes.h"
 #include "SquareChannel.h"
 
 const bool DUTY_CYCLE_0[] = {false, false, false, false, false, false, false, true};

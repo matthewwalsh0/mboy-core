@@ -6,7 +6,7 @@
 #include <stdexcept>
 #include "Bytes.h"
 #include "MemoryMap.h"
-#include <WaveChannel.h>
+#include "WaveChannel.h"
 
 const u_int8_t WAVE_VOLUME_SHIFT[] = {4, 0, 1, 2};
 

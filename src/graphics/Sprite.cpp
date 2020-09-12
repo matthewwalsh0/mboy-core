@@ -2,8 +2,8 @@
 // Created by matthew on 11/07/2020.
 //
 
-#include <TileSet.h>
-#include <GPU.h>
+#include "TileSet.h"
+#include "GPU.h"
 #include "Sprite.h"
 #include "Bytes.h"
 
