@@ -6,6 +6,9 @@
 #define MY_APPLICATION_MEMORY_H
 
 #include <sys/types.h>
+#include <functional>
+#include <vector>
+
 #include "MemoryHook.h"
 #include "MemoryRegister.h"
 #include "CoreMemory.h"
@@ -17,16 +20,21 @@ private:
     CoreMemory core;
     VRAM* vram;
     WRAM* wram;
-    MemoryHook** getters;
-    MemoryHook** setters;
-    MemoryHook** setters2;
+    std::vector<MEMORY_GETTER> getters;
+    std::vector<std::vector<MEMORY_SETTER>> setters;
+    MEMORY_FLAGGER flagger;
 public:
     Memory();
-    void registerGetter(u_int16_t address, MemoryHook* getter) override;
-    void registerGetter(u_int16_t start, u_int16_t end, MemoryHook* getter) override;
-    void registerSetter(u_int16_t address, MemoryHook* setter, bool override = true) override;
-    void registerSetter(u_int16_t start, u_int16_t end, MemoryHook* setter, bool override = true) override;
     void dma(u_int8_t value);
+    
+    // MemoryRegister.h
+    virtual void registerGetter(u_int16_t address, MEMORY_GETTER getter) override;
+    virtual void registerGetter(u_int16_t start, u_int16_t end, MEMORY_GETTER getter) override;
+    virtual void registerSetter(u_int16_t address, MEMORY_SETTER setter, bool override = true) override;
+    virtual void registerSetter(u_int16_t start, u_int16_t end, MEMORY_SETTER setter, bool override = true) override;
+    virtual void registerFlagger(MEMORY_FLAGGER flagger) override;
+    
+    // MemoryHook.h
     u_int8_t get_8(u_int16_t address) override;
     u_int8_t get_8(u_int16_t address, u_int8_t bank) override;
     bool set_8(u_int16_t address, u_int8_t value) override;

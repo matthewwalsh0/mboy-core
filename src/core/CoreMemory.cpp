@@ -1,8 +1,5 @@
-//
-// Created by matthew on 05/07/2020.
-//
-
 #include "CoreMemory.h"
+
 #include "Bytes.h"
 #include "MemoryMap.h"
 

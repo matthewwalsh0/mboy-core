@@ -1,9 +1,7 @@
-//
-// Created by matthew on 04/07/2020.
-//
-
 #include "Rom.h"
+
 #include <fstream>
+
 #include "MemoryMap.h"
 #include "MBC1.h"
 #include "MBC3.h"
@@ -33,13 +31,19 @@ static Controller* getController(u_int8_t* rom) {
     throw std::invalid_argument("Unsupported controller type.");
 }
 
+static std::string readName(u_int8_t* rom) {
+    char name[30];
+    strcpy(name, (const char*) rom + ADDRESS_TITLE_START);
+    return std::string(name);
+}
+
 Rom::Rom(std::string filename, Memory* memory) {
     std::ifstream file (filename, std::ios::binary | std::ios::ate);
 
     if(!file)
     {
         throw std::invalid_argument(
-                "Cannot read file.\nFile: " + filename + "\nReason: " + strerror(errno));
+            "Cannot read file.\nFile: " + filename + "\nReason: " + strerror(errno));
     }
 
     rom = new u_int8_t[MAX_ROM_SIZE];
@@ -57,15 +61,22 @@ Rom::Rom(std::string filename, Memory* memory) {
 
     ram = (Ram*) new SaveFile(filename);
 
-    MemoryHook* memoryHook = (MemoryHook*) this;
+    auto getter = [this]MEMORY_GETTER_LAMBDA {
+        return get_8(address, bank);
+    };
 
-    memory->registerGetter(0, 0x7FFF, memoryHook);
-    memory->registerGetter(0xA000, 0xBFFF, memoryHook);
-    memory->registerSetter(0, 0x7FFF, memoryHook);
-    memory->registerSetter(0xA000, 0xBFFF, memoryHook);
+    auto setter = [this]MEMORY_SETTER_LAMBDA {
+        return set_8(address, value);
+    };
+
+    memory->registerGetter(0, 0x7FFF, getter);
+    memory->registerGetter(0xA000, 0xBFFF, getter);
+
+    memory->registerSetter(0, 0x7FFF, setter);
+    memory->registerSetter(0xA000, 0xBFFF, setter);
 }
 
-u_int8_t Rom::get_8(u_int16_t address) {
+u_int8_t Rom::get_8(u_int16_t address, u_int8_t bank) {
     if(controller != nullptr) {
         int16_t controllerValue = this->controller->get_8(address, rom, ram);
         if(controllerValue != -1) return controllerValue;
@@ -85,10 +96,4 @@ bool Rom::set_8(u_int16_t address, u_int8_t value) {
     }
 
     return true;
-}
-
-std::string Rom::readName(u_int8_t* rom) {
-    char name[30];
-    strcpy(name, (const char*) rom + ADDRESS_TITLE_START);
-    return std::string(name);
 }

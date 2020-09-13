@@ -1,11 +1,8 @@
-//
-// Created by matthew on 04/07/2020.
-//
-
 #ifndef MY_APPLICATION_CPU_H
 #define MY_APPLICATION_CPU_H
 
 #include <sys/types.h>
+
 #include "MemoryHook.h"
 #include "LogFile.h"
 #include "Memory.h"

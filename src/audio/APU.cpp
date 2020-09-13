@@ -1,10 +1,13 @@
-#include <stdexcept>
 #include "APU.h"
-#include "NearestNeighbourDownsampler.h"
+
+#include <stdexcept>
 #include <sys/types.h>
+
+#include "NearestNeighbourDownsampler.h"
 #include "GUI.h"
 #include "WaveChannel.h"
 #include "Bytes.h"
+#include "MemoryRegister.h"
 
 const u_int16_t CHANNEL_VOLUME = 15;
 
@@ -16,11 +19,30 @@ APU::APU(GUI* gui, Memory* memory, struct config* config) :
     this->downsampler = (Downsampler*) new NearestNeighbourDownsampler();
     this->config = config;
 
-    memory->registerSetter(SQUARE_1_ADDRESS_START, SQUARE_1_ADDRESS_START + 3, (MemoryHook*) this);
-    memory->registerSetter(SQUARE_2_ADDRESS_START, SQUARE_2_ADDRESS_START + 3, (MemoryHook*) this);
-    memory->registerSetter(WAVE_START, WAVE_START + 4, (MemoryHook*) this);
-    memory->registerSetter(0xFF20, 0xFF23, (MemoryHook*) this);
-    memory->registerSetter(0xFF26, (MemoryHook*) this);
+    memory->registerSetter(SQUARE_1_ADDRESS_START, SQUARE_1_ADDRESS_START + 3, [this]MEMORY_SETTER_LAMBDA {
+        square_1.set_8(address, value);
+        return false;
+    });
+
+    memory->registerSetter(SQUARE_2_ADDRESS_START, SQUARE_2_ADDRESS_START + 3, [this]MEMORY_SETTER_LAMBDA {
+        square_2.set_8(address, value);
+        return false;
+    });
+
+    memory->registerSetter(WAVE_START, WAVE_START + 4, [this]MEMORY_SETTER_LAMBDA {
+        wave.set_8(address, value);
+        return false;
+    });
+
+    memory->registerSetter(ADDRESS_NOISE_START, ADDRESS_NOISE_START + 3, [this]MEMORY_SETTER_LAMBDA {
+        noise.set_8(address, value);
+        return false;
+    });
+
+    memory->registerSetter(ADDRESS_APU_POWER, [this]MEMORY_SETTER_LAMBDA {
+        power = Bytes::getBit_8(value, 7);
+        return true;
+    });
 }
 
 void APU::step(u_int16_t lastInstructionDuration, u_int32_t count) {
@@ -87,37 +109,4 @@ void APU::step(u_int16_t lastInstructionDuration, u_int32_t count) {
         float* samples = downsampler->getSamples();
         gui->playAudio(samples, SAMPLE_PLAY_COUNT);
     }
-}
-
-u_int8_t APU::get_8(u_int16_t address) {
-    throw std::invalid_argument("Invalid read from APU.");
-}
-
-bool APU::set_8(u_int16_t address, u_int8_t value) {
-    if(address >= SQUARE_1_ADDRESS_START && address < SQUARE_1_ADDRESS_START + 4) {
-        square_1.set_8(address, value);
-        return false;
-    }
-
-    if(address >= SQUARE_2_ADDRESS_START && address < SQUARE_2_ADDRESS_START + 4) {
-        square_2.set_8(address, value);
-        return false;
-    }
-
-    if(address >= WAVE_START && address < WAVE_START + 5) {
-        wave.set_8(address, value);
-        return false;
-    }
-
-    if(address >= 0xFF20 && address <= 0xFF23) {
-        noise.set_8(address, value);
-        return false;
-    }
-
-    if(address == 0xFF26) {
-        power = Bytes::getBit_8(value, 7);
-        return true;
-    }
-
-    throw std::invalid_argument("Invalid write to APU.");
 }

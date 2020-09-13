@@ -1,11 +1,8 @@
-//
-// Created by matthew on 06/07/2020.
-//
-
 #ifndef MY_APPLICATION_VRAM_H
 #define MY_APPLICATION_VRAM_H
 
 #include <sys/types.h>
+
 #include "MemoryRegister.h"
 
 const u_int8_t VRAM_BANK_COUNT = 2;
@@ -19,6 +16,5 @@ public:
 
     VRAM(MemoryRegister* memory);
 };
-
 
 #endif //MY_APPLICATION_VRAM_H

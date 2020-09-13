@@ -1,14 +1,9 @@
-//
-// Created by matthew on 11/07/2020.
-//
-
 #ifndef MBOY_ANDROID_SQUARECHANNEL_H
 #define MBOY_ANDROID_SQUARECHANNEL_H
 
 #include <sys/types.h>
-#include "MemoryHook.h"
 
-class SquareChannel : MemoryHook {
+class SquareChannel {
 private:
     u_int16_t addressStart = 0;
     bool firstEnabled = false;
@@ -29,9 +24,8 @@ public:
     SquareChannel(u_int16_t addressStart);
     void step(u_int16_t lastInstructionDuration);
     void lengthStep();
-    u_int8_t get_8(u_int16_t address) override;
-    bool set_8(u_int16_t address, u_int8_t value) override;
+    u_int8_t get_8(u_int16_t address, u_int8_t bank);
+    bool set_8(u_int16_t address, u_int8_t value);
 };
-
 
 #endif //MBOY_ANDROID_SQUARECHANNEL_H

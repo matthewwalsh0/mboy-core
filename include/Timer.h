@@ -2,10 +2,10 @@
 #define MY_APPLICATION_TIMER_H
 
 #include <sys/types.h>
-#include "MemoryHook.h"
+
 #include "Memory.h"
 
-class Timer : MemoryHook {
+class Timer {
 private:
     u_int16_t divider = 0;
     u_int16_t counter = 0;
@@ -17,8 +17,6 @@ private:
 public:
     Timer(Memory* memory);
     void step(u_int16_t cycleCount, MemoryHook* memory);
-    u_int8_t get_8(u_int16_t address) override;
-    bool set_8(u_int16_t address, u_int8_t value) override;
 };
 
 #endif

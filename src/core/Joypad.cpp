@@ -1,19 +1,11 @@
-//
-// Created by matthew on 17/07/2020.
-//
-
 #include "Joypad.h"
+
 #include "Bytes.h"
 #include "GUI.h"
 #include "MemoryMap.h"
+#include "MemoryRegister.h"
 
-Joypad::Joypad(GUI *gui, Memory* memory) {
-    this->gui = gui;
-    memory->registerGetter(ADDRESS_JOYPAD, (MemoryHook*) this);
-    memory->registerSetter(ADDRESS_JOYPAD, (MemoryHook*) this);
-}
-
-u_int8_t Joypad::get_8(u_int16_t address) {
+static u_int8_t get_8(GUI* gui, u_int16_t column) {
     u_int8_t value = column | 0x0F;
     bool buttonStart = false;
     bool buttonSelect = false;
@@ -52,17 +44,28 @@ u_int8_t Joypad::get_8(u_int16_t address) {
     return value;
 }
 
-bool Joypad::set_8(u_int16_t address, u_int8_t value) {
+static bool set_8(u_int8_t* column, u_int8_t value) {
     u_int8_t columnValue = value & 0x30;
     bool column_1 = Bytes::getBit_8(columnValue, 4);
     bool column_2 = Bytes::getBit_8(columnValue, 5);
 
     if(column_1) {
-        column = 0;
+        *column = 0;
     } else if(column_2) {
-        column = 1;
+        *column = 1;
     }
 
     return true;
 }
 
+Joypad::Joypad(GUI *gui, Memory* memory) {
+    this->gui = gui;
+
+    memory->registerGetter(ADDRESS_JOYPAD, [this]MEMORY_GETTER_LAMBDA {
+        return get_8(this->gui, column);
+    });
+
+    memory->registerSetter(ADDRESS_JOYPAD, [this]MEMORY_SETTER_LAMBDA {
+        return set_8(&column, value);
+    });
+}

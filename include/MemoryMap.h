@@ -48,6 +48,8 @@ const u_int16_t SQUARE_1_ADDRESS_START = 0xFF11;
 const u_int16_t SQUARE_2_ADDRESS_START = 0xFF16;
 const u_int16_t WAVE_TABLE_START = 0xFF30;
 const u_int16_t WAVE_START = 0xFF1A;
+const u_int16_t ADDRESS_NOISE_START = 0xFF20;
+const u_int16_t ADDRESS_APU_POWER = 0xFF26;
 
 // Memory Controller
 const u_int16_t ADDRESS_TYPE = 0x0147;

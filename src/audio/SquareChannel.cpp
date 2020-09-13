@@ -1,10 +1,8 @@
-//
-// Created by matthew on 11/07/2020.
-//
+#include "SquareChannel.h"
 
 #include <stdexcept>
+
 #include "Bytes.h"
-#include "SquareChannel.h"
 
 const bool DUTY_CYCLE_0[] = {false, false, false, false, false, false, false, true};
 const bool DUTY_CYCLE_1[] = {true, false, false, false, false, false, false, true};
@@ -67,7 +65,7 @@ void SquareChannel::lengthStep() {
     }
 }
 
-u_int8_t SquareChannel::get_8(u_int16_t address) {
+u_int8_t SquareChannel::get_8(u_int16_t address, u_int8_t bank) {
     throw std::invalid_argument("Bad read from square channel.");
 }
 

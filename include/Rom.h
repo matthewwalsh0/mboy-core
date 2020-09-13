@@ -1,14 +1,11 @@
-//
-// Created by matthew on 04/07/2020.
-//
-
 #ifndef MY_APPLICATION_ROM_H
 #define MY_APPLICATION_ROM_H
 
 #include <sys/types.h>
+#include <string>
+
 #include "MemoryHook.h"
 #include "SaveFile.h"
-#include <string>
 #include "Ram.h"
 #include "Memory.h"
 
@@ -18,16 +15,15 @@ public:
     virtual bool set_8(u_int16_t address, u_int8_t value, u_int8_t* rom, Ram* ram) { return false; };
 };
 
-class Rom : MemoryHook {
+class Rom {
 
 private:
     u_int8_t* rom;
     Ram* ram;
     Controller* controller;
 
-    std::string readName(u_int8_t* rom);
-    u_int8_t get_8(u_int16_t address) override;
-    bool set_8(u_int16_t address, u_int8_t value) override;
+    u_int8_t get_8(u_int16_t address, u_int8_t bank);
+    bool set_8(u_int16_t address, u_int8_t value);
 public:
     bool isColour = false;
     std::string name;

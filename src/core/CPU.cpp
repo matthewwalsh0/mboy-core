@@ -14,86 +14,6 @@ const u_int16_t INTERRUPT_ROUTINE_SERIAL = 0x0058;
 const u_int16_t INTERRUPT_ROUTINE_JOYPAD = 0x0060;
 const std::string LOG_PATH = "mboy_log_cpu.txt";
 
-class InterruptEnableHook : public MemoryHook {
-private:
-    CPU* cpu;
-public:
-    InterruptEnableHook(CPU* cpu) {
-        this->cpu = cpu;
-    }
-
-    u_int8_t get_8(u_int16_t address) {
-       return cpu->getInterruptEnable();
-    }
-
-    bool set_8(u_int16_t address, u_int8_t value) {
-        cpu->setInterruptEnable(value);
-        return true;
-    }
-};
-
-class InterruptFlagsHook : public MemoryHook {
-private:
-    CPU* cpu;
-public:
-    InterruptFlagsHook(CPU* cpu) {
-        this->cpu = cpu;
-    }
-
-    u_int8_t get_8(u_int16_t address) {
-       return cpu->getInterruptFlags();
-    }
-
-    bool set_8(u_int16_t address, u_int8_t value) {
-        cpu->setInterruptFlags(value);
-        return true;
-    }
-};
-
-class SpeedHook : public MemoryHook {
-private:
-    CPU* cpu;
-public:
-    SpeedHook(CPU* cpu) {
-        this->cpu = cpu;
-    }
-
-    u_int8_t get_8(u_int16_t address) {
-        u_int8_t value = 0;
-
-        if(cpu->currentSpeed == 2) {
-            value = Bytes::setBit_8(value, 7);
-        }
-
-        if(cpu->swapSpeed) {
-            value = Bytes::setBit_8(value, 0);
-        }
-
-        return value;
-    }
-
-    bool set_8(u_int16_t address, u_int8_t value) {
-        bool swap = Bytes::getBit_8(value, 0);
-        if(swap) {
-            cpu->swapSpeed = true;
-        }
-        return true;
-    }
-};
-
-class FlagHook : public MemoryHook {
-private:
-    CPU* cpu;
-public:
-    FlagHook(CPU* cpu) {
-        this->cpu = cpu;
-    }
-
-    void flagInterrupt(u_int8_t bit) {
-        cpu->flagInterrupt(bit);
-    }
-};
-
 CPU::CPU(Memory* memory) : logFile(LOG_PATH) {
     a = 0x11;
     b = 0x00;
@@ -113,20 +33,24 @@ CPU::CPU(Memory* memory) : logFile(LOG_PATH) {
     swapSpeed = false;
     currentSpeed = 1;
 
-    MemoryHook* interruptEnableHook = (MemoryHook*) new InterruptEnableHook(this);
-    MemoryHook* interruptFlagsHook = (MemoryHook*) new InterruptFlagsHook(this);
-    MemoryHook* speedHook = (MemoryHook*) new SpeedHook(this);
-    MemoryHook* flagHook = (MemoryHook*) new FlagHook(this);
+    memory->registerGetter(ADDRESS_INTERRUPT_ENABLE, [this]MEMORY_GETTER_LAMBDA { return getInterruptEnable(); });
+    memory->registerGetter(ADDRESS_INTERRUPT_FLAGS, [this]MEMORY_GETTER_LAMBDA { return getInterruptFlags(); });
+    memory->registerGetter(0xFF4D, [this]MEMORY_GETTER_LAMBDA {
+        u_int8_t value = 0;
+        if(currentSpeed == 2) { value = Bytes::setBit_8(value, 7); }
+        if(swapSpeed) { value = Bytes::setBit_8(value, 0); }
+        return value;
+    });
 
-    memory->registerGetter(ADDRESS_INTERRUPT_ENABLE, interruptEnableHook);
-    memory->registerGetter(ADDRESS_INTERRUPT_FLAGS, interruptFlagsHook);
-    memory->registerGetter(0xFF4D, speedHook);
+    memory->registerSetter(ADDRESS_INTERRUPT_ENABLE, [this]MEMORY_SETTER_LAMBDA { setInterruptEnable(value); return true; });
+    memory->registerSetter(ADDRESS_INTERRUPT_FLAGS, [this]MEMORY_SETTER_LAMBDA { setInterruptFlags(value); return true; });
+    memory->registerSetter(0xFF4D, [this]MEMORY_SETTER_LAMBDA {
+        bool swap = Bytes::getBit_8(value, 0);
+        if(swap) { swapSpeed = true; }
+        return true;
+    });
 
-    memory->registerSetter(ADDRESS_INTERRUPT_ENABLE, interruptEnableHook);
-    memory->registerSetter(ADDRESS_INTERRUPT_FLAGS, interruptFlagsHook);
-    memory->registerSetter(0xFF4D, speedHook);
-
-    memory->registerSetter(0, flagHook);
+    memory->registerFlagger([this]MEMORY_FLAGGER_LAMBDA { flagInterrupt(bit); });
 }
 
 u_int8_t CPU::get_8(Register cpuRegister) {

@@ -7,7 +7,6 @@
 #include "WaveChannel.h"
 #include "NoiseChannel.h"
 #include "MemoryMap.h"
-#include "MemoryHook.h"
 #include "Memory.h"
 #include "Config.h"
 
@@ -21,7 +20,7 @@ public:
     virtual float* getSamples() { return nullptr; }
 };
 
-class APU : MemoryHook {
+class APU {
 private:
     GUI *gui;
     Downsampler *downsampler;
@@ -37,8 +36,6 @@ private:
 public:
     APU(GUI* gui, Memory* memory, struct config* config);
     void step(u_int16_t lastInstructionDuration, u_int32_t count);
-    u_int8_t get_8(u_int16_t address);
-    bool set_8(u_int16_t address, u_int8_t value);
 };
 
 #endif
