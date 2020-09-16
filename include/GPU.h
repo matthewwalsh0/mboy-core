@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_GPU_H
 #define MY_APPLICATION_GPU_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "Control.h"
 #include "Pixels.h"
 #include "Display.h"
@@ -37,7 +37,7 @@ private:
     u_int16_t frameCount = 0;
     u_int16_t hdmaTarget = 0;
     u_int16_t hdmaSource = 0;
-    struct config* config;
+    Config* config;
     
 public:
 u_int16_t line;
@@ -45,7 +45,7 @@ u_int16_t coincidenceLine;
 
     Display display;
 
-    GPU(Memory* memory, GUI* gui, struct config* config);
+    GPU(Memory* memory, GUI* gui, Config* config);
     void step(u_int16_t lastInstructionDuration, MemoryHook* memory, bool isColour, u_int32_t count);
     u_int8_t getStat();
     void setStat(u_int8_t value);

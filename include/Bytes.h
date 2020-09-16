@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_BYTES_H
 #define MY_APPLICATION_BYTES_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 class Bytes {
 public:

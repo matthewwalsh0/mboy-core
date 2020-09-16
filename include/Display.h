@@ -13,7 +13,7 @@
 class Display {
 private:
     MemoryHook* memory;
-    struct config* config;
+    Config* config;
     Sprite* spriteCache[40];
 public:
     TileMap tileMap_0;
@@ -23,7 +23,7 @@ public:
     ColourPaletteData backgroundColourPaletteData;
     ColourPaletteData spriteColourPaletteData;
 
-    Display(MemoryHook* memory, struct config* config);
+    Display(MemoryHook* memory, Config* config);
     void drawLine(Pixels* pixels, u_int8_t line, bool isColour, Control* control);
     void clearSprite(u_int16_t address);
     void invalidateTile(TileMap* tileMap, u_int16_t address);

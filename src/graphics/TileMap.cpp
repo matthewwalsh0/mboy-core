@@ -4,6 +4,8 @@
 
 #include "TileMap.h"
 
+#include <algorithm>
+
 const u_int16_t WIDTH = TILE_COUNT * TILE_SIZE;
 const u_int16_t HEIGHT = WIDTH;
 
@@ -12,6 +14,7 @@ TileMap::TileMap(MemoryHook *memory, u_int16_t start, u_int16_t end, bool* disab
     this->start = start;
     this->end = end;
     this->disableCache = disableCache;
+    std::fill_n(invalidTiles, TILE_COUNT * TILE_COUNT, true);
 }
 
 u_int16_t TileMap::getIndex(u_int16_t tileX, u_int16_t tileY) {

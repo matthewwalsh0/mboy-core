@@ -1,7 +1,7 @@
 #ifndef MY_APPLICATION_ROM_H
 #define MY_APPLICATION_ROM_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include <string>
 
 #include "MemoryHook.h"

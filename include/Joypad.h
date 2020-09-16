@@ -1,7 +1,7 @@
 #ifndef MBOY_ANDROID_JOYPAD_H
 #define MBOY_ANDROID_JOYPAD_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 #include "GUI.h"
 #include "Memory.h"

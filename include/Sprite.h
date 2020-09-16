@@ -6,7 +6,7 @@
 #define MBOY_SPRITE_H
 
 
-#include <sys/types.h>
+#include "Types.h"
 #include "MemoryHook.h"
 #include "Tile.h"
 

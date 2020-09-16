@@ -6,7 +6,7 @@
 #define MBOY_ANDROID_BACKGROUNDATTRIBUTES_H
 
 
-#include <sys/types.h>
+#include "Types.h"
 
 class BackgroundAttributes {
 public:

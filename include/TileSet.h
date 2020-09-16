@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_TILESET_H
 #define MY_APPLICATION_TILESET_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "MemoryHook.h"
 #include "Tile.h"
 
@@ -14,7 +14,7 @@ private:
     u_int16_t start;
     bool isSigned;
     Tile* tileCache[1024 * 2];
-    bool tileCacheSet[1024 * 2] = {[0 ... 2047] = false};
+    bool tileCacheSet[1024 * 2];
     MemoryHook* memory;
     bool* disableCache;
 public:

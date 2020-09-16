@@ -1,7 +1,7 @@
 #ifndef MBOY_ANDROID_SQUARECHANNEL_H
 #define MBOY_ANDROID_SQUARECHANNEL_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 class SquareChannel {
 private:

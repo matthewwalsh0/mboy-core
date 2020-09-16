@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_MEMORYMAP_H
 #define MY_APPLICATION_MEMORYMAP_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 // CPU + Timer
 const u_int16_t ADDRESS_DIVIDER = 0xFF04;

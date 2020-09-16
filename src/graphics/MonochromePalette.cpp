@@ -1,9 +1,10 @@
+
 //
 // Created by matthew on 06/07/2020.
 //
 
 #include "MonochromePalette.h"
-#include <sys/types.h>
+#include "Types.h"
 #include "Bytes.h"
 
 const u_int32_t PALETTE_WHITE = 0xFFD0F8E0;
@@ -28,4 +29,6 @@ palette MonochromePalette::get(u_int8_t value) {
     palette.colours[3] = getColour(Bytes::getBit_8(value, 6), Bytes::getBit_8(value, 7));
 
     return palette;
+
+
 }

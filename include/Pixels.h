@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_PIXELS_H
 #define MY_APPLICATION_PIXELS_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 const u_int32_t WHITE = 0xFFFFFFFF;
 

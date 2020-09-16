@@ -1,6 +1,6 @@
 #include "GPU.h"
 
-#include <sys/types.h>
+#include "Types.h"
 
 #include "MemoryMap.h"
 #include "Bytes.h"
@@ -21,7 +21,7 @@ const u_int16_t MODE_DURATIONS[] = {
     DURATION_SCANLINE_SPRITE,
     DURATION_SCANLINE_BACKGROUND};
 
-GPU::GPU(Memory *memory, GUI* gui, struct config* config) :
+GPU::GPU(Memory *memory, GUI* gui, Config* config) :
     pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
     logFile(LOG_PATH),
     display((MemoryHook*) memory, config) {

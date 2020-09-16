@@ -5,7 +5,7 @@
 #ifndef MBOY_ANDROID_NOISECHANNEL_H
 #define MBOY_ANDROID_NOISECHANNEL_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 class NoiseChannel {
 private:

@@ -7,7 +7,7 @@
 
 const u_int8_t FINAL_INDEX = SCREEN_WIDTH / TILE_SIZE;
 
-Display::Display(MemoryHook *memory, struct config* config) :
+Display::Display(MemoryHook *memory, Config* config) :
 tileMap_0(memory, TILE_MAP_0_START, TILE_MAP_0_END, &config->disableTileMapCache),
 tileMap_1(memory, TILE_MAP_1_START, TILE_MAP_1_END, &config->disableTileMapCache),
 tileSet_0(memory, TILE_SET_0_START, true, &config->disableTileSetCache),

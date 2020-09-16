@@ -1,5 +1,5 @@
 #include <stdexcept>
-#include <sys/types.h>
+#include "Types.h"
 #include "Bytes.h"
 #include "CPU.h"
 #include "Instructions.h"

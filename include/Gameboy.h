@@ -22,9 +22,9 @@ private:
     Timer timer;
     Joypad joypad;
     GUI* gui;
-    config* config;
+    Config* config;
 public:
-    Gameboy(std::string path, GUI* gui, struct config* config);
+    Gameboy(std::string path, GUI* gui, Config* config);
     void run();
 };
 

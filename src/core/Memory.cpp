@@ -9,7 +9,7 @@ const u_int16_t ADDRESS_DMA_TRANSFER = 0xFF46;
 const u_int16_t ADDRESS_SPRITE_INFO_START = 0xFE00;
 
 Memory::Memory() {
-    for(u_int32_t i = 0; i < 0xFFFF; i++) {
+    for(u_int32_t i = 0; i <= 0xFFFF; i++) {
         getters.push_back(nullptr);
         std::vector<MEMORY_SETTER> vectorList;
         setters.push_back(vectorList);

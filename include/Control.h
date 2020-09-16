@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_CONTROL_H
 #define MY_APPLICATION_CONTROL_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "MemoryHook.h"
 
 class Control {

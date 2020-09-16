@@ -6,7 +6,7 @@
 #define MBOY_ANDROID_COLOURPALETTE_H
 
 
-#include <sys/types.h>
+#include "Types.h"
 #include "Tile.h"
 
 class ColourPalette {

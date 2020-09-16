@@ -5,7 +5,7 @@
 #ifndef MBOY_ANDROID_WAVECHANNEL_H
 #define MBOY_ANDROID_WAVECHANNEL_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "MemoryHook.h"
 
 class WaveChannel {

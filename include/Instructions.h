@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_INSTRUCTIONS_H
 #define MY_APPLICATION_INSTRUCTIONS_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "CPU.h"
 #include "MemoryHook.h"
 

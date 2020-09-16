@@ -1,7 +1,7 @@
 #ifndef MY_APPLICATION_CPU_H
 #define MY_APPLICATION_CPU_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 #include "MemoryHook.h"
 #include "LogFile.h"

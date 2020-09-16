@@ -20,7 +20,7 @@ class TileMap {
 private:
     MemoryHook* memory;
     u_int16_t end;
-    bool invalidTiles[TILE_COUNT * TILE_COUNT] = {[0 ... TILE_COUNT * TILE_COUNT - 1] = true};
+    bool invalidTiles[TILE_COUNT * TILE_COUNT];
     bool* disableCache;
 public:
     u_int16_t start;

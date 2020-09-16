@@ -1,7 +1,7 @@
 #ifndef MY_APPLICATION_COREMEMORY_H
 #define MY_APPLICATION_COREMEMORY_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 class CoreMemory {
 private:

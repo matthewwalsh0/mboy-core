@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_MEMORYHOOK_H
 #define MY_APPLICATION_MEMORYHOOK_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 class MemoryHook {
 public:

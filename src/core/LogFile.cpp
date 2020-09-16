@@ -4,6 +4,8 @@
 
 #include "LogFile.h"
 
+#include <stdarg.h>
+
 LogFile::LogFile(std::string path) {
     file.open(path);
 }

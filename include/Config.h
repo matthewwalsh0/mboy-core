@@ -8,7 +8,7 @@
 #include "Tile.h"
 #include "TileSet.h"
 
-struct config {
+struct Config {
     bool background = true;
     bool window = true;
     bool sprites = true;

@@ -3,6 +3,9 @@
 //
 
 #include "Tile.h"
+
+#include <algorithm>
+
 #include "Bytes.h"
 
 static void getColours(MemoryHook* memory, u_int16_t start, u_int32_t* colourIndexes, bool large, bool alternateBank) {
@@ -40,6 +43,7 @@ static void getColours(MemoryHook* memory, u_int16_t start, u_int32_t* colourInd
 
 Tile::Tile(MemoryHook *memory, u_int16_t start, bool large, bool alternateBank) {
     this->large = large;
+    std::fill_n(paletteCacheSet, 256 * TILE_SIZE, false);
     getColours(memory, start, colourIndexes, large, alternateBank);
 }
 

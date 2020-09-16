@@ -1,7 +1,7 @@
 #ifndef MBOY_ANDROID_APU_H
 #define MBOY_ANDROID_APU_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "GUI.h"
 #include "SquareChannel.h"
 #include "WaveChannel.h"
@@ -32,9 +32,9 @@ private:
     u_int32_t volumeEnvelopeCounter = 0;
     bool ready = false;
     bool power = false;
-    struct config* config;
+    Config* config;
 public:
-    APU(GUI* gui, Memory* memory, struct config* config);
+    APU(GUI* gui, Memory* memory, Config* config);
     void step(u_int16_t lastInstructionDuration, u_int32_t count);
 };
 

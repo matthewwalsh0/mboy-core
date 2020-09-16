@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_MEMORY_H
 #define MY_APPLICATION_MEMORY_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include <functional>
 #include <vector>
 

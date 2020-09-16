@@ -1,7 +1,7 @@
 #include "APU.h"
 
 #include <stdexcept>
-#include <sys/types.h>
+#include "Types.h"
 
 #include "NearestNeighbourDownsampler.h"
 #include "GUI.h"
@@ -11,7 +11,7 @@
 
 const u_int16_t CHANNEL_VOLUME = 15;
 
-APU::APU(GUI* gui, Memory* memory, struct config* config) :
+APU::APU(GUI* gui, Memory* memory, Config* config) :
     square_1(SQUARE_1_ADDRESS_START),
     square_2(SQUARE_2_ADDRESS_START),
     wave((MemoryHook*) memory, WAVE_TABLE_START) {

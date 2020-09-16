@@ -5,7 +5,7 @@
 #ifndef MBOY_ANDROID_MBC3_H
 #define MBOY_ANDROID_MBC3_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "MemoryHook.h"
 #include "Rom.h"
 

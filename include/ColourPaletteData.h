@@ -5,7 +5,7 @@
 #ifndef MBOY_ANDROID_COLOURPALETTEDATA_H
 #define MBOY_ANDROID_COLOURPALETTEDATA_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "Tile.h"
 
 class ColourPaletteData {

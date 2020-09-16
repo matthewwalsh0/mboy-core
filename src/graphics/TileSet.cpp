@@ -3,6 +3,9 @@
 //
 
 #include "TileSet.h"
+
+#include <algorithm>
+
 #include "Bytes.h"
 
 TileSet::TileSet(MemoryHook* memory, u_int16_t start, bool isSigned, bool* disableCache) {
@@ -10,6 +13,7 @@ TileSet::TileSet(MemoryHook* memory, u_int16_t start, bool isSigned, bool* disab
     this->start = start;
     this->isSigned = isSigned;
     this->disableCache = disableCache;
+    std::fill_n(tileCacheSet, 2048, false);
 }
 
 Tile* TileSet::getTile(u_int8_t index, bool large, bool alternateBank, bool useCache) {

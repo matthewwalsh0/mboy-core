@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_TILE_H
 #define MY_APPLICATION_TILE_H
 
-#include <sys/types.h>
+#include "Types.h"
 #include "MemoryHook.h"
 #include "Pixels.h"
 #include "VRAM.h"
@@ -23,8 +23,8 @@ class Tile {
 private:
     u_int32_t colourIndexes[TILE_SIZE * TILE_SIZE];
     bool large;
-    u_int32_t paletteCache[256 * TILE_SIZE * TILE_SIZE];
-    bool paletteCacheSet[256 * TILE_SIZE] = {[0 ... 256 * TILE_SIZE - 1] = false};
+    u_int32_t paletteCache[256 * TILE_SIZE * TILE_SIZE] = { 0 };
+    bool paletteCacheSet[256 * TILE_SIZE];
 public:
     Tile(MemoryHook* memory, u_int16_t start, bool large, bool alternateBank);
     void drawLine(Pixels* pixels, palette palette, u_int16_t localY,

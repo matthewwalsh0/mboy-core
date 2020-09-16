@@ -1,7 +1,7 @@
 #ifndef MBOY_ANDROID_WRAM_H
 #define MBOY_ANDROID_WRAM_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 #include "MemoryHook.h"
 #include "MemoryRegister.h"

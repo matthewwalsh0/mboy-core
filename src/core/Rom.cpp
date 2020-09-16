@@ -1,6 +1,8 @@
 #include "Rom.h"
 
 #include <fstream>
+#include <cstring>
+#include <string.h>
 
 #include "MemoryMap.h"
 #include "MBC1.h"

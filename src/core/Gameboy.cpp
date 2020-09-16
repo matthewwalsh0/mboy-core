@@ -4,7 +4,7 @@
 
 #include "Gameboy.h"
 
-Gameboy::Gameboy(std::string path, GUI* gui, struct config* config) :
+Gameboy::Gameboy(std::string path, GUI* gui, Config* config) :
     memory(),
     rom(path, &memory),
     cpu(&memory),

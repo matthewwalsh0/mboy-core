@@ -5,7 +5,7 @@
 #ifndef MY_APPLICATION_GUI_H
 #define MY_APPLICATION_GUI_H
 
-#include <sys/types.h>
+#include "Types.h"
 
 const u_int8_t BUTTON_START = 0;
 const u_int8_t BUTTON_SELECT = 1;
