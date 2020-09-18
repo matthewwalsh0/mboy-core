@@ -1,8 +1,5 @@
-//
-// Created by matthew on 05/07/2020.
-//
-
 #include "Gameboy.h"
+#include "Log.h"
 
 Gameboy::Gameboy(std::string path, GUI* gui, Config* config) :
     memory(),
@@ -15,6 +12,7 @@ Gameboy::Gameboy(std::string path, GUI* gui, Config* config) :
 
     this->gui = gui;
     this->config = config;
+    initLogging();
 
     memory.set_8(LCD_CONTROL, 0x91);
     memory.set_8(ADDRESS_JOYPAD, 0x0F);

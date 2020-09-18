@@ -1,7 +1,9 @@
+#include "CPU.h"
+
 #include <stdexcept>
+
 #include "Types.h"
 #include "Bytes.h"
-#include "CPU.h"
 #include "Instructions.h"
 #include "MemoryMap.h"
 
@@ -12,9 +14,8 @@ const u_int16_t INTERRUPT_ROUTINE_LCD = 0x0048;
 const u_int16_t INTERRUPT_ROUTINE_TIMER = 0x0050;
 const u_int16_t INTERRUPT_ROUTINE_SERIAL = 0x0058;
 const u_int16_t INTERRUPT_ROUTINE_JOYPAD = 0x0060;
-const std::string LOG_PATH = "mboy_log_cpu.txt";
 
-CPU::CPU(Memory* memory) : logFile(LOG_PATH) {
+CPU::CPU(Memory* memory) {
     a = 0x11;
     b = 0x00;
     c = 0x13;
@@ -188,12 +189,10 @@ u_int16_t CPU::step(MemoryHook* memory, u_int32_t count, bool debug) {
     u_int16_t instructionDurationNoAction = instruction.cyclesNoAction;
     u_int16_t totalCycles = 0;
 
-    //u_int8_t argLength = instruction.length - 1;
-
-    // logFile.write("%d - 0x%04X - 0x%04X - %10s - %02X - %04X - AF=%04X BC=%04X DE=%04X HL=%04X SP=%04X - Z=%d N=%d H=%d C=%d",
-    //                 count, pc, instructionCode, instruction.debug, arg_8, arg_16,
-    //                 get_16(AF), get_16(BC), get_16(DE), get_16(HL), sp,
-    //                 flag_z, flag_n, flag_h, flag_c);
+    MBOY_TRACE("{0:d} - 0x{1:04X} - 0x{2:04X} - {3:10} - {4:02X} - {5:04X} - AF={6:04X} BC={7:04X} DE={8:04X} HL={9:04X} SP={10:04X} - Z={11:d} N={12:d} H={13:d} C={14:d}",
+        count, pc, instructionCode, instruction.debug, arg_8, arg_16,
+        get_16(AF), get_16(BC), get_16(DE), get_16(HL), sp,
+        flag_z, flag_n, flag_h, flag_c);
 
     if(!halt) {
         pc += instructionLength;

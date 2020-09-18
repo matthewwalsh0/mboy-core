@@ -1,11 +1,10 @@
-//
-// Created by matthew on 03/08/2020.
-//
+#include "SaveFile.h"
 
 #include <fstream>
 #include <iostream>
 #include <regex>
-#include "SaveFile.h"
+
+#include "Log.h"
 
 SaveFile::SaveFile(std::string name) {
     this->name = name;
@@ -37,6 +36,8 @@ u_int8_t SaveFile::get_8(u_int32_t address) {
 }
 
 bool SaveFile::set_8(u_int32_t address, u_int8_t value) {
+    MBOY_INFO("Writing to save file - {0} - 0x{1:X} = 0x{2:X}", this->fileName, address, value);
+
     const char data[1] = {(char) value};
     this->data[address] = value;
     this->file.seekp(address, std::ios::beg);

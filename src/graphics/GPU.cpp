@@ -13,7 +13,6 @@ const u_int16_t DURATION_SCANLINE_SPRITE = 80;
 const u_int16_t DURATION_SCANLINE_BACKGROUND = 172;
 const u_int16_t DURATION_HORIZONTAL_BLANK = 204;
 const u_int16_t DURATION_VERTICAL_BLANK = 456;
-const std::string LOG_PATH = "/sdcard/Download/matterboy_log_gpu.txt";
 
 const u_int16_t MODE_DURATIONS[] = {
     DURATION_HORIZONTAL_BLANK,
@@ -23,7 +22,6 @@ const u_int16_t MODE_DURATIONS[] = {
 
 GPU::GPU(Memory *memory, GUI* gui, Config* config) :
     pixels(SCREEN_WIDTH, SCREEN_HEIGHT),
-    logFile(LOG_PATH),
     display((MemoryHook*) memory, config) {
     this->memory = (MemoryHook*) memory;
     this->control = new Control((u_int8_t) 0);

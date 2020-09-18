@@ -1,11 +1,10 @@
-#ifndef MY_APPLICATION_CPU_H
-#define MY_APPLICATION_CPU_H
+#ifndef CPU_H
+#define CPU_H
 
 #include "Types.h"
-
 #include "MemoryHook.h"
-#include "LogFile.h"
 #include "Memory.h"
+#include "Log.h"
 
 enum Register {
     A,
@@ -56,8 +55,6 @@ public:
     bool interruptFlagsSerial = false;
     bool interruptFlagsJoypad = false;
 
-    LogFile logFile;
-
     CPU(Memory* memory);
     u_int8_t get_8(Register cpuRegister);
     u_int8_t get_f();
@@ -77,4 +74,4 @@ private:
 };
 
 
-#endif //MY_APPLICATION_CPU_H
+#endif

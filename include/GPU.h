@@ -10,7 +10,6 @@
 #include "Pixels.h"
 #include "Display.h"
 #include "GUI.h"
-#include "LogFile.h"
 #include "Config.h"
 #include "Memory.h"
 #include <chrono>
@@ -32,7 +31,6 @@ private:
     bool hblankInterrupt;
     
     GUI* gui;
-    LogFile logFile;
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
     u_int16_t frameCount = 0;
     u_int16_t hdmaTarget = 0;
